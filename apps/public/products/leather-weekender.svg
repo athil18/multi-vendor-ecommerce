@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bgWeekender" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#0c0a09"/>
+    </linearGradient>
+    <linearGradient id="leatherGradient" x1="0%" y1="0%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#78350f"/>
+      <stop offset="50%" stop-color="#92400e"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="brassHardware" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <filter id="shadowWeekender" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="25" stdDeviation="25" flood-color="#000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bgWeekender)"/>
+  <ellipse cx="400" cy="455" rx="220" ry="25" fill="#000000" opacity="0.7"/>
+
+  <g transform="translate(200, 150)" filter="url(#shadowWeekender)">
+    <!-- Carry Handles -->
+    <path d="M 140,110 C 140,20 260,20 260,110" fill="none" stroke="#451a03" stroke-width="16" stroke-linecap="round"/>
+    <path d="M 140,110 C 140,20 260,20 260,110" fill="none" stroke="url(#leatherGradient)" stroke-width="12" stroke-linecap="round"/>
+    <!-- Handle Anchors with Brass Rivets -->
+    <rect x="130" y="100" width="20" height="35" rx="4" fill="url(#brassHardware)"/>
+    <circle cx="140" cy="118" r="3" fill="#451a03"/>
+    <rect x="250" y="100" width="20" height="35" rx="4" fill="url(#brassHardware)"/>
+    <circle cx="260" cy="118" r="3" fill="#451a03"/>
+
+    <!-- Duffle Body -->
+    <rect x="30" y="90" width="340" height="180" rx="36" fill="url(#leatherGradient)" stroke="#292524" stroke-width="2"/>
+    
+    <!-- Heavy Stitch Lines -->
+    <path d="M 60,95 L 60,265 M 340,95 L 340,265" stroke="#fde68a" stroke-dasharray="6,4" stroke-width="2" opacity="0.6"/>
+
+    <!-- Brass Zipper Track across top -->
+    <path d="M 50,92 L 350,92" stroke="url(#brassHardware)" stroke-width="6"/>
+
+    <!-- Center Accent Pocket -->
+    <rect x="120" y="140" width="160" height="100" rx="12" fill="#451a03" stroke="url(#brassHardware)" stroke-width="1.5"/>
+    <line x1="130" y1="145" x2="270" y2="145" stroke="#fde68a" stroke-dasharray="4,3" stroke-width="1.5" opacity="0.7"/>
+    <circle cx="200" cy="190" r="5" fill="url(#brassHardware)"/>
+  </g>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#fde68a" letter-spacing="4">HANDCRAFTED ITALIAN LEATHER WEEKENDER</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#d97706" letter-spacing="2">FULL-GRAIN TUSCAN COWHIDE • SOLID BRASS • LIFETIME WARRANTY</text>
+</svg>

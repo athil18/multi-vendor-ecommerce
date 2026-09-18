@@ -1,0 +1,84 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "staging", "dev" ]
+
+jobs:
+  determine-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.set-env.outputs.env_name }}
+    steps:
+      - id: set-env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "env_name=production" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "env_name=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "env_name=development" >> "$GITHUB_OUTPUT"
+          fi
+
+  database-safety:
+    needs: determine-environment
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.env_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Migrations Status Check
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: npm run migrate:status
+      - name: Execute Database Migrations
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: npm run migrate:up
+
+  deploy-frontend:
+    needs: [determine-environment, database-safety]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.env_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=${{ needs.determine-environment.outputs.env_name }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build ${{ needs.determine-environment.outputs.env_name == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt ${{ needs.determine-environment.outputs.env_name == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-backend:
+    needs: [determine-environment, database-safety]
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.env_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Render
+        if: needs.determine-environment.outputs.env_name == 'production'
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_PROD }}
+      - name: Deploy to Render Staging
+        if: needs.determine-environment.outputs.env_name == 'staging'
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
+      - name: Deploy to Render Dev
+        if: needs.determine-environment.outputs.env_name == 'development'
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_DEV }}
+
+  observability:
+    needs: [deploy-frontend, deploy-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log Deployment Success
+        run: echo "Deployment to ${{ github.ref }} successfully completed."

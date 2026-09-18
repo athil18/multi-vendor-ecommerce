@@ -1,0 +1,20 @@
+{
+  "title": "Engineering Dashboard",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Queue Depth",
+      "metrics": ["max:queue.depth{*} by {queue_name}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "API Latency (p95)",
+      "metrics": ["p95:api.latency{*} by {route}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Redis Cache Hit Rate",
+      "metrics": ["sum:redis.cache.hits{*} / (sum:redis.cache.hits{*} + sum:redis.cache.misses{*})"]
+    }
+  ]
+}

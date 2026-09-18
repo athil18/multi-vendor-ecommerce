@@ -1,0 +1,25 @@
+{
+  "title": "Marketplace Risk Dashboard",
+  "panels": [
+    {
+      "type": "table",
+      "title": "High Risk Sellers",
+      "metrics": ["top:store.fraudRiskLevel{high} by {storeName}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Active Disputes",
+      "metrics": ["sum:disputes.open.count{*}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Refund Trends",
+      "metrics": ["sum:orders.refunded.count{*}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Fraud Alerts",
+      "metrics": ["sum:alerts.fraud.count{*}"]
+    }
+  ]
+}

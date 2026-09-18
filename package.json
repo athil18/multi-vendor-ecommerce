@@ -1,0 +1,43 @@
+{
+  "name": "ecommerce-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "dev:up": "node scripts/local/dev-supervisor.js up",
+    "dev:prod": "node scripts/local/dev-supervisor.js prod",
+    "dev:down": "node scripts/local/dev-supervisor.js down",
+    "dev:status": "node scripts/local/dev-supervisor.js status",
+    "dev:restart": "node scripts/local/dev-supervisor.js restart",
+    "dev:open": "node scripts/local/dev-supervisor.js open",
+    "dev:install-startup": "powershell -ExecutionPolicy Bypass -File scripts/local/install-startup.ps1",
+    "dev:uninstall-startup": "powershell -ExecutionPolicy Bypass -File scripts/local/uninstall-startup.ps1",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "node ../scripts/clean-workspace.js",
+    "clean:build": "node ../scripts/clean-workspace.js",
+    "clean:test": "node ../scripts/clean-workspace.js",
+    "clean:all": "node ../scripts/clean-workspace.js --all",
+    "format": "prettier --write \"**/*.{js,ts,jsx,tsx,json,md}\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

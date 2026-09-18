@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#121214"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="walnut" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3e2723"/>
+      <stop offset="35%" stop-color="#5d4037"/>
+      <stop offset="70%" stop-color="#4e342e"/>
+      <stop offset="100%" stop-color="#2e1c14"/>
+    </linearGradient>
+    <linearGradient id="aluminumLeg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="50%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <filter id="shelfShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="25" stdDeviation="25" flood-color="#000" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- Cast Shadow Under Riser -->
+  <ellipse cx="400" cy="390" rx="310" ry="25" fill="#000000" opacity="0.6"/>
+
+  <g transform="translate(90, 200)" filter="url(#shelfShadow)">
+    <!-- Aluminum Legs (Left & Right) -->
+    <rect x="30" y="45" width="22" height="95" rx="6" fill="url(#aluminumLeg)"/>
+    <rect x="568" y="45" width="22" height="95" rx="6" fill="url(#aluminumLeg)"/>
+
+    <!-- Bottom Cork Pads on Feet -->
+    <rect x="28" y="136" width="26" height="6" rx="2" fill="#b45309"/>
+    <rect x="566" y="136" width="26" height="6" rx="2" fill="#b45309"/>
+
+    <!-- Solid Walnut Plank -->
+    <!-- Front Edge -->
+    <rect x="0" y="32" width="620" height="24" rx="6" fill="#2e1c14"/>
+    <!-- Top Surface (Isometric-style Perspective) -->
+    <path d="M 0,32 L 35,0 L 585,0 L 620,32 Z" fill="url(#walnut)" stroke="#6d4c41" stroke-width="0.75"/>
+
+    <!-- Natural Woodgrain Details -->
+    <path d="M 80,18 C 180,10 320,24 540,8" fill="none" stroke="#6d4c41" stroke-width="1.5" opacity="0.4"/>
+    <path d="M 120,24 C 240,16 380,28 500,16" fill="none" stroke="#3e2723" stroke-width="1.5" opacity="0.4"/>
+
+    <!-- Integrated Cable Routing Pass-through Slot at Back -->
+    <rect x="270" y="4" width="80" height="8" rx="4" fill="#121214"/>
+  </g>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#cbd5e1" letter-spacing="4">SOLID WALNUT MONITOR RISER</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#64748b" letter-spacing="2">AMERICAN HARDWOOD • ANODIZED LEGS • INTEGRATED CHANNELS</text>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "title": "Business Dashboard",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Active Users",
+      "metrics": ["sum:users.active{*}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Checkout Conversion Rate",
+      "metrics": ["sum:checkout.success.count{*} / sum:checkout.started.count{*}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Payment Success Rate",
+      "metrics": ["sum:payment.success.count{*} / sum:payment.attempted.count{*}"]
+    }
+  ]
+}

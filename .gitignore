@@ -1,0 +1,114 @@
+# ==============================================================================
+# Nexus Multi-Vendor E-Commerce Platform - Git Ignore Rules
+# Strictly prevents credentials, build artifacts, and dependency bloat
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment & Sensitive Credentials (CRITICAL)
+# ------------------------------------------------------------------------------
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+apps/.env
+apps/.env.test
+apps/.env.local
+apps/.env.production
+*.pem
+*.key
+*.cert
+*.pfx
+*.p12
+
+# Explicitly allow environment example templates
+!.env.example
+!apps/.env.example
+
+# ------------------------------------------------------------------------------
+# 2. Dependencies & Package Managers
+# ------------------------------------------------------------------------------
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ------------------------------------------------------------------------------
+# 3. Next.js & Frontend Build Outputs
+# ------------------------------------------------------------------------------
+.next/
+**/.next/
+out/
+**/out/
+build/
+**/build/
+dist/
+**/dist/
+.angular/
+**/.angular/
+.vercel
+**/.vercel
+
+# ------------------------------------------------------------------------------
+# 4. User Uploads & Temporary Media
+# ------------------------------------------------------------------------------
+apps/public/uploads/*
+!apps/public/uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
+
+# ------------------------------------------------------------------------------
+# 5. Logs, Runtime & Process State
+# ------------------------------------------------------------------------------
+logs/
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.dev-state.json
+**/.dev-state.json
+
+# ------------------------------------------------------------------------------
+# 5. TypeScript & Cache Files
+# ------------------------------------------------------------------------------
+*.tsbuildinfo
+**/*.tsbuildinfo
+next-env.d.ts
+
+# ------------------------------------------------------------------------------
+# 6. Testing, Code Coverage & Playwright Artifacts
+# ------------------------------------------------------------------------------
+coverage/
+**/coverage/
+.nyc_output
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+blob-report/
+**/blob-report/
+
+# ------------------------------------------------------------------------------
+# 7. Operating System & Editor Metadata
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

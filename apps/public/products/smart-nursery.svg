@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bgNursery" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#052e16"/>
+      <stop offset="100%" stop-color="#021a0c"/>
+    </linearGradient>
+    <linearGradient id="nurseryGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#047857" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="growLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadowNursery" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="25" stdDeviation="25" flood-color="#000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bgNursery)"/>
+  <ellipse cx="400" cy="450" rx="180" ry="25" fill="#000000" opacity="0.7"/>
+
+  <!-- Light cone -->
+  <polygon points="320,160 480,160 550,380 250,380" fill="url(#growLight)"/>
+
+  <g transform="translate(250, 140)" filter="url(#shadowNursery)">
+    <!-- Top Light Bar -->
+    <rect x="50" y="20" width="200" height="24" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="2"/>
+    <line x1="70" y1="32" x2="230" y2="32" stroke="#a7f3d0" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Support Struts -->
+    <line x1="60" y1="44" x2="60" y2="240" stroke="#334155" stroke-width="8"/>
+    <line x1="240" y1="44" x2="240" y2="240" stroke="#334155" stroke-width="8"/>
+
+    <!-- Glass Dome -->
+    <rect x="40" y="44" width="220" height="190" rx="20" fill="url(#nurseryGlass)" stroke="#10b981" stroke-width="1.5"/>
+
+    <!-- Seedling Sprouts -->
+    <path d="M 110,220 Q 100,160 85,150 Q 110,165 110,220" fill="#34d399"/>
+    <path d="M 110,220 Q 120,160 135,150 Q 110,165 110,220" fill="#10b981"/>
+
+    <path d="M 150,220 Q 140,140 120,130 Q 150,150 150,220" fill="#34d399"/>
+    <path d="M 150,220 Q 160,140 180,130 Q 150,150 150,220" fill="#059669"/>
+
+    <path d="M 190,220 Q 180,160 165,155 Q 190,168 190,220" fill="#34d399"/>
+    <path d="M 190,220 Q 200,160 215,155 Q 190,168 190,220" fill="#10b981"/>
+
+    <!-- Reservoir Base -->
+    <rect x="25" y="220" width="250" height="50" rx="14" fill="#0f172a" stroke="#047857" stroke-width="2"/>
+    <rect x="40" y="235" width="220" height="18" rx="6" fill="#064e3b"/>
+    <circle cx="230" cy="244" r="5" fill="#34d399"/>
+  </g>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#a7f3d0" letter-spacing="4">HYDROPONIC SMART INDOOR NURSERY</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#6ee7b7" letter-spacing="2">SPECTRUM LED • AUTOMATED HYDRATION • ZERO SOIL</text>
+</svg>

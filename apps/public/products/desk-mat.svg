@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141417"/>
+      <stop offset="100%" stop-color="#0c0c0e"/>
+    </linearGradient>
+    <linearGradient id="felt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f3f46"/>
+      <stop offset="50%" stop-color="#27272a"/>
+      <stop offset="100%" stop-color="#18181b"/>
+    </linearGradient>
+    <linearGradient id="cork" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="25" stdDeviation="30" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- Cork Layer Base Peeking Out -->
+  <rect x="105" y="145" width="590" height="310" rx="20" fill="url(#cork)" opacity="0.8"/>
+
+  <!-- Main Merino Wool Desk Mat -->
+  <rect x="100" y="140" width="600" height="320" rx="16" fill="url(#felt)" stroke="#52525b" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- Stitched Border -->
+  <rect x="110" y="150" width="580" height="300" rx="10" fill="none" stroke="#71717a" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>
+
+  <!-- Minimalist Leather Branding Tag -->
+  <rect x="620" y="420" width="50" height="24" rx="4" fill="#92400e" stroke="#b45309" stroke-width="1"/>
+  <circle cx="630" cy="432" r="2" fill="#d97706"/>
+  <circle cx="660" cy="432" r="2" fill="#d97706"/>
+  <text x="645" y="435" text-anchor="middle" font-family="sans-serif" font-size="7" font-weight="900" fill="#fef3c7" letter-spacing="1">NEXUS</text>
+
+  <!-- Clean Desk Accessory Silhouette -->
+  <!-- Mouse silhouette on mat -->
+  <rect x="520" y="240" width="70" height="110" rx="35" fill="#202024" stroke="#38383e" stroke-width="1"/>
+  <line x1="555" y1="242" x2="555" y2="280" stroke="#52525b" stroke-width="1"/>
+  <rect x="552" y="260" width="6" height="16" rx="3" fill="#a1a1aa"/>
+
+  <!-- Pen and Notebook Minimal Silhouette -->
+  <rect x="150" y="190" width="130" height="180" rx="8" fill="#1c1917" stroke="#292524" stroke-width="1"/>
+  <line x1="160" y1="220" x2="260" y2="220" stroke="#44403c" stroke-width="1"/>
+  <line x1="160" y1="240" x2="240" y2="240" stroke="#44403c" stroke-width="1"/>
+  <rect x="295" y="180" width="6" height="190" rx="3" fill="#d97706"/>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#a1a1aa" letter-spacing="4">MINIMALIST DESK MAT</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#71717a" letter-spacing="2">DUAL-SIDED MERINO WOOL • NATURAL CORK BACKING</text>
+</svg>

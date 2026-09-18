@@ -1,0 +1,67 @@
+<footer class="border-t border-outline-variant/20 bg-surface-container-lowest/80 py-12 text-on-surface-variant">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-10">
+    
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Brand & Mission -->
+      <div class="flex flex-col gap-3 md:col-span-1">
+        <div class="flex items-center gap-2.5">
+          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-primary-container text-on-primary font-geist font-bold text-sm">
+            N
+          </div>
+          <span class="font-geist text-lg font-bold text-on-surface">NEXUS</span>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          A curated marketplace connecting discerning buyers directly with independent artisans, verified workshops, and innovative creators worldwide.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="flex flex-col gap-2.5">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Marketplace</h4>
+        <a routerLink="/" class="text-xs hover:text-primary transition-colors">Explore All Products</a>
+        <a routerLink="/" class="text-xs hover:text-primary transition-colors">Verified Creators</a>
+        <a routerLink="/" class="text-xs hover:text-primary transition-colors">Featured Ateliers</a>
+        <a routerLink="/customer" class="text-xs hover:text-primary transition-colors">Track Your Order</a>
+      </div>
+
+      <!-- Vendor Hub -->
+      <div class="flex flex-col gap-2.5">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Sell on Nexus</h4>
+        <a routerLink="/seller" class="text-xs hover:text-primary transition-colors">Open a Storefront</a>
+        <a routerLink="/seller" class="text-xs hover:text-primary transition-colors">Creator Benefits</a>
+        <a routerLink="/seller" class="text-xs hover:text-primary transition-colors">Stripe Connect Payouts</a>
+        <a routerLink="/seller" class="text-xs hover:text-primary transition-colors">Merchant Dashboard</a>
+      </div>
+
+      <!-- Trust & Security -->
+      <div class="flex flex-col gap-2.5">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Trust & Protection</h4>
+        <div class="flex items-center gap-1.5 text-xs text-tertiary">
+          <lucide-icon [img]="ShieldCheckIcon" class="h-4 w-4"></lucide-icon>
+          <span>100% Escrow Protection</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs text-primary">
+          <lucide-icon [img]="ShieldCheckIcon" class="h-4 w-4"></lucide-icon>
+          <span>Verified Merchant Network</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+          <lucide-icon [img]="GlobeIcon" class="h-4 w-4"></lucide-icon>
+          <span>Global Carbon-Neutral Delivery</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-outline-variant/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-on-surface-variant/70">
+      <p>&copy; 2026 Nexus Multi-Vendor Marketplace. All rights reserved.</p>
+      <div class="flex gap-4">
+        <span class="hover:text-on-surface cursor-pointer">Privacy Policy</span>
+        <span>&bull;</span>
+        <span class="hover:text-on-surface cursor-pointer">Terms of Service</span>
+        <span>&bull;</span>
+        <span class="hover:text-on-surface cursor-pointer">Creator Standards</span>
+      </div>
+    </div>
+
+  </div>
+</footer>

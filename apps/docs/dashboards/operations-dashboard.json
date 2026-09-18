@@ -1,0 +1,25 @@
+{
+  "title": "Operations Dashboard",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "API Requests / Min",
+      "metrics": ["sum:api.requests.count{*} by {route}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Error Rate %",
+      "metrics": ["sum:api.errors.count{*} / sum:api.requests.count{*}"]
+    },
+    {
+      "type": "timeseries",
+      "title": "Database Latency (p99)",
+      "metrics": ["p99:mongodb.query.latency{*}"]
+    },
+    {
+      "type": "gauge",
+      "title": "Active Workers",
+      "metrics": ["sum:queue.workers.active{*}"]
+    }
+  ]
+}

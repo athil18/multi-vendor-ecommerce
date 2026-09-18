@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bgHeadphones" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="metalBand" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="earCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="acousticGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadowHeadphones" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="25" stdDeviation="30" flood-color="#000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bgHeadphones)"/>
+  <circle cx="400" cy="270" r="180" fill="url(#acousticGlow)"/>
+
+  <!-- Pedestal shadow -->
+  <ellipse cx="400" cy="450" rx="190" ry="25" fill="#000000" opacity="0.7"/>
+
+  <g transform="translate(200, 100)" filter="url(#shadowHeadphones)">
+    <!-- Headband Arc -->
+    <path d="M 50,220 C 50,40 350,40 350,220" fill="none" stroke="url(#metalBand)" stroke-width="24" stroke-linecap="round"/>
+    <path d="M 90,160 C 120,70 280,70 310,160" fill="none" stroke="#0f172a" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Left Ear Cup -->
+    <g transform="translate(10, 190)">
+      <ellipse cx="50" cy="80" rx="45" ry="70" fill="url(#earCup)" stroke="#4f46e5" stroke-width="3"/>
+      <ellipse cx="50" cy="80" rx="32" ry="52" fill="#0f172a" stroke="#6366f1" stroke-width="1.5"/>
+      <circle cx="50" cy="80" r="14" fill="#312e81"/>
+    </g>
+
+    <!-- Right Ear Cup -->
+    <g transform="translate(290, 190)">
+      <ellipse cx="50" cy="80" rx="45" ry="70" fill="url(#earCup)" stroke="#4f46e5" stroke-width="3"/>
+      <ellipse cx="50" cy="80" rx="32" ry="52" fill="#0f172a" stroke="#6366f1" stroke-width="1.5"/>
+      <circle cx="50" cy="80" r="14" fill="#312e81"/>
+    </g>
+  </g>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#e2e8f0" letter-spacing="4">STUDIO SPATIAL AUDIO HEADPHONES</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#818cf8" letter-spacing="2">PLANAR MAGNETIC • BERYLLIUM DRIVERS • ZERO DISTORTION</text>
+</svg>

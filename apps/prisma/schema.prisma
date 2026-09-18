@@ -1,0 +1,664 @@
+// Prisma Schema for Multi-Vendor E-Commerce Platform
+// PostgreSQL Database Provider
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ----------------------------------------------------
+// ENUMS
+// ----------------------------------------------------
+
+enum Role {
+  admin
+  seller
+  customer
+}
+
+enum UserStatus {
+  active
+  suspended
+  pending_verification
+}
+
+enum FraudRiskLevel {
+  low
+  medium
+  high
+  critical
+}
+
+enum GovernanceStatus {
+  good_standing
+  probation
+  suspended
+  banned
+}
+
+enum ProductStatus {
+  draft
+  pending_review
+  approved
+  published
+  rejected
+  archived
+}
+
+enum AddressType {
+  billing
+  shipping
+}
+
+enum DiscountType {
+  percentage
+  fixed
+}
+
+enum CouponScope {
+  global
+  seller
+}
+
+enum OrderAggregateStatus {
+  pending
+  processing
+  partially_shipped
+  shipped
+  delivered
+  cancelled
+}
+
+enum OrderItemStatus {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum PaymentMethod {
+  card
+  cod
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+enum ReviewStatus {
+  pending
+  approved
+  rejected
+}
+
+enum DisputeReason {
+  item_not_received
+  item_damaged
+  wrong_item
+  other
+}
+
+enum DisputeStatus {
+  open
+  under_review
+  resolved
+  rejected
+}
+
+enum LedgerType {
+  payment
+  payout
+  refund
+  reversal
+  fee
+  adjustment
+}
+
+enum LedgerStatus {
+  pending
+  completed
+  failed
+}
+
+enum JournalEventName {
+  ORDER_PAID
+  VENDOR_SETTLED
+  REFUND_ISSUED
+}
+
+enum JournalStatus {
+  PENDING
+  POSTED
+  VOIDED
+}
+
+enum TransactionDirection {
+  DEBIT
+  CREDIT
+}
+
+enum TransferStatus {
+  pending
+  success
+  failed
+}
+
+enum EventStatus {
+  pending
+  processed
+  failed
+  skipped
+}
+
+enum FileAssetCategory {
+  avatar
+  product_image
+  store_banner
+  admin_asset
+}
+
+enum StorageProvider {
+  local
+  s3
+}
+
+// ----------------------------------------------------
+// 1. USER MODEL
+// ----------------------------------------------------
+
+model User {
+  id               String      @id @default(cuid())
+  name             String
+  email            String      @unique
+  password         String
+  role             Role        @default(customer)
+  status           UserStatus  @default(active)
+  avatar           String?
+  stripeCustomerId    String?
+  refreshTokens       String[]    @default([])
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+  deletedAt           DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  // Relations
+  store              Store?
+  addresses          Address[]
+  orders             Order[]            @relation("CustomerOrders")
+  orderItems         OrderItem[]        @relation("SellerOrderItems")
+  products           Product[]          @relation("SellerProducts")
+  variants           Variant[]          @relation("SellerVariants")
+  reviews            Review[]           @relation("CustomerReviews")
+  moderatedReviews   Review[]           @relation("ModeratedReviews")
+  disputesAsBuyer    Dispute[]          @relation("BuyerDisputes")
+  disputesAsSeller   Dispute[]          @relation("SellerDisputes")
+  disputesAsResolver Dispute[]          @relation("ResolvedDisputes")
+  coupons            Coupon[]           @relation("SellerCoupons")
+  wishlist           Wishlist?
+  fileAssets         FileAsset[]
+  transferLogs       TransferLog[]
+  transactionLines   TransactionLine[]
+  financialLedgers   FinancialLedger[]  @relation("SellerLedgers")
+
+  @@index([role, status])
+  @@map("users")
+}
+
+// ----------------------------------------------------
+// 2. STORE MODEL
+// ----------------------------------------------------
+
+model Store {
+  id                       String           @id @default(cuid())
+  sellerId                 String           @unique
+  seller                   User             @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  name                     String
+  slug                     String           @unique
+  description              String?
+  logo                     String?
+  banner                   String?
+  stripeConnectedAccountId String?          @unique
+  stripeOnboardingComplete Boolean          @default(false)
+  payoutsEnabled           Boolean          @default(false)
+  trustScore               Float            @default(100.0)
+  fraudRiskLevel           FraudRiskLevel   @default(low)
+  governanceStatus         GovernanceStatus @default(good_standing)
+  probationReason          String?
+  enforcementHistory       Json?
+  deletedAt                DateTime?
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+
+  @@index([governanceStatus])
+  @@map("stores")
+}
+
+// ----------------------------------------------------
+// 3. CATEGORY MODEL
+// ----------------------------------------------------
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  parentId  String?
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryHierarchy")
+  image     String?
+  deletedAt DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  products  Product[]
+
+  @@map("categories")
+}
+
+// ----------------------------------------------------
+// 4. PRODUCT MODEL
+// ----------------------------------------------------
+
+model Product {
+  id          String        @id @default(cuid())
+  sellerId    String
+  seller      User          @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String        @unique
+  description String
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  brandId     String?
+  basePrice   Float
+  images      String[]
+  status      ProductStatus @default(draft)
+  options     Json?         // [{ name: string, values: string[] }]
+  tags        String[]
+  rating      Float         @default(0)
+  numReviews  Int           @default(0)
+  inStock     Boolean       @default(true)
+  deletedAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  variants   Variant[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@index([status, categoryId, createdAt(sort: Desc)])
+  @@index([sellerId, status, createdAt(sort: Desc)])
+  @@index([status, basePrice])
+  @@index([status, deletedAt, createdAt(sort: Desc)])
+  @@map("products")
+}
+
+// ----------------------------------------------------
+// 5. VARIANT MODEL
+// ----------------------------------------------------
+
+model Variant {
+  id                String   @id @default(cuid())
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sellerId          String
+  seller            User     @relation("SellerVariants", fields: [sellerId], references: [id], onDelete: Cascade)
+  sku               String
+  barcode           String?
+  attributes        Json?    // e.g. { color: 'red', size: 'M' }
+  price             Float
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(10)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  orderItems        OrderItem[]
+
+  @@unique([productId, sku])
+  @@index([productId])
+  @@index([sellerId])
+  @@map("variants")
+}
+
+// ----------------------------------------------------
+// 6. ADDRESS MODEL
+// ----------------------------------------------------
+
+model Address {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      AddressType
+  street    String
+  city      String
+  state     String
+  zip       String
+  country   String
+  isDefault Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  orders    Order[]
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// ----------------------------------------------------
+// 7. COUPON MODEL
+// ----------------------------------------------------
+
+model Coupon {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  discountType  DiscountType
+  value         Float
+  minOrderValue Float?       @default(0)
+  maxDiscount   Float?
+  validFrom     DateTime
+  validTo       DateTime
+  usageLimit    Int          @default(1)
+  usedCount     Int          @default(0)
+  scope         CouponScope  @default(global)
+  sellerId      String?
+  seller        User?        @relation("SellerCoupons", fields: [sellerId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  orders        Order[]
+
+  @@map("coupons")
+}
+
+// ----------------------------------------------------
+// 8. ORDER MODEL
+// ----------------------------------------------------
+
+model Order {
+  id                    String               @id @default(cuid())
+  customerId            String
+  customer              User                 @relation("CustomerOrders", fields: [customerId], references: [id])
+  sellerIds             String[]
+  totalAmount           Float
+  aggregateStatus       OrderAggregateStatus @default(pending)
+  shippingAddressId     String
+  shippingAddress       Address              @relation(fields: [shippingAddressId], references: [id])
+  paymentMethod         PaymentMethod
+  paymentStatus         PaymentStatus        @default(pending)
+  stripePaymentIntentId String?
+  paidAt                DateTime?
+  couponId              String?
+  coupon                Coupon?              @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  deletedAt             DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  // Relations
+  items            OrderItem[]
+  financialLedgers FinancialLedger[]
+  journalEntries   JournalEntry[]
+  transferLogs     TransferLog[]
+  disputes         Dispute[]
+
+  @@index([customerId, createdAt(sort: Desc)])
+  @@index([customerId, aggregateStatus, createdAt(sort: Desc)])
+  @@index([stripePaymentIntentId])
+  @@map("orders")
+}
+
+// ----------------------------------------------------
+// 9. ORDER ITEM MODEL
+// ----------------------------------------------------
+
+model OrderItem {
+  id              String          @id @default(cuid())
+  orderId         String
+  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product         @relation(fields: [productId], references: [id])
+  variantId       String?
+  variant         Variant?        @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  sellerId        String
+  seller          User            @relation("SellerOrderItems", fields: [sellerId], references: [id])
+  quantity        Int
+  price           Float
+  status          OrderItemStatus @default(pending)
+  platformFee     Float           @default(0)
+  sellerPayout    Float           @default(0)
+  discountApplied Float           @default(0)
+  taxAmount       Float           @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  disputes        Dispute[]
+
+  @@index([orderId])
+  @@index([sellerId, createdAt(sort: Desc)])
+  @@map("order_items")
+}
+
+// ----------------------------------------------------
+// 10. REVIEW MODEL
+// ----------------------------------------------------
+
+model Review {
+  id               String       @id @default(cuid())
+  productId        String
+  product          Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerId       String
+  customer         User         @relation("CustomerReviews", fields: [customerId], references: [id], onDelete: Cascade)
+  rating           Int
+  title            String?
+  comment          String
+  images           String[]
+  recommendation   Boolean?
+  pros             String[]
+  cons             String[]
+  status           ReviewStatus @default(pending)
+  moderationReason String?
+  moderatedById    String?
+  moderatedBy      User?        @relation("ModeratedReviews", fields: [moderatedById], references: [id], onDelete: SetNull)
+  deletedAt        DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([customerId, productId])
+  @@index([productId, status])
+  @@map("reviews")
+}
+
+// ----------------------------------------------------
+// 11. DISPUTE MODEL
+// ----------------------------------------------------
+
+model Dispute {
+  id              String        @id @default(cuid())
+  orderId         String
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderItemId     String
+  orderItem       OrderItem     @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  buyerId         String
+  buyer           User          @relation("BuyerDisputes", fields: [buyerId], references: [id])
+  sellerId        String
+  seller          User          @relation("SellerDisputes", fields: [sellerId], references: [id])
+  reason          DisputeReason
+  description     String
+  status          DisputeStatus @default(open)
+  evidenceUrls    String[]
+  resolutionNotes String?
+  resolvedById    String?
+  resolvedBy      User?         @relation("ResolvedDisputes", fields: [resolvedById], references: [id], onDelete: SetNull)
+  refundAmount    Float?
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([orderItemId])
+  @@index([buyerId])
+  @@index([sellerId])
+  @@map("disputes")
+}
+
+// ----------------------------------------------------
+// 12. WISHLIST MODEL
+// ----------------------------------------------------
+
+model Wishlist {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productIds String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("wishlists")
+}
+
+// ----------------------------------------------------
+// 13. FINANCIAL LEDGER MODEL
+// ----------------------------------------------------
+
+model FinancialLedger {
+  id                String       @id @default(cuid())
+  orderId           String
+  order             Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  sellerId          String?
+  seller            User?        @relation("SellerLedgers", fields: [sellerId], references: [id], onDelete: SetNull)
+  type              LedgerType
+  amount            Float
+  currency          String       @default("usd")
+  status            LedgerStatus @default(completed)
+  stripeReferenceId String?
+  description       String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([orderId])
+  @@index([sellerId, type, createdAt(sort: Desc)])
+  @@index([type, status])
+  @@map("financial_ledgers")
+}
+
+// ----------------------------------------------------
+// 14. JOURNAL ENTRY MODEL (Double-Entry Bookkeeping)
+// ----------------------------------------------------
+
+model JournalEntry {
+  id             String           @id @default(cuid())
+  idempotencyKey String           @unique
+  eventName      JournalEventName
+  description    String?
+  currency       String           @default("usd")
+  status         JournalStatus    @default(PENDING)
+  orderId        String?
+  order          Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  lines          TransactionLine[]
+
+  @@map("journal_entries")
+}
+
+// ----------------------------------------------------
+// 15. TRANSACTION LINE MODEL
+// ----------------------------------------------------
+
+model TransactionLine {
+  id             String               @id @default(cuid())
+  journalEntryId String
+  journalEntry   JournalEntry         @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  accountId      String
+  amount         Int                  // integer cents
+  direction      TransactionDirection
+  entityId       String?
+  entity         User?                @relation(fields: [entityId], references: [id], onDelete: SetNull)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([journalEntryId])
+  @@index([accountId])
+  @@index([entityId])
+  @@map("transaction_lines")
+}
+
+// ----------------------------------------------------
+// 16. TRANSFER LOG MODEL
+// ----------------------------------------------------
+
+model TransferLog {
+  id               String         @id @default(cuid())
+  orderId          String
+  order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  sellerId         String
+  seller           User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  amount           Float
+  currency         String         @default("usd")
+  stripeTransferId String?
+  status           TransferStatus @default(pending)
+  error            String?
+  attempts         Int            @default(0)
+  lastAttemptAt    DateTime?
+  nextRetryAt      DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([orderId, sellerId])
+  @@index([orderId])
+  @@index([sellerId])
+  @@index([status])
+  @@map("transfer_logs")
+}
+
+// ----------------------------------------------------
+// 17. EVENT LOG MODEL (Webhook Idempotency)
+// ----------------------------------------------------
+
+model EventLog {
+  id                   String      @id @default(cuid())
+  eventId              String      @unique
+  eventType            String
+  status               EventStatus @default(processed)
+  stripeCreatedAt      DateTime?
+  processedAt          DateTime    @default(now())
+  processingNode       String?
+  requestId            String?
+  processingDurationMs Int?
+  error                String?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  @@index([eventType, processedAt(sort: Desc)])
+  @@map("event_logs")
+}
+
+// ----------------------------------------------------
+// 18. FILE ASSET MODEL
+// ----------------------------------------------------
+
+model FileAsset {
+  id           String            @id @default(cuid())
+  url          String
+  storageKey   String            @unique
+  uploadedById String
+  uploadedBy   User              @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  fileSize     Int
+  fileType     String
+  category     FileAssetCategory
+  provider     StorageProvider
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([uploadedById])
+  @@index([category])
+  @@map("file_assets")
+}

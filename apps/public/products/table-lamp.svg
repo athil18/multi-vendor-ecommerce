@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#17130b"/>
+      <stop offset="100%" stop-color="#0a0805"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="60%" stop-color="#fef3c7"/>
+      <stop offset="85%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#d97706" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="lightGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="50"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- Warm Ambient Light Pool -->
+  <circle cx="400" cy="220" r="240" fill="url(#lampGlow)" filter="url(#lightGlow)"/>
+
+  <g transform="translate(280, 80)">
+    <!-- Shade Dome (Spun Brass) -->
+    <path d="M 10,140 C 10,40 230,40 230,140 Z" fill="url(#brass)" stroke="#78350f" stroke-width="1.5"/>
+    <ellipse cx="120" cy="140" rx="110" ry="24" fill="#92400e"/>
+    <!-- Glowing Diffuser Inside Shade -->
+    <ellipse cx="120" cy="138" rx="100" ry="20" fill="#fef08a"/>
+    <circle cx="120" cy="138" r="15" fill="#ffffff"/>
+
+    <!-- Slender Stem -->
+    <rect x="115" y="140" width="10" height="220" fill="url(#brass)"/>
+
+    <!-- Brass Base Plinth -->
+    <ellipse cx="120" cy="360" rx="75" ry="18" fill="url(#brass)" stroke="#78350f" stroke-width="1.5"/>
+    <ellipse cx="120" cy="356" rx="75" ry="18" fill="#f59e0b"/>
+    <ellipse cx="120" cy="354" rx="70" ry="16" fill="url(#brass)"/>
+
+    <!-- Subtle Rotary Dimmer Knob on Base -->
+    <circle cx="150" cy="354" r="6" fill="#78350f"/>
+    <circle cx="150" cy="354" r="3" fill="#fef3c7"/>
+  </g>
+
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#fde68a" letter-spacing="4">ARCHITECTURAL TABLE LAMP</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#d97706" letter-spacing="2">SPUN SOLID BRASS • DIMMABLE WARM LED • AMBIENT DIFFUSER</text>
+</svg>

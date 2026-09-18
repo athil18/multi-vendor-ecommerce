@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0c1b"/>
+      <stop offset="50%" stop-color="#181528"/>
+      <stop offset="100%" stop-color="#090710"/>
+    </linearGradient>
+    <linearGradient id="chassis" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a283e"/>
+      <stop offset="100%" stop-color="#161424"/>
+    </linearGradient>
+    <linearGradient id="accentKey" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blurGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+  
+  <!-- Ambient Glow -->
+  <circle cx="400" cy="300" r="220" fill="url(#glow)" filter="url(#blurGlow)"/>
+
+  <!-- Keyboard Chassis -->
+  <g transform="translate(140, 160)">
+    <!-- Shadow -->
+    <rect x="0" y="30" width="520" height="280" rx="24" fill="#000000" opacity="0.6" filter="url(#blurGlow)"/>
+    
+    <!-- Outer Bezel -->
+    <rect x="0" y="0" width="520" height="280" rx="24" fill="url(#chassis)" stroke="#3e3b56" stroke-width="2"/>
+    
+    <!-- Inner Plate -->
+    <rect x="16" y="16" width="488" height="248" rx="16" fill="#12101c" stroke="#252336" stroke-width="1"/>
+
+    <!-- Key Rows -->
+    <!-- Function Row -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="28" width="44" height="26" rx="6" fill="url(#accentKey)" stroke="#a78bfa"/>
+      <rect x="80" y="28" width="30" height="26" rx="6"/>
+      <rect x="118" y="28" width="30" height="26" rx="6"/>
+      <rect x="156" y="28" width="30" height="26" rx="6"/>
+      <rect x="194" y="28" width="30" height="26" rx="6"/>
+      <rect x="240" y="28" width="30" height="26" rx="6"/>
+      <rect x="278" y="28" width="30" height="26" rx="6"/>
+      <rect x="316" y="28" width="30" height="26" rx="6"/>
+      <rect x="354" y="28" width="30" height="26" rx="6"/>
+      <rect x="400" y="28" width="30" height="26" rx="6"/>
+      <rect x="438" y="28" width="54" height="26" rx="6" fill="#312e47"/>
+    </g>
+
+    <!-- Number Row -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="62" width="32" height="30" rx="6"/>
+      <rect x="68" y="62" width="30" height="30" rx="6"/>
+      <rect x="106" y="62" width="30" height="30" rx="6"/>
+      <rect x="144" y="62" width="30" height="30" rx="6"/>
+      <rect x="182" y="62" width="30" height="30" rx="6"/>
+      <rect x="220" y="62" width="30" height="30" rx="6"/>
+      <rect x="258" y="62" width="30" height="30" rx="6"/>
+      <rect x="296" y="62" width="30" height="30" rx="6"/>
+      <rect x="334" y="62" width="30" height="30" rx="6"/>
+      <rect x="372" y="62" width="30" height="30" rx="6"/>
+      <rect x="410" y="62" width="30" height="30" rx="6"/>
+      <rect x="448" y="62" width="44" height="30" rx="6" fill="#312e47"/>
+    </g>
+
+    <!-- QWERTY Row -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="100" width="44" height="30" rx="6" fill="#312e47"/>
+      <rect x="80" y="100" width="30" height="30" rx="6"/>
+      <rect x="118" y="100" width="30" height="30" rx="6"/>
+      <rect x="156" y="100" width="30" height="30" rx="6"/>
+      <rect x="194" y="100" width="30" height="30" rx="6"/>
+      <rect x="232" y="100" width="30" height="30" rx="6"/>
+      <rect x="270" y="100" width="30" height="30" rx="6"/>
+      <rect x="308" y="100" width="30" height="30" rx="6"/>
+      <rect x="346" y="100" width="30" height="30" rx="6"/>
+      <rect x="384" y="100" width="30" height="30" rx="6"/>
+      <rect x="422" y="100" width="30" height="30" rx="6"/>
+      <rect x="460" y="100" width="32" height="30" rx="6"/>
+    </g>
+
+    <!-- ASDF Row -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="138" width="52" height="30" rx="6" fill="#312e47"/>
+      <rect x="88" y="138" width="30" height="30" rx="6"/>
+      <rect x="126" y="138" width="30" height="30" rx="6"/>
+      <rect x="164" y="138" width="30" height="30" rx="6"/>
+      <rect x="202" y="138" width="30" height="30" rx="6"/>
+      <rect x="240" y="138" width="30" height="30" rx="6"/>
+      <rect x="278" y="138" width="30" height="30" rx="6"/>
+      <rect x="316" y="138" width="30" height="30" rx="6"/>
+      <rect x="354" y="138" width="30" height="30" rx="6"/>
+      <rect x="392" y="138" width="30" height="30" rx="6"/>
+      <rect x="430" y="138" width="62" height="30" rx="6" fill="url(#accentKey)" stroke="#a78bfa"/>
+    </g>
+
+    <!-- ZXCV Row -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="176" width="64" height="30" rx="6" fill="#312e47"/>
+      <rect x="100" y="176" width="30" height="30" rx="6"/>
+      <rect x="138" y="176" width="30" height="30" rx="6"/>
+      <rect x="176" y="176" width="30" height="30" rx="6"/>
+      <rect x="214" y="176" width="30" height="30" rx="6"/>
+      <rect x="252" y="176" width="30" height="30" rx="6"/>
+      <rect x="290" y="176" width="30" height="30" rx="6"/>
+      <rect x="328" y="176" width="30" height="30" rx="6"/>
+      <rect x="366" y="176" width="30" height="30" rx="6"/>
+      <rect x="404" y="176" width="40" height="30" rx="6"/>
+      <rect x="452" y="176" width="40" height="30" rx="6" fill="#312e47"/>
+    </g>
+
+    <!-- Bottom Row (Spacebar) -->
+    <g fill="#242236" stroke="#36344d" stroke-width="1">
+      <rect x="28" y="214" width="40" height="32" rx="6" fill="#312e47"/>
+      <rect x="76" y="214" width="36" height="32" rx="6"/>
+      <rect x="120" y="214" width="38" height="32" rx="6"/>
+      <rect x="166" y="214" width="180" height="32" rx="6" fill="#2d2a45" stroke="#4c486e"/>
+      <rect x="354" y="214" width="38" height="32" rx="6"/>
+      <rect x="400" y="214" width="42" height="32" rx="6"/>
+      <rect x="450" y="214" width="42" height="32" rx="6" fill="url(#accentKey)" stroke="#a78bfa"/>
+    </g>
+
+    <!-- Brass Rotary Encoder Knob -->
+    <circle cx="475" cy="42" r="14" fill="#d97706" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="475" cy="42" r="10" fill="#92400e"/>
+    <circle cx="475" cy="42" r="3" fill="#fbbf24"/>
+  </g>
+
+  <!-- Typography Label -->
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#94a3b8" letter-spacing="4">ARTISAN MECHANICAL KEYBOARD</text>
+  <text x="400" y="545" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#64748b" letter-spacing="2">CNC ALUMINUM • HOT-SWAPPABLE • PBT KEYCAPS</text>
+</svg>
