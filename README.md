@@ -1,7 +1,7 @@
 <div align="center">
 
 # ⚡ NEXUS MULTI-VENDOR E-COMMERCE PLATFORM
-### *The World's Fastest, Apple-Grade Marketplace Engine*
+### *The World's Fastest High-Concurrency Marketplace Engine*
 
 [![GitHub Stars](https://img.shields.io/github/stars/athil18/nexus-multi-vendor-ecommerce?style=for-the-badge&logo=github&color=FFD700)](https://github.com/athil18/nexus-multi-vendor-ecommerce/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/athil18/nexus-multi-vendor-ecommerce?style=for-the-badge&logo=github&color=60A5FA)](https://github.com/athil18/nexus-multi-vendor-ecommerce/network/members)
@@ -15,16 +15,15 @@
 
 <br />
 
-> 🌟 **If you find this architecture impressive or useful for your next enterprise build, please give it a STAR!** 🌟
+> 🌟 **Star this repository if you love high-performance e-commerce engineering!** 🌟
 
 <p align="center">
-  <a href="#-key-highlights--why-nexus">Why Nexus?</a> •
+  <a href="#-why-nexus">Why Nexus?</a> •
   <a href="#-system-architecture">Architecture</a> •
-  <a href="#-lighthouse-100100-audit-matrix">Performance</a> •
+  <a href="#-lighthouse-performance-audit">Performance</a> •
   <a href="#-tech-stack">Tech Stack</a> •
-  <a href="#-quick-start-in-60-seconds">Quick Start</a> •
-  <a href="#-testing-pyramid">Testing</a> •
-  <a href="#-ai-agent-governance">AI Governance</a>
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-testing-pyramid">Testing</a>
 </p>
 
 ---
@@ -33,29 +32,29 @@
 
 ## 💎 What is Nexus?
 
-**Nexus** is a production-hardened, multi-vendor marketplace ecosystem engineered from the ground up to solve the three fatal flaws of modern e-commerce: **clunky client-side hydration delays**, **opaque vendor settlement flows**, and **cookie-cutter user experiences**.
+**Nexus** is an ultra-modern, high-concurrency multi-vendor marketplace platform built for scale, speed, and trust. It solves the biggest bottlenecks of modern e-commerce: **slow page loads**, **unreliable vendor settlement**, and **rigid monolithic backends**.
 
-Built on **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Prisma ORM**, Nexus pairs an Apple-grade cinematic glassmorphic storefront with an automated **Stripe Connect Escrow Settlement Pipeline**, background asynchronous queues powered by **BullMQ**, and an autonomous **500+ AI Agent Architecture Directorate**.
+Built on **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Prisma ORM**, Nexus combines an ultra-fast glassmorphic storefront with an automated **Stripe Connect Escrow Settlement Engine**, high-throughput background queues via **BullMQ**, and robust database architecture.
 
 ---
 
-## 🚀 Key Highlights & "Why Nexus?"
+## 🚀 Why Nexus?
 
-| Feature | The Old Way (Shopify / Medusa / WooCommerce) | The Nexus Way ⚡ |
+| Capability | Legacy E-Commerce (Shopify / Medusa / WooCommerce) | Nexus Platform ⚡ |
 |---|---|---|
-| **Total Blocking Time (TBT)** | 300 – 900 ms (Janky scroll & click delays) | **0 ms TBT** (Eliminated through micro-task scheduling) |
-| **Largest Contentful Paint (LCP)** | 2.8 – 4.5s (Heavy client payloads) | **968 ms** (Sub-second Edge Server Component streaming) |
-| **Initial JS Bundle** | 800 – 1,500 KiB monolithic client script | **6.3 KiB** (99.4% payload reduction) |
-| **Vendor Payouts** | Manual month-end CSV reconciliation | **Automated Stripe Connect Escrow Splits** with holdback |
-| **Storefront Aesthetics** | Generic bootstrap / Material design | **Cinematic Glassmorphism**, HSL ambient glows & 60fps micro-interactions |
-| **Accessibility (a11y)** | Inconsistent labels, low contrast (< 85) | **100/100 WCAG 2.1 AA** with universal keyboard navigation |
-| **AI Shopping Assistant** | Blocking 3rd-party widget scripts | **Zero-blocking on-demand copilot** with chunked streaming |
+| **Interactivity (TBT)** | 300 – 900 ms click latency | **0 ms Total Blocking Time** (Ultra-responsive) |
+| **Visual Speed (LCP)** | 2.8 – 4.5s load time | **968 ms** (Sub-second Edge Streaming) |
+| **Initial JS Payload** | 800 – 1,500 KiB monolithic bundle | **6.3 KiB** (Zero unnecessary script execution) |
+| **Vendor Settlement** | Manual month-end CSV spreadsheets | **Automated Multi-Vendor Stripe Escrow Splits** |
+| **Modern Design** | Standard templates & generic styles | **Cinematic Glassmorphism**, fluid motion & dark mode |
+| **Accessibility** | Inconsistent contrast & broken ARIA | **100/100 WCAG 2.1 AA** keyboard-navigable |
+| **Background Jobs** | Blocking synchronous HTTP tasks | **Distributed BullMQ Queues** with Redis persistence |
 
 ---
 
-## 📊 Lighthouse 100/100 Forensic Audit Matrix
+## 📊 Lighthouse Performance Audit
 
-Nexus achieved a near-perfect score across all four Google Web Vital disciplines through rigorous forensic profiling:
+Nexus delivers near-perfect scores across all Google Core Web Vitals audits:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -66,72 +65,26 @@ Nexus achieved a near-perfect score across all four Google Web Vital disciplines
 └──────────────────┴──────────────────┴──────────────────┴───────────────┘
 ```
 
-### Detailed Metric Transformation
-
-| Metric | Baseline | Nexus Production | Delta | Performance Impact |
-|---|---:|---:|---:|---|
-| **Lighthouse Score** | 39 / 100 | **98 / 100** | **+59 pts** | 🟢 **151% Improvement** |
-| **Total Blocking Time (TBT)** | 355 ms | **0 ms** | **-355 ms** | 🟢 **100% Jank Eliminated** |
-| **Largest Contentful Paint (LCP)** | 2,800 ms | **968 ms** | **-1,832 ms** | 🟢 **Sub-Second Render** |
-| **Cumulative Layout Shift (CLS)** | 0.3730 | **0.0047** | **-98.7%** | 🟢 **Zero Visual Shift** |
-| **First Contentful Paint (FCP)** | 1,536 ms | **968 ms** | **-37.0%** | 🟢 **Instant First Paint** |
-| **Initial JavaScript Load** | 1,040 KiB | **6.3 KiB** | **-99.4%** | 🟢 **Zero Unused Script** |
-| **Total Transferred Payload** | 1,160 KiB | **347.7 KiB** | **-70.0%** | 🟢 **Ultra Lightweight** |
-| **V8 JS Heap Allocation** | 38.4 MB | **4.28 MB** | **-88.9%** | 🟢 **Lean Memory Profile** |
+- ⚡ **Sub-Second LCP (968 ms)** – Instant initial content delivery via streaming server components
+- 🛑 **0 ms Total Blocking Time (TBT)** – Zero thread-blocking scripts or hydration stalls
+- 🎯 **0.0047 CLS** – Layout-stable UI with explicit dimensional containment
+- ♿ **100/100 Accessibility** – High-contrast color tokens and comprehensive screen-reader landmarks
 
 ---
 
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TD
-    subgraph Clients["Edge Clients & Storefronts"]
-        Desktop["Desktop Browser (Chrome/Safari/Firefox)"]
-        Mobile["Mobile Viewport (Responsive & Touch)"]
-        AngularPortal["Angular 18 Enterprise Admin Portal"]
-    end
-
-    subgraph EdgeLayer["Next.js 16 Edge & App Router Layer"]
-        Middleware["Security & Auth Middleware (JWT & RBAC)"]
-        RSC["React 19 Server Components (Streaming SSR)"]
-        APIRoutes["OpenAPI & REST Route Handlers"]
-    end
-
-    subgraph CoreEngine["Nexus Domain Core Services"]
-        CatalogService["Product Catalog & Search Engine"]
-        CartService["Zustand Cart & Integer Cents Currency Engine"]
-        OrderService["Multi-Vendor Order Partitioning"]
-        StripeEscrow["Stripe Connect Escrow & Splitter"]
-        AICopilot["On-Demand Shopping Assistant Copilot"]
-    end
-
-    subgraph AsyncWorker["Asynchronous Event & Worker Queue"]
-        BullMQ["BullMQ Distributed Job Engine"]
-        RedisCache["Redis 7 (State, Cache & Rate Limiting)"]
-    end
-
-    subgraph DataPersistence["Zero-Downtime Data Tier"]
-        Prisma["Prisma ORM Client (Connection Pooler)"]
-        Postgres[(PostgreSQL 16 Multi-Tenant RLS)]
-        S3Bucket[(AWS S3 / Presigned Asset Storage)]
-    end
-
-    Desktop --> RSC
-    Mobile --> RSC
-    AngularPortal --> APIRoutes
-
-    RSC --> Middleware
-    APIRoutes --> Middleware
-    Middleware --> CoreEngine
-
-    OrderService --> StripeEscrow
-    OrderService --> BullMQ
-    BullMQ --> RedisCache
-    BullMQ --> CatalogService
-
-    CoreEngine --> Prisma
-    Prisma --> Postgres
-    CatalogService --> S3Bucket
+graph TD
+    User["Web & Mobile Shoppers"] --> Storefront["Next.js 16 Storefront"]
+    Admin["Merchants & Admins"] --> Dashboard["Enterprise Portal"]
+    Storefront --> Gateway["API Routes & Edge Middleware"]
+    Dashboard --> Gateway
+    Gateway --> Services["Marketplace Core Services"]
+    Services --> StripeEngine["Stripe Connect Escrow Engine"]
+    Services --> WorkerQueue["BullMQ Background Workers"]
+    Services --> Database["PostgreSQL 16 via Prisma ORM"]
+    WorkerQueue --> Redis["Redis In-Memory Cache"]
 ```
 
 ---
@@ -144,84 +97,77 @@ Nexus features an automated split payment workflow ensuring marketplace transpar
 sequenceDiagram
     autonumber
     actor Customer as Customer
-    participant Storefront as Nexus Next.js Storefront
-    participant API as Order & Checkout API
-    participant Stripe as Stripe Connect Gateway
-    participant Escrow as Escrow Ledger Service
-    actor VendorA as Vendor A ($70)
-    actor VendorB as Vendor B ($30)
-    participant Platform as Nexus Platform Fee ($10)
+    participant Storefront as Storefront
+    participant API as Order API
+    participant Stripe as Stripe Connect
+    participant Escrow as Escrow Vault
+    actor VendorA as Vendor A
+    actor VendorB as Vendor B
+    participant Platform as Platform Fee
 
-    Customer->>Storefront: Places Order ($110 Total)
+    Customer->>Storefront: Places Multi-Vendor Order ($110)
     Storefront->>API: POST /api/orders/checkout
-    API->>Stripe: Create PaymentIntent with Multi-Vendor Metadata
+    API->>Stripe: Create PaymentIntent
     Customer->>Stripe: Authorizes Payment
-    Stripe-->>API: Webhook (payment_intent.succeeded)
-    API->>Escrow: Lock Funds in Escrow Vault
-    Escrow->>Escrow: Calculate Splits & Deduct Platform Fee (10%)
-    Note over Escrow: Hold Period: 7-Day Fulfillment / Delivery Window
-    Escrow->>VendorA: Transfer $63 (70 - 10% Platform Cut)
-    Escrow->>VendorB: Transfer $27 (30 - 10% Platform Cut)
-    Escrow->>Platform: Transfer $10 Marketplace Take Rate
-    Escrow-->>API: Update Order & Vendor Payout State (SETTLED)
+    Stripe-->>API: Webhook payment_intent.succeeded
+    API->>Escrow: Lock Funds in Escrow
+    Escrow->>Escrow: Calculate Splits & Deduct Platform Cut
+    Note over Escrow: Fulfillment & Delivery Window
+    Escrow->>VendorA: Transfer $63 (Vendor A Share)
+    Escrow->>VendorB: Transfer $27 (Vendor B Share)
+    Escrow->>Platform: Transfer $10 (Platform Take Rate)
+    Escrow-->>API: Mark Order as Settled
 ```
 
 ---
 
-## 🛠️ Complete Tech Stack
+## 🛠️ Tech Stack
 
-### Core Frameworks & Storefront
-- **Next.js 16.2.9** – App Router, Turbopack, Streaming Server Components, Metadata APIs.
-- **React 19.2.4** – Modern Actions, `useOptimistic`, fine-grained hydration.
-- **Angular 18 Portal** – Dedicated administrative workspace and enterprise analytics.
-- **Tailwind CSS v4** – Pure CSS variable theme tokens, GPU-accelerated utility primitives.
-- **Framer Motion 12** – 60fps micro-interactions, layout transitions, and glassmorphic overlays.
-- **Zustand 5** – Zero-overhead client state container for shopping cart and user preferences.
+### Storefront & Client
+- **Next.js 16.2.9** – App Router, Turbopack, Streaming Server Components, Metadata APIs
+- **React 19.2.4** – Server Actions, `useOptimistic`, fine-grained hydration
+- **Angular 18 Portal** – Dedicated administrative workspace and enterprise analytics
+- **Tailwind CSS v4** – Pure CSS variable theme tokens, GPU-accelerated utility primitives
+- **Framer Motion 12** – 60fps micro-interactions, layout transitions, and glassmorphic overlays
+- **Zustand 5** – Zero-overhead client state container for shopping cart and user preferences
 
-### Backend, Database & Infrastructure
-- **PostgreSQL 16** – Multi-tenant schema, ACID transactional integrity, compound indexes.
-- **Prisma ORM 7.9** – Type-safe database queries, schema migrations, zero-downtime evolution.
-- **Stripe Connect & Webhooks** – Custom merchant accounts, escrow holds, payout split routines.
-- **BullMQ 5.78 + Redis 7** – High-throughput background workers for email and webhook processing.
-- **AWS S3 SDK v3** – Presigned secure asset uploads and responsive image delivery.
-- **Sentry 10.58** – Distributed tracing, real-user monitoring, and error reporting.
+### Backend & Infrastructure
+- **PostgreSQL 16** – Multi-tenant schema, ACID transactional integrity, compound indexes
+- **Prisma ORM 7.9** – Type-safe database queries, schema migrations, zero-downtime evolution
+- **Stripe Connect & Webhooks** – Custom merchant accounts, escrow holds, payout split routines
+- **BullMQ 5.78 + Redis 7** – High-throughput background workers for email and webhook processing
+- **AWS S3 SDK v3** – Presigned secure asset uploads and responsive image delivery
+- **Sentry 10.58** – Distributed tracing, real-user monitoring, and error reporting
 
-### Security & Compliance
-- **JWT & HTTP-Only Refresh Cookies** – 15-minute access tokens with auto-rotation.
-- **Zod 4.4 Runtime Contracts** – Strict ingress/egress validation across every API route.
-- **Role-Based Access Control (RBAC)** – Multi-tiered permissions (`admin`, `seller`, `customer`).
-- **WCAG 2.1 AA & Section 508** – 4.5:1 minimum text contrast, ARIA dialog landmarks, keyboard skip links.
+### Security & Standards
+- **JWT & HTTP-Only Refresh Cookies** – 15-minute access tokens with auto-rotation
+- **Zod 4.4 Runtime Contracts** – Strict ingress/egress validation across every API route
+- **Role-Based Access Control (RBAC)** – Multi-tiered permissions (`admin`, `seller`, `customer`)
+- **WCAG 2.1 AA & Section 508** – 4.5:1 minimum text contrast, ARIA dialog landmarks, keyboard skip links
 
 ---
 
-## ⚡ Quick Start (In 60 Seconds)
+## ⚡ Quick Start
 
-### 1. Prerequisites
-Ensure you have the following installed on your machine:
-- **Node.js** `>= 20.0.0`
-- **npm** `>= 10.0.0`
-- **PostgreSQL 16** (or Docker for containerized run)
-- **Redis 7** (for background jobs)
-
-### 2. Clone the Repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/athil18/nexus-multi-vendor-ecommerce.git
 cd nexus-multi-vendor-ecommerce
 ```
 
-### 3. Setup Environment Variables
+### 2. Setup Environment Variables
 Copy the secure template file:
 ```bash
 cp .env.example apps/.env
 ```
 *(Configure `DATABASE_URL`, `JWT_SECRET`, and `STRIPE_SECRET_KEY` in `apps/.env` with your local values)*
 
-### 4. Install Dependencies
+### 3. Install Dependencies
 ```bash
 npm install
 ```
 
-### 5. Setup Database & Seed Catalog
+### 4. Setup Database & Seed Catalog
 ```bash
 cd apps
 npx prisma generate
@@ -230,10 +176,9 @@ npm run seed:run
 cd ..
 ```
 
-### 6. Launch with One Command
+### 5. Launch with One Command
 Run the unified developer supervisor:
 ```bash
-# Starts Next.js storefront and supervisor monitoring
 npm run dev:up
 ```
 
@@ -243,7 +188,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🧪 Comprehensive Testing Pyramid
 
-Nexus is governed by a 5-tier testing pyramid ensuring zero regressions:
+Nexus includes a 5-tier testing suite for guaranteed stability:
 
 ```bash
 # 1. Level 1: Fast Unit Tests (Zod schemas, integer cents, cart reducers)
@@ -264,27 +209,14 @@ npm run build --workspace=apps
 
 ---
 
-## 🤖 500+ AI Agent Ecosystem Roster
-
-This codebase was architected, stress-tested, and optimized by specialized autonomous agent directives:
-
-- `🛟 engineering-database-reliability-engineer` – Designed zero-downtime Prisma migrations and double-entry ledger records.
-- `⚡ engineering-database-optimizer` – Compound indexes on product lookups and order state filters.
-- `🎨 design-ui-designer` & `✨ design-whimsy-injector` – Apple-grade dark-mode tokens, smooth hover dynamics, and ambient lighting.
-- `♿ engineering-section-508-specialist` – WCAG 2.1 AA keyboard focus indicators and screen-reader landmark navigation.
-- `⚡ testing-performance-benchmarker` – Profiler that eliminated 355ms TBT and brought LCP to sub-second 968ms.
-- `🔒 security-appsec-engineer` – Enforced strict credential isolation, JWT session validation, and zero secret leakage.
-
----
-
 ## 📂 Project Structure
 
 ```
 nexus-multi-vendor-ecommerce/
-├── apps/                         # Main Next.js 16 Full-Stack E-Commerce Engine
+├── apps/                         # Next.js 16 Full-Stack E-Commerce Engine
 │   ├── src/
-│   │   ├── app/                  # Next.js App Router (Storefront, Cart, Checkout, Auth, API)
-│   │   ├── components/           # Apple-grade UI components (Navbar, CartDrawer, Copilot)
+│   │   ├── app/                  # App Router (Storefront, Cart, Checkout, Auth, API)
+│   │   ├── components/           # Modern UI components (Navbar, CartDrawer, Catalog)
 │   │   ├── lib/                  # Database client, auth utilities, queue workers, Stripe logic
 │   │   └── store/                # Zustand client state management
 │   ├── prisma/                   # PostgreSQL schema & database migration history
@@ -293,7 +225,6 @@ nexus-multi-vendor-ecommerce/
 │   └── docs/                     # Production deployment guides & architectural blueprints
 ├── angular-frontend/             # Angular 18 Enterprise Admin Workspace
 ├── scripts/                      # Performance profiling, Lighthouse audits & Dev supervisor
-├── .agents/                      # AI Agent governance rules & architectural manifests
 ├── LIGHTHOUSE_OPTIMIZATION_REPORT.md  # Detailed forensic profiling metrics & verification
 ├── .env.example                  # Safe configuration template
 └── README.md                     # Canonical project documentation
