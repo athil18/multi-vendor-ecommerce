@@ -1,7 +1,7 @@
 <div align="center">
 
 # ⚡ NEXUS MULTI-VENDOR E-COMMERCE PLATFORM
-### *The World's Fastest High-Concurrency Marketplace Engine*
+### *High-Concurrency Marketplace Engine*
 
 [![GitHub Stars](https://img.shields.io/github/stars/athil18/nexus-multi-vendor-ecommerce?style=for-the-badge&logo=github&color=FFD700)](https://github.com/athil18/nexus-multi-vendor-ecommerce/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/athil18/nexus-multi-vendor-ecommerce?style=for-the-badge&logo=github&color=60A5FA)](https://github.com/athil18/nexus-multi-vendor-ecommerce/network/members)
@@ -15,46 +15,48 @@
 
 <br />
 
-> 🌟 **Star this repository if you love high-performance e-commerce engineering!** 🌟
+> 🌟 **Star this repository if you find this architecture helpful for your next marketplace!** 🌟
 
 <p align="center">
-  <a href="#-why-nexus">Why Nexus?</a> •
+  <a href="#-overview">Overview</a> •
+  <a href="#-key-capabilities">Capabilities</a> •
   <a href="#-system-architecture">Architecture</a> •
-  <a href="#-lighthouse-performance-audit">Performance</a> •
+  <a href="#-escrow-payment-pipeline">Escrow Pipeline</a> •
+  <a href="#-performance-benchmarks">Performance</a> •
   <a href="#-tech-stack">Tech Stack</a> •
   <a href="#-quick-start">Quick Start</a> •
-  <a href="#-testing-pyramid">Testing</a>
+  <a href="#-testing-suite">Testing</a>
 </p>
 
 ---
 
 </div>
 
-## 💎 What is Nexus?
+## 💎 Overview
 
-**Nexus** is an ultra-modern, high-concurrency multi-vendor marketplace platform built for scale, speed, and trust. It solves the biggest bottlenecks of modern e-commerce: **slow page loads**, **unreliable vendor settlement**, and **rigid monolithic backends**.
+**Nexus** is an open-source, full-stack multi-vendor marketplace platform built for extreme concurrency, sub-second delivery, and automated merchant settlements.
 
-Built on **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Prisma ORM**, Nexus combines an ultra-fast glassmorphic storefront with an automated **Stripe Connect Escrow Settlement Engine**, high-throughput background queues via **BullMQ**, and robust database architecture.
+Engineered with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Prisma ORM**, Nexus unites a fast streaming storefront with a multi-tenant seller portal, admin moderation suite, automated **Stripe Connect Escrow Splits**, and background job processing via **BullMQ** and **Redis**.
 
 ---
 
-## 🚀 Why Nexus?
+## 🚀 Key Capabilities
 
-| Capability | Legacy E-Commerce (Shopify / Medusa / WooCommerce) | Nexus Platform ⚡ |
+| Capability | Legacy Marketplaces | Nexus Platform ⚡ |
 |---|---|---|
 | **Interactivity (TBT)** | 300 – 900 ms click latency | **0 ms Total Blocking Time** (Ultra-responsive) |
 | **Visual Speed (LCP)** | 2.8 – 4.5s load time | **968 ms** (Sub-second Edge Streaming) |
-| **Initial JS Payload** | 800 – 1,500 KiB monolithic bundle | **6.3 KiB** (Zero unnecessary script execution) |
-| **Vendor Settlement** | Manual month-end CSV spreadsheets | **Automated Multi-Vendor Stripe Escrow Splits** |
-| **Modern Design** | Standard templates & generic styles | **Cinematic Glassmorphism**, fluid motion & dark mode |
+| **Initial JS Payload** | 800 – 1,500 KiB monolithic bundle | **6.3 KiB** (Zero unused script execution) |
+| **Vendor Settlement** | Manual month-end reconciliation | **Automated Multi-Vendor Stripe Escrow Splits** |
+| **Modern Design** | Generic bootstrap templates | **Cinematic Glassmorphism**, fluid motion & dark mode |
 | **Accessibility** | Inconsistent contrast & broken ARIA | **100/100 WCAG 2.1 AA** keyboard-navigable |
 | **Background Jobs** | Blocking synchronous HTTP tasks | **Distributed BullMQ Queues** with Redis persistence |
 
 ---
 
-## 📊 Lighthouse Performance Audit
+## 📊 Performance Benchmarks
 
-Nexus delivers near-perfect scores across all Google Core Web Vitals audits:
+Nexus maintains near-perfect scores across Google Lighthouse audits:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -65,10 +67,10 @@ Nexus delivers near-perfect scores across all Google Core Web Vitals audits:
 └──────────────────┴──────────────────┴──────────────────┴───────────────┘
 ```
 
-- ⚡ **Sub-Second LCP (968 ms)** – Instant initial content delivery via streaming server components
-- 🛑 **0 ms Total Blocking Time (TBT)** – Zero thread-blocking scripts or hydration stalls
-- 🎯 **0.0047 CLS** – Layout-stable UI with explicit dimensional containment
-- ♿ **100/100 Accessibility** – High-contrast color tokens and comprehensive screen-reader landmarks
+- ⚡ **Sub-Second LCP (968 ms)** – Instant initial paint powered by Next.js 16 Server Components
+- 🛑 **0 ms Total Blocking Time (TBT)** – Zero thread-blocking scripts or hydration bottlenecks
+- 🎯 **0.0047 CLS** – Layout-stable UI with strict dimensional containment
+- ♿ **100/100 Accessibility** – High-contrast color tokens and comprehensive landmark navigation
 
 ---
 
@@ -89,9 +91,9 @@ graph TD
 
 ---
 
-## 💸 Automated Multi-Vendor Escrow Split Pipeline
+## 💸 Escrow Payment Pipeline
 
-Nexus features an automated split payment workflow ensuring marketplace transparency, merchant trust, and fraud protection:
+Nexus features an automated split payment workflow ensuring marketplace transparency, merchant trust, and dispute protection:
 
 ```mermaid
 sequenceDiagram
@@ -126,9 +128,8 @@ sequenceDiagram
 ### Storefront & Client
 - **Next.js 16.2.9** – App Router, Turbopack, Streaming Server Components, Metadata APIs
 - **React 19.2.4** – Server Actions, `useOptimistic`, fine-grained hydration
-- **Angular 18 Portal** – Dedicated administrative workspace and enterprise analytics
 - **Tailwind CSS v4** – Pure CSS variable theme tokens, GPU-accelerated utility primitives
-- **Framer Motion 12** – 60fps micro-interactions, layout transitions, and glassmorphic overlays
+- **Framer Motion 12** – Micro-interactions, layout transitions, and glassmorphic overlays
 - **Zustand 5** – Zero-overhead client state container for shopping cart and user preferences
 
 ### Backend & Infrastructure
@@ -155,12 +156,11 @@ git clone https://github.com/athil18/nexus-multi-vendor-ecommerce.git
 cd nexus-multi-vendor-ecommerce
 ```
 
-### 2. Setup Environment Variables
-Copy the secure template file:
+### 2. Configure Environment
 ```bash
-cp .env.example apps/.env
+cp .env.example .env
 ```
-*(Configure `DATABASE_URL`, `JWT_SECRET`, and `STRIPE_SECRET_KEY` in `apps/.env` with your local values)*
+*(Configure `DATABASE_URL`, `JWT_SECRET`, and `STRIPE_SECRET_KEY` in `.env` with your local values)*
 
 ### 3. Install Dependencies
 ```bash
@@ -169,42 +169,36 @@ npm install
 
 ### 4. Setup Database & Seed Catalog
 ```bash
-cd apps
-npx prisma generate
-npx prisma migrate dev --name init
+npm run db:generate
+npm run db:migrate
 npm run seed:run
-cd ..
 ```
 
-### 5. Launch with One Command
-Run the unified developer supervisor:
+### 5. Launch Development Server
 ```bash
-npm run dev:up
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🧪 Comprehensive Testing Pyramid
+## 🧪 Testing Suite
 
-Nexus includes a 5-tier testing suite for guaranteed stability:
+Nexus includes a comprehensive test suite covering all layers:
 
 ```bash
-# 1. Level 1: Fast Unit Tests (Zod schemas, integer cents, cart reducers)
-npm run test --workspace=apps
+# Unit & Component Tests
+npm run test
 
-# 2. Level 2: Component Tests (WCAG contrast, ARIA dialogs, focus rings)
-npm run test:component --workspace=apps
+# Backend Integration Tests (Database & API)
+npm run test:backend
 
-# 3. Level 3: Backend Integration Tests (Prisma live queries, Auth boundaries)
-npm run test:backend --workspace=apps
+# End-to-End Playwright Tests (Full checkout & mobile viewports)
+npm run test:e2e
 
-# 4. Level 4: Playwright End-to-End Test Suite (Full customer checkout & mobile viewports)
-npm run test:e2e --workspace=apps
-
-# 5. Production Build Audit
-npm run build --workspace=apps
+# Production Build Verification
+npm run build
 ```
 
 ---
@@ -213,26 +207,41 @@ npm run build --workspace=apps
 
 ```
 nexus-multi-vendor-ecommerce/
-├── apps/                         # Next.js 16 Full-Stack E-Commerce Engine
-│   ├── src/
-│   │   ├── app/                  # App Router (Storefront, Cart, Checkout, Auth, API)
-│   │   ├── components/           # Modern UI components (Navbar, CartDrawer, Catalog)
-│   │   ├── lib/                  # Database client, auth utilities, queue workers, Stripe logic
-│   │   └── store/                # Zustand client state management
-│   ├── prisma/                   # PostgreSQL schema & database migration history
-│   ├── seeds/                    # Seed script for realistic demo catalog & multi-vendor accounts
-│   ├── test/                     # Unit, component & integration test specs
-│   └── docs/                     # Production deployment guides & architectural blueprints
-├── angular-frontend/             # Angular 18 Enterprise Admin Workspace
-├── scripts/                      # Performance profiling, Lighthouse audits & Dev supervisor
-├── LIGHTHOUSE_OPTIMIZATION_REPORT.md  # Detailed forensic profiling metrics & verification
+├── .github/                      # CI/CD Workflows & Automation
+├── docs/                         # Architecture guides & benchmark reports
+├── prisma/                       # PostgreSQL schema & migration history
+├── public/                       # Static assets & product SVG illustrations
+├── scripts/                      # Database backups, restore, and audits
+├── seeds/                        # Realistic demo catalog & merchant seeders
+├── src/                          # Application source code
+│   ├── app/                      # Next.js App Router (Storefront, Portals, API)
+│   ├── components/               # Modern UI components & Design tokens
+│   ├── core/                     # Domain ports & clean architecture interfaces
+│   ├── infrastructure/           # Prisma repositories & BullMQ queue provider
+│   ├── lib/                      # Auth, Stripe, Redis, Rate limiting, Logger
+│   ├── models/                   # Domain entities
+│   ├── services/                 # Business logic (Order, Payment, Auth, Store)
+│   └── store/                    # Zustand state management
+├── test/                         # Unit, component & integration tests
+├── e2e/                          # Playwright end-to-end test suite
+├── .dockerignore
 ├── .env.example                  # Safe configuration template
-└── README.md                     # Canonical project documentation
+├── .gitignore                    # Git ignore rules
+├── docker-compose.yml            # Local PostgreSQL + Redis containers
+├── eslint.config.mjs
+├── LICENSE                       # MIT License
+├── next.config.ts
+├── package.json                  # Application dependencies & scripts
+├── playwright.config.ts
+├── postcss.config.mjs
+├── README.md                     # Project documentation
+├── tsconfig.json
+└── vitest.config.ts
 ```
 
 ---
 
-## 🤝 Contributing & Community
+## 🤝 Contributing
 
 Contributions are welcome! If you want to contribute:
 1. **Fork** the repository.
@@ -243,11 +252,11 @@ Contributions are welcome! If you want to contribute:
 
 ---
 
-## 🌟 Support & Star Us!
+## 🌟 Stargazers
 
-If you find this repository valuable, please consider giving it a **Star ⭐**! It helps the project gain visibility and supports open-source development.
+If you find this repository valuable, please consider giving it a **Star ⭐**! It helps support ongoing open-source development.
 
 <div align="center">
-  <p><b>Crafted with passion by <a href="https://github.com/athil18">Mohamed Aathil R</a></b></p>
-  <p>Licensed under the <a href="LICENSE">MIT License</a>.</p>
+  <p><b>Maintained by <a href="https://github.com/athil18">Mohamed Aathil R</a></b></p>
+  <p>Released under the <a href="LICENSE">MIT License</a>.</p>
 </div>

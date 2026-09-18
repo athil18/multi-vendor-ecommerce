@@ -1,11 +1,8 @@
 # ==============================================================================
 # Nexus Multi-Vendor E-Commerce Platform - Git Ignore Rules
-# Strictly prevents credentials, build artifacts, and dependency bloat
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# 1. Environment & Sensitive Credentials (CRITICAL)
-# ------------------------------------------------------------------------------
+# Environment & Sensitive Credentials (CRITICAL)
 .env
 .env*.local
 .env.development
@@ -13,23 +10,16 @@
 .env.production
 .env.staging
 *.env
-apps/.env
-apps/.env.test
-apps/.env.local
-apps/.env.production
 *.pem
 *.key
 *.cert
 *.pfx
 *.p12
 
-# Explicitly allow environment example templates
+# Allow environment example template
 !.env.example
-!apps/.env.example
 
-# ------------------------------------------------------------------------------
-# 2. Agent Frameworks, AI Metadata & Local Documents
-# ------------------------------------------------------------------------------
+# Internal documents & metadata
 .agents/
 **/.agents/
 .ai/
@@ -37,85 +27,49 @@ apps/.env.production
 *.pdf
 **/*.pdf
 
-# ------------------------------------------------------------------------------
-# 2. Dependencies & Package Managers
-# ------------------------------------------------------------------------------
+# Dependencies
 node_modules/
 **/node_modules/
 .pnp
 .pnp.js
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
-# ------------------------------------------------------------------------------
-# 3. Next.js & Frontend Build Outputs
-# ------------------------------------------------------------------------------
+# Next.js Build Outputs & Cache
 .next/
 **/.next/
 out/
-**/out/
 build/
-**/build/
 dist/
-**/dist/
-.angular/
-**/.angular/
 .vercel
-**/.vercel
 
-# ------------------------------------------------------------------------------
-# 4. User Uploads & Temporary Media
-# ------------------------------------------------------------------------------
-apps/public/uploads/*
-!apps/public/uploads/.gitkeep
+# User Uploads
 public/uploads/*
 !public/uploads/.gitkeep
 
-# ------------------------------------------------------------------------------
-# 5. Logs, Runtime & Process State
-# ------------------------------------------------------------------------------
+# Logs & Runtime State
 logs/
-**/logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .dev-state.json
-**/.dev-state.json
 
-# ------------------------------------------------------------------------------
-# 5. TypeScript & Cache Files
-# ------------------------------------------------------------------------------
+# TypeScript & Cache
 *.tsbuildinfo
 **/*.tsbuildinfo
 next-env.d.ts
 
-# ------------------------------------------------------------------------------
-# 6. Testing, Code Coverage & Playwright Artifacts
-# ------------------------------------------------------------------------------
+# Testing & Coverage
 coverage/
 **/coverage/
-.nyc_output
 test-results/
-**/test-results/
 playwright-report/
-**/playwright-report/
 blob-report/
-**/blob-report/
 
-# ------------------------------------------------------------------------------
-# 7. Operating System & Editor Metadata
-# ------------------------------------------------------------------------------
+# OS & Editor Metadata
 .DS_Store
 Thumbs.db
 Desktop.ini
-*.swp
-*.swo
-*~
 .idea/
 .vscode/*
 !.vscode/settings.json
