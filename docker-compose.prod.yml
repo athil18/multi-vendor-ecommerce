@@ -1,0 +1,112 @@
+version: '3.8'
+
+# ==============================================================================
+# 100% Open-Source Self-Hosted Production Stack for Nexus E-Commerce
+# Orchestrates: Next.js Web + BullMQ Worker + PostgreSQL + Redis + Caddy SSL
+# ==============================================================================
+
+services:
+  # 1. PostgreSQL 16 Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexus-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-marketplace}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-marketplace}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexus-network
+
+  # 2. Redis 7 In-Memory Queue & Cache
+  redis:
+    image: redis:7-alpine
+    container_name: nexus-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_secure_password}
+    volumes:
+      - redis_prod_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secure_password}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexus-network
+
+  # 3. Next.js 16 Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-web
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - nexus-network
+
+  # 4. BullMQ Background Queue Worker
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-worker
+    restart: always
+    command: ["npx", "tsx", "src/lib/queue/worker.ts"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+    networks:
+      - nexus-network
+
+  # 5. Caddy Reverse Proxy (Automatic Free Let's Encrypt SSL)
+  caddy:
+    image: caddy:2-alpine
+    container_name: nexus-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    networks:
+      - nexus-network
+
+volumes:
+  postgres_prod_data:
+  redis_prod_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  nexus-network:
+    driver: bridge
