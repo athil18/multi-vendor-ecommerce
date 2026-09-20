@@ -21,7 +21,7 @@ const net = require('net');
 
 // Paths
 const ROOT_DIR = path.resolve(__dirname, '../..');
-const APPS_DIR = path.join(ROOT_DIR, 'apps');
+const APPS_DIR = fs.existsSync(path.join(ROOT_DIR, 'apps')) ? path.join(ROOT_DIR, 'apps') : ROOT_DIR;
 const LOGS_DIR = path.join(ROOT_DIR, 'logs');
 const STATE_FILE = path.join(ROOT_DIR, '.dev-state.json');
 const NEXTJS_LOG = path.join(LOGS_DIR, 'nextjs.log');
