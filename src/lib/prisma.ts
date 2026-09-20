@@ -15,11 +15,13 @@ const connectionString =
   process.env.DATABASE_URL || 'postgresql://postgres:123@localhost:5432/marketplace?schema=public';
 
 // Configure resilient connection pool with safety bounds
+const isRemoteDb = connectionString.includes('sslmode=') || connectionString.includes('neon.tech');
 const pool = new pg.Pool({
   connectionString,
+  ssl: isRemoteDb ? { rejectUnauthorized: false } : undefined,
   max: parseInt(process.env.DB_POOL_MAX || '20', 10),
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000,
 });
 
 import { logger } from './logger';
