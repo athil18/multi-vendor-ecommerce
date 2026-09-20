@@ -1,0 +1,10 @@
+{
+  "name": "nexus-multi-vendor-ecommerce",
+  "description": "High-concurrency multi-vendor e-commerce platform engineered with Next.js 16, React 19, Prisma, PostgreSQL, Stripe Connect Escrow, and BullMQ.",
+  "keywords": ["ecommerce", "nextjs", "prisma", "stripe", "bullmq", "marketplace"],
+  "scripts": {
+    "dokku": {
+      "predeploy": "npx prisma migrate deploy"
+    }
+  }
+}
