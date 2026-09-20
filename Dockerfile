@@ -22,6 +22,21 @@ COPY . .
 # Generate Prisma Client & Build Next.js
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
+# Dummy build-time env vars (Next.js needs these to compile server code;
+# real values are injected at runtime via Render Secret Files)
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public"
+ENV DIRECT_URL="postgresql://build:build@localhost:5432/build?schema=public"
+ENV JWT_SECRET="build-placeholder-jwt-secret"
+ENV JWT_REFRESH_SECRET="build-placeholder-jwt-refresh-secret"
+ENV STRIPE_SECRET_KEY="sk_test_build_placeholder"
+ENV STRIPE_WEBHOOK_SECRET="whsec_build_placeholder"
+ENV UPSTASH_REDIS_REST_URL="https://build-placeholder.upstash.io"
+ENV UPSTASH_REDIS_REST_TOKEN="build-placeholder-token"
+ENV NEXT_PUBLIC_APP_URL="http://localhost:3000"
+ENV CLIENT_URL="http://localhost:3000"
+ENV CRON_SECRET="build-placeholder-cron-secret"
+
 RUN npx prisma generate
 RUN npm run build
 
