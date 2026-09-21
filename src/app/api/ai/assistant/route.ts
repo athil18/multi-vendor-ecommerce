@@ -14,10 +14,27 @@ import { getAuthUser } from '@/lib/auth';
 import { sanitizeText } from '@/lib/pii';
 import prisma from '@/lib/prisma';
 
+interface CartItemPayload {
+  productId: string;
+  variantId?: string;
+  name: string;
+  price: number;
+  image?: string;
+  quantity: number;
+  sellerName?: string;
+  category?: string;
+  escrowSplit?: {
+    sellerAmount: number;
+    platformFee: number;
+  };
+}
+
 interface AgentIntentResponse {
   message: string;
   dispatchedAgents: string[];
-  suggestedActions?: { label: string; href?: string; action?: string }[];
+  suggestedActions?: { label: string; href?: string; action?: string; item?: CartItemPayload }[];
+  action?: string;
+  itemToCart?: CartItemPayload;
 }
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
@@ -39,6 +56,101 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   let response: AgentIntentResponse;
 
   // 2. Multi-Agent Intent Dispatching
+  if (
+    lowerPrompt.includes('cart') ||
+    lowerPrompt.includes('push') ||
+    lowerPrompt.includes('add to bag') ||
+    lowerPrompt.includes('buy now') ||
+    lowerPrompt.includes('put in cart')
+  ) {
+    // Dispatched to product-behavioral-nudge-engine, engineering-payments-billing-engineer, 04-sql-query-agent
+    const stopWords = new Set([
+      'use', 'ai', 'agent', 'skills', 'for', 'cart', 'pushing', 'push', 'add',
+      'to', 'my', 'the', 'a', 'an', 'please', 'put', 'in', 'into', 'buy', 'now',
+      'item', 'product', 'can', 'you', 'i', 'want', 'need', 'get', 'bag', 'me'
+    ]);
+    const tokens = lowerPrompt
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => !stopWords.has(w) && w.length > 2);
+    const queryKeyword = tokens.join(' ').trim();
+
+    let matchedProduct = null;
+    if (queryKeyword) {
+      matchedProduct = await prisma.product.findFirst({
+        where: {
+          status: 'published',
+          deletedAt: null,
+          OR: [
+            { name: { contains: queryKeyword, mode: 'insensitive' } },
+            { description: { contains: queryKeyword, mode: 'insensitive' } },
+            { category: { name: { contains: queryKeyword, mode: 'insensitive' } } },
+          ],
+        },
+        include: {
+          category: { select: { name: true } },
+          seller: { select: { store: { select: { name: true } } } },
+          variants: { where: { isActive: true }, take: 1, select: { id: true, price: true } },
+        },
+      });
+    }
+
+    if (!matchedProduct) {
+      matchedProduct = await prisma.product.findFirst({
+        where: { status: 'published', deletedAt: null },
+        orderBy: { rating: 'desc' },
+        include: {
+          category: { select: { name: true } },
+          seller: { select: { store: { select: { name: true } } } },
+          variants: { where: { isActive: true }, take: 1, select: { id: true, price: true } },
+        },
+      });
+    }
+
+    if (matchedProduct) {
+      const price = matchedProduct.variants?.[0]?.price || matchedProduct.basePrice || 49.99;
+      const sellerName = matchedProduct.seller?.store?.name || 'Nexus Verified Atelier';
+      const escrowSplit = {
+        sellerAmount: Number((price * 0.90).toFixed(2)),
+        platformFee: Number((price * 0.10).toFixed(2)),
+      };
+
+      const itemToCart: CartItemPayload = {
+        productId: matchedProduct.id,
+        variantId: matchedProduct.variants?.[0]?.id,
+        name: matchedProduct.name,
+        price,
+        image: matchedProduct.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80',
+        quantity: 1,
+        sellerName,
+        category: matchedProduct.category?.name || 'Curated',
+        escrowSplit,
+      };
+
+      response = {
+        message: `🛒 **AI Agent Cart Pushing Executed!**\n\nI matched and staged **${matchedProduct.name}** directly from atelier **${sellerName}** for your cart.\n\n• **Price**: $${price.toFixed(2)}\n• **Category**: ${matchedProduct.category?.name || 'Curated'}\n• **Escrow Split**: $${escrowSplit.sellerAmount.toFixed(2)} (90% Seller Escrow) + $${escrowSplit.platformFee.toFixed(2)} (10% Platform Fee)\n• **Buyer Guarantee**: 100% Escrow Protection & 48h Merchant Dispatch\n\nClick **"Push to Cart"** below to confirm this item into your active cart!`,
+        dispatchedAgents: [
+          'product-behavioral-nudge-engine',
+          'engineering-payments-billing-engineer',
+          '04-sql-query-agent',
+          'design-whimsy-injector',
+        ],
+        action: 'ADD_TO_CART',
+        itemToCart,
+        suggestedActions: [
+          { label: `🛒 Push "${matchedProduct.name.slice(0, 22)}..." to Cart`, action: 'PUSH_TO_CART', item: itemToCart },
+          { label: 'Proceed to Checkout', href: '/checkout' },
+          { label: 'Browse All Categories', href: '/categories' },
+        ],
+      };
+    } else {
+      response = {
+        message: `I was unable to locate a matching product right now. Please explore our 500+ verified catalog items across categories.`,
+        dispatchedAgents: ['product-behavioral-nudge-engine', '04-sql-query-agent'],
+        suggestedActions: [{ label: 'Explore Products', href: '/products' }],
+      };
+    }
+  } else
   if (lowerPrompt.includes('order') || lowerPrompt.includes('track') || lowerPrompt.includes('delivery') || lowerPrompt.includes('ship')) {
     // Dispatched to 13-customer-support-agent & engineering-support-engineer
     if (user) {

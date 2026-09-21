@@ -30,26 +30,20 @@ export default function ProductsPage() {
     queryKey: ['products', 'all'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch('/api/products?limit=200');
         if (!res.ok) throw new Error('Failed to load products');
         const json = await res.json();
         const dbItems = json.data || [];
-        const normalizedDb = dbItems.map((p: any, idx: number) => ({
-          ...p,
-          _id: p.id || p._id,
-          images: (p.images && p.images.length > 0) ? p.images : [FALLBACK_PRODUCTS_LIST[idx % FALLBACK_PRODUCTS_LIST.length]?.images[0] || '/products/keyboard.svg'],
-          rating: p.rating || 4.8,
-          numReviews: p.numReviews || 24,
-        }));
-        
-        // Merge with curated items to ensure a rich, full catalog across all categories
-        const combined = [...normalizedDb];
-        FALLBACK_PRODUCTS_LIST.forEach((fp) => {
-          if (!combined.some((item) => item.name === fp.name)) {
-            combined.push(fp as any);
-          }
-        });
-        return combined;
+        if (dbItems.length > 0) {
+          return dbItems.map((p: any) => ({
+            ...p,
+            _id: p.id || p._id,
+            images: (p.images && p.images.length > 0) ? p.images : ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800'],
+            rating: p.rating || 4.8,
+            numReviews: p.numReviews || 24,
+          }));
+        }
+        return FALLBACK_PRODUCTS_LIST;
       } catch {
         return FALLBACK_PRODUCTS_LIST;
       }

@@ -12,7 +12,8 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 
 const connectionString =
-  process.env.DATABASE_URL || 'postgresql://postgres:123@localhost:5432/marketplace?schema=public';
+  process.env.DATABASE_URL ||
+  'postgresql://neondb_owner:npg_nR2Tf1ympHDX@ep-red-violet-b4cqhqy5-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
 
 // Configure resilient connection pool with safety bounds
 const isRemoteDb = connectionString.includes('sslmode=') || connectionString.includes('neon.tech');

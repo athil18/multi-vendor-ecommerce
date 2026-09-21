@@ -1,0 +1,913 @@
+{
+  "timestamp": 1789975469.1309679,
+  "total": 55,
+  "passing": 36,
+  "broken_count": 19,
+  "working_links": [
+    {
+      "index": 1,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 2,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/keyboard.svg",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 3,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/_next/static/chunks/0zwwl_x4x4ocj.css",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 4,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/_next/static/chunks/0x3i1tda2t94d.css",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 5,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/_next/static/chunks/3qr6atwrhh7d7.js",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 6,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/manifest.webmanifest",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 7,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/favicon.ico",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 8,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/favicon.ico?favicon.2vob68tjqpejf.ico",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 9,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/icon.svg",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 10,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 11,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 12,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/stores",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 13,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products?category=Tech+Gear",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 14,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products?category=Fitness",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 15,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products?category=Sustainable",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 16,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products?category=Luxury",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 17,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/auth/login",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 18,
+      "url": "https://github.com",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 24,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/seller/register",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 25,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/seller",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 26,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/seller/guidelines",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 27,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/seller/payouts",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 33,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/privacy",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 34,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/terms",
+      "status": 200,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 37,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products?category=Workspace",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 38,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-1",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 40,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-2",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 41,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-3",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 42,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-4",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 43,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-5",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 44,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-6",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 45,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-7",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 46,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-8",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 47,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-9",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 48,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/products/prod-fallback-10",
+      "status": 200,
+      "sources": [
+        "/"
+      ],
+      "ok": true,
+      "error": ""
+    },
+    {
+      "index": 55,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/seller/store",
+      "status": 200,
+      "sources": [
+        "/stores"
+      ],
+      "ok": true,
+      "error": ""
+    }
+  ],
+  "broken_links": [
+    {
+      "index": 19,
+      "url": "https://nexus-commerce.io",
+      "status": "ERR",
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+    },
+    {
+      "index": 20,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/categories",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 21,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/vendors",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 22,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/deals",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 23,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/new-arrivals",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 28,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/about",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 29,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/standards",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 30,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/buyer-protection",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 31,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/sustainability",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 32,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/help",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 35,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/security-policy",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 36,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/accessibility",
+      "status": 404,
+      "sources": [
+        "/",
+        "/admin",
+        "/auth/login",
+        "/auth/register",
+        "/checkout",
+        "/customer",
+        "/privacy",
+        "/products",
+        "/seller",
+        "/stores",
+        "/terms"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 39,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store",
+      "status": 404,
+      "sources": [
+        "/"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 49,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-1",
+      "status": 404,
+      "sources": [
+        "/",
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 50,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-2",
+      "status": 404,
+      "sources": [
+        "/",
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 51,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-3",
+      "status": 404,
+      "sources": [
+        "/",
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 52,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-4",
+      "status": 404,
+      "sources": [
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 53,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-5",
+      "status": 404,
+      "sources": [
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    },
+    {
+      "index": 54,
+      "url": "https://multi-vendor-ecommerce-gq1t.onrender.com/store/store-6",
+      "status": 404,
+      "sources": [
+        "/stores"
+      ],
+      "ok": false,
+      "error": "HTTP 404"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ export function Footer() {
   const marketplaceLinks = [
     { label: 'Explore Products', href: '/products' },
     { label: 'Featured Categories', href: '/categories' },
-    { label: 'Top-Rated Vendors', href: '/vendors' },
+    { label: 'Top-Rated Vendors', href: '/stores' },
     { label: 'Deals & Discounts', href: '/deals' },
     { label: 'New Arrivals', href: '/new-arrivals' },
   ];
@@ -122,16 +122,16 @@ export function Footer() {
                 <Globe className="h-4 w-4" />
               </a>
               <a 
-                href="https://nexus-commerce.io" 
+                href="https://github.com/athil18/multi-vendor-ecommerce" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                aria-label="Nexus Network"
+                aria-label="Nexus Repository"
                 className="h-9 w-9 rounded-xl bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center justify-center text-surface-600 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-500/40 transition-all"
               >
                 <Share2 className="h-4 w-4" />
               </a>
               <a 
-                href="mailto:support@nexus-commerce.io" 
+                href="mailto:support@nexus.market" 
                 aria-label="Contact Support"
                 className="h-9 w-9 rounded-xl bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center justify-center text-surface-600 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-500/40 transition-all"
               >

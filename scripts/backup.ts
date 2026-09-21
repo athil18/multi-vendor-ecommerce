@@ -8,7 +8,7 @@
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import zlib from 'zlib';
+import * as zlib from 'zlib';
 import prisma from '../src/lib/prisma';
 import { logger } from '../src/lib/logger';
 

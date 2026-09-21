@@ -87,6 +87,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
       where,
       include: {
         category: { select: { id: true, name: true, slug: true } },
+        seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
       },
       orderBy,
       take: limit,
@@ -169,7 +170,12 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
   const nextCursor = products.length === limit ? products[products.length - 1].id : null;
 
   return NextResponse.json({
-    data: products.map(p => ({ ...p, _id: p.id, categoryId: p.category })),
+    data: products.map(p => ({
+      ...p,
+      _id: p.id,
+      storeName: p.seller?.store?.name || p.seller?.name || 'Nexus Atelier',
+      categoryId: p.category,
+    })),
     meta: {
       page: cursor ? undefined : page,
       limit,
