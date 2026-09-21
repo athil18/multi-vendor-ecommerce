@@ -64,7 +64,7 @@ COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 10000 3000
 
 # Shell form enables $PORT variable expansion from Render's runtime env
 CMD npx next start -H 0.0.0.0 -p ${PORT:-3000}
