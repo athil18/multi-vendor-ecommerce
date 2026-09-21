@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 # real values are injected at runtime via Render Secret Files)
 ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public"
 ENV DIRECT_URL="postgresql://build:build@localhost:5432/build?schema=public"
-ENV JWT_SECRET="build-placeholder-jwt-secret"
+ENV JWT_SECRET="build-placeholder-jwt-secret-minimum-32chars"
 ENV JWT_REFRESH_SECRET="build-placeholder-jwt-refresh-secret"
 ENV STRIPE_SECRET_KEY="sk_test_build_placeholder"
 ENV STRIPE_WEBHOOK_SECRET="whsec_build_placeholder"
