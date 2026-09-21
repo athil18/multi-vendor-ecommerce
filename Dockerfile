@@ -46,12 +46,13 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-# PORT is set by Render at runtime (typically 10000); fallback to 3000 for local Docker
+ENV PORT=10000
 ENV HOSTNAME="0.0.0.0"
+ENV NODE_OPTIONS="--max-old-space-size=400"
 
 # Create non-root system user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 -G nodejs -h /home/nextjs nextjs
 
 # Copy runtime assets, source, and standalone build
 COPY --from=builder /app/public ./public
@@ -66,5 +67,5 @@ USER nextjs
 
 EXPOSE 10000 3000
 
-# Shell form enables $PORT variable expansion from Render's runtime env
-CMD npx next start -H 0.0.0.0 -p ${PORT:-3000}
+# Direct node invocation bypassing npx overhead, binding dynamically to $PORT (default 10000)
+CMD node node_modules/next/dist/bin/next start -H 0.0.0.0 -p ${PORT:-10000}
