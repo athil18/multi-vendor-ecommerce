@@ -46,7 +46,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
+# PORT is set by Render at runtime (typically 10000); fallback to 3000 for local Docker
 ENV HOSTNAME="0.0.0.0"
 
 # Create non-root system user for security
@@ -66,4 +66,5 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["npx", "next", "start", "-p", "3000"]
+# Shell form enables $PORT variable expansion from Render's runtime env
+CMD npx next start -H 0.0.0.0 -p ${PORT:-3000}
