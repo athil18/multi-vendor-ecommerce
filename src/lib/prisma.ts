@@ -11,9 +11,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 
-let connectionString =
-  process.env.DATABASE_URL ||
-  'postgresql://neondb_owner:npg_nR2Tf1ympHDX@ep-red-violet-b4cqhqy5-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require&uselibpqcompat=true';
+let connectionString = process.env.DATABASE_URL || '';
+if (!connectionString) {
+  throw new Error('DATABASE_URL environment variable is required to initialize PostgreSQL connection pool.');
+}
 
 // Prevent Node.js pg-connection-string security warning regarding libpq compatibility
 if (
