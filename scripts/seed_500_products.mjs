@@ -9,6 +9,7 @@
 import 'dotenv/config';
 import pg from 'pg';
 import bcrypt from 'bcryptjs';
+import { DIVERSE_CATEGORY_IMAGES } from './diversify_product_images.mjs';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -50,12 +51,7 @@ const VOCABULARY = {
     prefixes: ['Aura', 'Apex', 'Cyber', 'Titanium', 'Spectre', 'Vanguard', 'Matrix', 'Zenith', 'Quantum', 'Nebula', 'Vortex', 'Pulse', 'Hyperion', 'Chrono', 'Krypton', 'Solaris'],
     items: ['CNC Mechanical Keyboard', 'Wireless Macro Pad', 'PBT Dye-Sub Keycap Set', 'Planar Magnetic DAC', 'Aviator USB-C Coiled Cable', 'Artisan Brass Keycap', 'Low-Profile Typing Deck', 'Titanium Switch Puller', 'Silicone Gasket Plate Kit', 'Braided Balanced Audio Cable', 'Desktop Headphone Stand', 'OLED Stream Controller'],
     materials: ['CNC 6063 Aluminum', 'Titanium PVD Coated', 'Polycarbonate Frosted', 'Brass Weighted Core', 'Carbon Fiber Inlay'],
-    images: [
-      'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Tech & Electronics'],
     priceRange: [45, 480],
     tags: ['mechanical-keyboard', 'custom-cables', 'audiophile', 'cnc-machined', 'rgb-lighting']
   },
@@ -63,12 +59,7 @@ const VOCABULARY = {
     prefixes: ['Velox', 'Aero', 'Endurance', 'Kevlar', 'Olympic', 'Pro-Form', 'Summit', 'Apex', 'Stealth', 'Dynamo', 'Kinetic', 'Carbon', 'Ironclad', 'Titan', 'Vigor', 'Atlas'],
     items: ['Carbon Fiber Road Frame', 'Precision Hex Dumbbell Set', 'Olympic Cerakote Barbell', 'Ergonomic Speed Jump Rope', 'Cast Iron Kettlebell', 'Competition Weightlifting Belt', 'Recovery Massage Gun', 'Aerodynamic Cycling Helmet', 'Adjustable Dumbbell Stand', 'High-Density Foam Roller', 'Titanium Cycling Pedals', 'Billet Aluminum Pulley Wheel'],
     materials: ['Toray T800 Carbon Fiber', 'Solid Cast Iron', 'Electrophoretic Cerakote Coating', 'Multi-Layer Top-Grain Leather'],
-    images: [
-      'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Sports & Fitness'],
     priceRange: [35, 1250],
     tags: ['fitness', 'olympic-weights', 'carbon-fiber', 'cycling', 'recovery']
   },
@@ -76,12 +67,7 @@ const VOCABULARY = {
     prefixes: ['Verdant', 'Terra', 'Eco', 'Botanical', 'Solstice', 'Arbor', 'Prism', 'Gaia', 'Biolume', 'Organic', 'Heirloom', 'Sylvan', 'Eden', 'Living', 'Rooted', 'Sprout'],
     items: ['Vertical Hydroponic Tower', 'Self-Watering Ceramic Planter', 'Heirloom Microgreens Growing Kit', 'Cold-Pressed Botanical Serum', 'Mycelium Acoustic Wall Panel', 'Reclaimed Teak Garden Trowel', 'Compost Aerator System', 'Organic Cotton Canvas Tote', 'Beeswax Food Preservation Wraps', 'Bamboo Fiber Cutlery Set', 'Indoor Mushroom Fruiting Chamber', 'Solar-Distilled Plant Nutrient'],
     materials: ['100% Recycled Ocean Polymers', 'Glazed Terracotta', 'Organic Heirloom Seeds', 'FSC-Certified Solid Teak'],
-    images: [
-      'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Sustainable Living'],
     priceRange: [22, 340],
     tags: ['hydroponics', 'sustainable', 'organic', 'zero-waste', 'heirloom']
   },
@@ -89,12 +75,7 @@ const VOCABULARY = {
     prefixes: ['Atelier', 'Veloce', 'Monaco', 'Sovereign', 'Heritage', 'Regal', 'Palazzo', 'Tuscan', 'Chrono', 'Luxe', 'Imperial', 'Aurelius', 'Grand', 'Noble', 'Vintage', 'Signet'],
     items: ['Full-Grain Weekender Duffel', 'Bespoke Cardholder Wallet', 'Automatic Horology Watch', 'Vegetable-Tanned Watch Roll', 'Hand-Forged Damascus Pocket Knife', 'Brass Aviator Sunglasses', 'Monogrammed Passport Cover', 'Hand-Stitched Leather Belt', 'Sterling Silver Signet Ring', 'Minimalist Bi-Fold Wallet', 'Solid Brass Key Shackle', 'Travel Watch Travel Folio'],
     materials: ['Full-Grain Tuscan Vachetta Leather', '316L Surgical Grade Stainless Steel', 'Japanese Miyota Automatic Caliber', 'Solid Hand-Turned Brass'],
-    images: [
-      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1622434641406-a158123450f9?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Luxury & Leathercraft'],
     priceRange: [65, 890],
     tags: ['luxury', 'leather-goods', 'handcrafted', 'horology', 'italian-leather']
   },
@@ -102,12 +83,7 @@ const VOCABULARY = {
     prefixes: ['Nordic', 'Ergo', 'Walnut', 'Linear', 'Artisan', 'Studio', 'Forma', 'Focus', 'Cortex', 'Haven', 'Element', 'Nexus', 'Kanso', 'Balance', 'Craft', 'Minimal'],
     items: ['Solid Walnut Dual Monitor Stand', 'Merino Wool Felt Desk Mat', 'MagSafe Wooden Charging Dock', 'Magnetic Aluminum Cable Organizer', 'Ergonomic Active Lumbar Chair', 'Adjustable Walnut Laptop Riser', 'Architectural Acrylic Desk Blotter', 'Bespoke Oak Pencil Tray', 'Desktop Audio Shelf Organizer', 'Solid Brass Desk Weight', 'Pegboard Modular Storage Kit', 'Under-Desk Steel Cable Tray'],
     materials: ['Kiln-Dried American Black Walnut', '100% German Merino Wool Felt', 'Anodized Aircraft Aluminum', 'Solid White Oak'],
-    images: [
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Workspace Essentials'],
     priceRange: [38, 560],
     tags: ['workspace', 'desk-setup', 'ergonomics', 'solid-walnut', 'minimalist']
   },
@@ -115,12 +91,7 @@ const VOCABULARY = {
     prefixes: ['Lumina', 'Komorebi', 'Sumi', 'Stoneware', 'Artisan', 'Kyoto', 'Ember', 'Celadon', 'Wabi', 'Mineral', 'Earthen', 'Brass', 'Aura', 'Glow', 'Horizon', 'Terra'],
     items: ['Stoneware Ceramic Coffee Dripper', 'Volcanic Ash Glazed Matcha Bowl', 'Spun Brass Ambient Desk Lamp', 'Hand-Carved Hinoki Bath Tray', 'Linen Woven Table Runner', 'Textured Ceramic Espresso Cup Set', 'Cast Iron Japanese Teapot', 'Soy Wax Botanical Amber Candle', 'Mouth-Blown Fluted Glass Carafe', 'Hand-Dyed Indigo Throw Blanket', 'Minimalist Ceramic Incense Holder', 'Terracotta Pour-Over Carafe'],
     materials: ['Wheel-Thrown Shigaraki Stoneware', 'Spun Solid Unlacquered Brass', '100% Belgian Washed Linen', 'Japanese Hinoki Cypress'],
-    images: [
-      'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Home & Ceramics'],
     priceRange: [28, 420],
     tags: ['ceramics', 'ambient-lighting', 'home-decor', 'japanese-craft', 'handcrafted']
   },
@@ -128,12 +99,7 @@ const VOCABULARY = {
     prefixes: ['Sonic', 'Resonance', 'Planar', 'Acoustic', 'Valhalla', 'Symphony', 'Harmonic', 'Ohm', 'Valve', 'Fidelity', 'Aether', 'Decibel', 'Soundstage', 'Zenith', 'Echo', 'Frequency'],
     items: ['Open-Back Planar Magnetic Headphones', 'Desktop Tube Headphone Amplifier', 'High-Res Lossless Audio Streamer', 'Acoustic Hardwood Diffuser Panel', 'Solid Copper Interconnect Cable', 'In-Ear Monitor with Beryllium Drivers', 'Isolation Pad Set for Studio Monitors', 'Aluminum Volume Control Knob', 'Balanced XLR Microphone Preamp', 'Solid Billet Headphone Amplifier Chassis'],
     materials: ['Solid Walnut Wood Rings', 'Oxygen-Free Pure Copper', 'CNC Machined Anodized Aluminum', 'Titanium Driver Diaphragm'],
-    images: [
-      'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1577174881658-0f30ed549adc?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Audio & Acoustics'],
     priceRange: [85, 1450],
     tags: ['audiophile', 'planar-magnetic', 'studio-monitors', 'dac-amp', 'hifi']
   },
@@ -141,12 +107,7 @@ const VOCABULARY = {
     prefixes: ['Kuro', 'Loopwheel', 'Atelier', 'Selvedge', 'Artisan', 'Tenue', 'Denim', 'Heritage', 'Indigo', 'Mercer', 'Standard', 'Raw', 'Tailored', 'Minimal', 'Canvas', 'Weave'],
     items: ['Heavyweight 500GSM Loopwheel Hoodie', '15oz Japanese Raw Selvedge Denim', 'Supima Long-Staple Cotton T-Shirt', 'Merino Wool Thermal Crewneck', 'Waxed Canvas Utility Overshirt', 'Hand-Dyed Natural Indigo Workshirt', 'Tailored Chino with Horn Buttons', 'Cashmere Wool Waffle Beanie', 'French Terry Sweatshorts', 'Ripstop Field Anorak Jacket'],
     materials: ['100% Organic Loopwheel Cotton', 'Kuroki Mills 15oz Selvedge Denim', 'Grade-A Mongolian Cashmere', 'American Supima Cotton'],
-    images: [
-      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1542272604-780c96856592?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=800',
-    ],
+    images: DIVERSE_CATEGORY_IMAGES['Apparel & Textiles'],
     priceRange: [45, 380],
     tags: ['selvedge-denim', 'loopwheel-hoodie', 'organic-cotton', 'japanese-denim', 'artisan-apparel']
   },
@@ -235,8 +196,9 @@ async function main() {
       const maxPrice = vocab.priceRange[1];
       const basePrice = parseFloat((minPrice + Math.random() * (maxPrice - minPrice)).toFixed(2));
       const rating = parseFloat((4.6 + Math.random() * 0.4).toFixed(2));
-      const numReviews = Math.floor(12 + Math.random() * 180);
-      const image = vocab.images[Math.floor(Math.random() * vocab.images.length)];
+      const imgIdx = productsToInsert.length % vocab.images.length;
+      const primaryImage = vocab.images[imgIdx];
+      const secondaryImage = vocab.images[(imgIdx + Math.floor(vocab.images.length / 2)) % vocab.images.length];
 
       const description = `Precision handcrafted ${item.toLowerCase()} engineered from ${material.toLowerCase()}. Meticulously fabricated in small studio batches to deliver uncompromised tactile feedback, structural rigidity, and enduring aesthetics. Backed by the Nexus 100% escrow buyer protection guarantee.`;
 
@@ -249,7 +211,7 @@ async function main() {
         basePrice,
         rating,
         numReviews,
-        image,
+        images: [primaryImage, secondaryImage],
         tags: vocab.tags,
         options: JSON.stringify([
           { name: 'Finish', values: ['Raw Matte', 'Anodized Slate', 'Burnished Brass'] },
@@ -278,14 +240,14 @@ async function main() {
           )
           VALUES (
             gen_random_uuid()::text, $1, $2, $3, $4, $5,
-            $6, 'published', true, ARRAY[$7]::text[], $8, $9::jsonb,
+            $6, 'published', true, $7::text[], $8, $9::jsonb,
             $10, $11, NOW(), NOW()
           )
           ON CONFLICT ("slug") DO NOTHING
           RETURNING "id", "sellerId", "basePrice";
         `, [
           p.sellerId, p.categoryId, p.name, p.slug, p.description,
-          p.basePrice, p.image, p.tags, p.options,
+          p.basePrice, p.images, p.tags, p.options,
           p.rating, p.numReviews
         ]);
 

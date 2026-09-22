@@ -78,94 +78,17 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     }
   }
 
-  let count = 0;
-  let products: any[] = [];
-  
-  try {
-    count = cursor ? 0 : await prisma.product.count({ where });
-    products = await prisma.product.findMany({
-      where,
-      include: {
-        category: { select: { id: true, name: true, slug: true } },
-        seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
-      },
-      orderBy,
-      take: limit,
-      skip: cursor ? undefined : skip,
-    });
-  } catch (error) {
-    logger.error('Prisma Database Error, serving frontend mock data', { error: String(error) });
-    // Graceful fallback: Serve rich mock products if DB is disconnected/syncing
-    products = [
-      {
-        id: 'mock-1',
-        name: 'Aerodynamic Ergonomic Chair',
-        description: 'A beautifully crafted ergonomic chair designed for maximum comfort and style.',
-        basePrice: 299.99,
-        images: ['https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=800'],
-        rating: 4.9,
-        numReviews: 124,
-        category: { id: 'c-1', name: 'Furniture', slug: 'furniture' },
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'mock-2',
-        name: 'Mechanical Keyboard Pro',
-        description: 'Tactile, aesthetic, and completely customizable mechanical keyboard.',
-        basePrice: 149.50,
-        images: ['https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=800'],
-        rating: 4.8,
-        numReviews: 89,
-        category: { id: 'c-2', name: 'Electronics', slug: 'electronics' },
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'mock-3',
-        name: 'Ceramic Pour-Over Set',
-        description: 'Artisanal coffee brewing kit for the perfect morning ritual.',
-        basePrice: 85.00,
-        images: ['https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800'],
-        rating: 5.0,
-        numReviews: 42,
-        category: { id: 'c-3', name: 'Home Goods', slug: 'home-goods' },
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'mock-4',
-        name: 'Minimalist Desk Lamp',
-        description: 'Sleek, dimmable LED desk lamp with adjustable color temperature.',
-        basePrice: 120.00,
-        images: ['https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=800'],
-        rating: 4.7,
-        numReviews: 56,
-        category: { id: 'c-4', name: 'Lighting', slug: 'lighting' },
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'mock-5',
-        name: 'Premium Noise-Cancelling Headphones',
-        description: 'Industry-leading noise cancellation with spatial audio support.',
-        basePrice: 349.00,
-        images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800'],
-        rating: 4.9,
-        numReviews: 215,
-        category: { id: 'c-2', name: 'Electronics', slug: 'electronics' },
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'mock-6',
-        name: 'Concrete Desktop Planter',
-        description: 'Minimalist concrete planter perfect for succulents and small cacti.',
-        basePrice: 35.00,
-        images: ['https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&q=80&w=800'],
-        rating: 4.6,
-        numReviews: 32,
-        category: { id: 'c-3', name: 'Home Goods', slug: 'home-goods' },
-        createdAt: new Date().toISOString()
-      }
-    ];
-    count = products.length;
-  }
+  const count = cursor ? 0 : await prisma.product.count({ where });
+  const products = await prisma.product.findMany({
+    where,
+    include: {
+      category: { select: { id: true, name: true, slug: true } },
+      seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
+    },
+    orderBy,
+    take: limit,
+    skip: cursor ? undefined : skip,
+  });
 
   const nextCursor = products.length === limit ? products[products.length - 1].id : null;
 

@@ -11,9 +11,18 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 
-const connectionString =
+let connectionString =
   process.env.DATABASE_URL ||
-  'postgresql://neondb_owner:npg_nR2Tf1ympHDX@ep-red-violet-b4cqhqy5-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
+  'postgresql://neondb_owner:npg_nR2Tf1ympHDX@ep-red-violet-b4cqhqy5-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require&uselibpqcompat=true';
+
+// Prevent Node.js pg-connection-string security warning regarding libpq compatibility
+if (
+  connectionString.includes('sslmode=') &&
+  !connectionString.includes('uselibpqcompat=') &&
+  !connectionString.includes('sslmode=verify-full')
+) {
+  connectionString += (connectionString.includes('?') ? '&' : '?') + 'uselibpqcompat=true';
+}
 
 // Configure resilient connection pool with safety bounds
 const isRemoteDb = connectionString.includes('sslmode=') || connectionString.includes('neon.tech');

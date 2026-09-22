@@ -16,6 +16,9 @@ import { Footer } from '@/components/Footer';
 
 import { AIAssistantWidget } from '@/components/AIAssistantWidget';
 
+import { LiveBuyerActivityTicker } from '@/components/LiveBuyerActivityTicker';
+import { ProductCompareTray } from '@/components/ProductCompareTray';
+
 const Toaster = dynamic(
   () => import('react-hot-toast').then((mod) => mod.Toaster),
   { ssr: false }
@@ -55,8 +58,14 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
+      {/* Floating 25-Lakh Luxury Utilities */}
+      <LiveBuyerActivityTicker />
+      <ProductCompareTray />
+      <AIAssistantWidget />
+
       {/* Footer */}
       <Footer />
     </>
   );
 }
+
