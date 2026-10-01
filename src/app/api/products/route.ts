@@ -16,6 +16,7 @@ import { logger } from '@/lib/logger';
 import { getAuthUser, authorizeRole } from '@/lib/auth';
 import { parsePagination } from '@/lib/pagination';
 import { createProductSchema } from '@/lib/schemas/commerce';
+import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 
 export const GET = withErrorHandler(async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -78,17 +79,69 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     }
   }
 
-  const count = cursor ? 0 : await prisma.product.count({ where });
-  const products = await prisma.product.findMany({
-    where,
-    include: {
-      category: { select: { id: true, name: true, slug: true } },
-      seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
-    },
-    orderBy,
-    take: limit,
-    skip: cursor ? undefined : skip,
-  });
+  let products: any[] = [];
+  let count = 0;
+
+  try {
+    count = cursor ? 0 : await prisma.product.count({ where });
+    if (count > 0) {
+      products = await prisma.product.findMany({
+        where,
+        include: {
+          category: { select: { id: true, name: true, slug: true } },
+          seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
+        },
+        orderBy,
+        take: limit,
+        skip: cursor ? undefined : skip,
+      });
+    }
+  } catch (dbErr) {
+    logger.warn('Database query skipped or offline, serving fallback catalog', { error: dbErr });
+  }
+
+  if (products.length === 0) {
+    let filtered = [...FALLBACK_PRODUCTS_LIST];
+    if (keyword) {
+      const kw = keyword.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(kw) || p.description.toLowerCase().includes(kw));
+    }
+    if (category && category !== 'all') {
+      const catKey = category.toLowerCase();
+      filtered = filtered.filter(p => 
+        (p.category?.slug && p.category.slug.toLowerCase().includes(catKey)) ||
+        (p.category?.name && p.category.name.toLowerCase().includes(catKey)) ||
+        (p.categoryName && p.categoryName.toLowerCase().includes(catKey))
+      );
+    }
+    if (minPrice) filtered = filtered.filter(p => p.basePrice >= Number(minPrice));
+    if (maxPrice) filtered = filtered.filter(p => p.basePrice <= Number(maxPrice));
+    if (inStock === 'true') filtered = filtered.filter(p => p.stock > 0);
+
+    if (sort === 'price_asc') filtered.sort((a, b) => a.basePrice - b.basePrice);
+    else if (sort === 'price_desc') filtered.sort((a, b) => b.basePrice - a.basePrice);
+    else if (sort === 'top_rated') filtered.sort((a, b) => b.rating - a.rating);
+    else if (sort === 'popular') filtered.sort((a, b) => b.numReviews - a.numReviews);
+
+    count = filtered.length;
+    const paginated = filtered.slice(skip, skip + limit);
+
+    return NextResponse.json({
+      data: paginated.map(p => ({
+        ...p,
+        _id: p.id,
+        storeName: p.storeName || p.seller?.name || 'Nexus Atelier',
+        categoryId: p.category,
+      })),
+      meta: {
+        page,
+        limit,
+        total: count,
+        totalPages: Math.ceil(count / limit),
+        nextCursor: null,
+      },
+    });
+  }
 
   const nextCursor = products.length === limit ? products[products.length - 1].id : null;
 

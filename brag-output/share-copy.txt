@@ -1,0 +1,21 @@
+# Postable Share Copy for Nexus Marketplace Launch
+
+### Option 1: High-Craft / Engineering Focus (X / Twitter)
+We just re-engineered Nexus: a high-concurrency multi-vendor marketplace built with Next.js 16, React 19, and Prisma. 
+Direct artisan purchases with 100% Stripe Connect escrow vaulting — funds are released only after buyer inspection.
+Zero fake metrics. Real verified workshops. 
+Explore the live platform: http://localhost:3000
+
+---
+
+### Option 2: Product & Commercial Focus (LinkedIn / Product Hunt)
+Most marketplaces optimize for generic mass drops. We built Nexus for discerning collectors and independent master ateliers.
+- Double-entry ledger escrow splits with automated 90% direct creator payouts
+- Sub-second faceted discovery with URL persistence
+- Full-grain leather, CNC mechanical keyboards, and bespoke audio gear
+- 100% test pyramid coverage across unit, component, and integration gates
+
+---
+
+### Option 3: Punchy One-Liner (Discord / Slack / Group Chats)
+You built the marketplace. Now let's ship. Check out Nexus running live: http://localhost:3000

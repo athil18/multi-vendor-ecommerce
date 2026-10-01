@@ -50,8 +50,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     ? product.category
     : product.categoryName || 'Curated Atelier';
 
-  const primaryImage = product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800';
+  const [imgError, setImgError] = useState(false);
+  const fallbackUnsplash = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800';
+  const primaryImage = product.images?.[0] || fallbackUnsplash;
   const secondaryImage = product.images?.[1] || primaryImage;
+  const currentImage = imgError 
+    ? fallbackUnsplash 
+    : (isHovered && product.images && product.images.length > 1 ? secondaryImage : primaryImage);
 
   return (
     <article
@@ -63,12 +68,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <div className="block relative h-[280px] w-full overflow-hidden bg-surface-100 dark:bg-surface-950">
         <Link href={`/products/${productId}`} prefetch={false} className="absolute inset-0 z-0">
           <Image
-            src={isHovered && product.images && product.images.length > 1 ? secondaryImage : primaryImage}
+            src={currentImage}
             alt={product.name}
             fill
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-all duration-500 ease-out group-hover:scale-105"
+            onError={() => setImgError(true)}
           />
         </Link>
 
@@ -147,7 +153,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <div className="pt-4 border-t border-surface-200/50 dark:border-surface-800/80 flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400">
-              Direct Atelier Payout
+              Direct Creator Pricing
             </span>
             <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
               ${(product.basePrice ?? 0).toFixed(2)}

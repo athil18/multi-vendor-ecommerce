@@ -1,25 +1,25 @@
 /**
- * 25-Lakh Tier Multi-Vendor Marketplace Catalog & Faceted Discovery Engine
+ * Multi-Vendor Marketplace Catalog & Faceted Discovery Engine
+ * Production-grade faceted filtering, search synchronization, and responsive grid.
  * 
  * @agent design-ui-designer
  * @agent design-ux-architect
  * @agent design-ui-finish-gate-reviewer
- * @agent design-whimsy-injector
  * @agent engineering-frontend-developer
  */
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  Search, SlidersHorizontal, ArrowUpDown, Filter, Sparkles, 
+  Search, SlidersHorizontal, ArrowUpDown, Filter, 
   ShoppingBag, ArrowLeft, X, LayoutGrid, Grid3X3, Check, 
-  RotateCcw, ShieldCheck, Award, DollarSign 
+  RotateCcw, ShieldCheck
 } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
-import { useCartStore } from '@/store/useCartStore';
 import { Button } from '@/components/ui/Button';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 
@@ -32,9 +32,15 @@ const LUXURY_MATERIALS = [
   'Artisanal Hardwood',
 ];
 
-export default function ProductsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+function CatalogContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const urlSearch = searchParams.get('search') || '';
+  const urlCategory = searchParams.get('category') || 'all';
+
+  const [searchTerm, setSearchTerm] = useState(urlSearch);
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -43,11 +49,29 @@ export default function ProductsPage() {
   const [viewMode, setViewMode] = useState<'editorial' | 'compact'>('editorial');
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
+  // Sync state if URL query params change (e.g. from navbar navigation)
+  useEffect(() => {
+    if (urlSearch !== searchTerm) {
+      setSearchTerm(urlSearch);
+    }
+    if (urlCategory !== selectedCategory) {
+      setSelectedCategory(urlCategory);
+    }
+  }, [urlSearch, urlCategory]);
+
+  const updateUrlParams = (newSearch: string, newCategory: string) => {
+    const params = new URLSearchParams();
+    if (newSearch.trim()) params.set('search', newSearch.trim());
+    if (newCategory && newCategory !== 'all') params.set('category', newCategory);
+    const qs = params.toString();
+    router.replace(qs ? `/products?${qs}` : '/products', { scroll: false });
+  };
+
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['products', 'all'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/products?limit=200');
+        const res = await fetch('/api/products?limit=600');
         if (!res.ok) throw new Error('Failed to load products');
         const json = await res.json();
         const dbItems = json.data || [];
@@ -96,7 +120,6 @@ export default function ProductsPage() {
         const matchesPrice = (p.basePrice ?? 0) <= maxPriceFilter;
         const matchesStock = !inStockOnly || p.inStock !== false;
         
-        // Mock material filter check against description or material field
         const matchesMaterial = selectedMaterials.length === 0 || selectedMaterials.some((m) =>
           nameDesc.includes(m.toLowerCase().split(' ')[0])
         );
@@ -123,35 +146,36 @@ export default function ProductsPage() {
     setInStockOnly(false);
     setMaxPriceFilter(2000);
     setSortBy('featured');
+    updateUrlParams('', 'all');
   };
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 py-12 px-4 sm:px-6 lg:px-8 ambient-gradient-mesh">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Breadcrumb & Title */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-surface-200/60 dark:border-surface-800/80 pb-8">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-surface-200 dark:border-surface-800 pb-8">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-surface-400 mb-3">
               <Link href="/" className="hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1 transition-colors">
-                <ArrowLeft className="h-3.5 w-3.5" /> Flagship Storefront
+                <ArrowLeft className="h-3.5 w-3.5" /> Marketplace
               </Link>
               <span>/</span>
-              <span className="text-surface-900 dark:text-white font-bold">Atelier Curations</span>
+              <span className="text-surface-900 dark:text-white font-bold">Catalog</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-sans">
-              The Curated Catalog
+              Curated Collection
             </h1>
             <p className="text-surface-600 dark:text-surface-300 mt-2 text-sm sm:text-base max-w-2xl font-normal">
-              Direct commissions from independent master workshops. Every acquisition is held in 100% escrow protection.
+              Direct orders from verified independent workshops and creators. Every purchase is safeguarded by escrow protection.
             </p>
           </div>
 
           {/* Quick Metrics & View Toggle */}
           <div className="flex items-center gap-4">
             <span className="specular-pill text-brand-700 dark:text-brand-300">
-              {filteredProducts.length} Specimens Available
+              {filteredProducts.length} Items Available
             </span>
 
             {/* Grid density switcher */}
@@ -189,15 +213,22 @@ export default function ProductsPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400" />
             <input
               type="text"
-              placeholder="Search by artisan studio, material, or keyword..."
+              placeholder="Search by workshop, product name, or material..."
               aria-label="Search products"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchTerm(val);
+                updateUrlParams(val, selectedCategory);
+              }}
               className="w-full pl-11 pr-4 py-3 bg-surface-50/80 dark:bg-surface-900/80 text-surface-900 dark:text-white text-sm rounded-2xl border border-surface-200 dark:border-surface-700/80 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium placeholder:text-surface-400"
             />
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm('')}
+                onClick={() => {
+                  setSearchTerm('');
+                  updateUrlParams('', selectedCategory);
+                }}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 p-1"
               >
                 <X className="h-4 w-4" />
@@ -223,26 +254,26 @@ export default function ProductsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                aria-label="Sort curations by"
+                aria-label="Sort products by"
                 className="bg-transparent text-surface-800 dark:text-surface-200 text-xs font-bold focus:outline-none cursor-pointer pr-2"
               >
-                <option value="featured">Featured Curations</option>
+                <option value="featured">Featured Collection</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
-                <option value="rating">Connoisseur Pick (Highest Rated)</option>
+                <option value="rating">Top Rated</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* ─── Expandable Faceted Luxury Filter Panel ───────────────────────── */}
+        {/* ─── Expandable Faceted Filter Panel ──────────────────────────────── */}
         {isFilterDrawerOpen && (
           <div className="glass-luxury-card specular-border rounded-3xl p-6 sm:p-8 mb-10 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center justify-between pb-4 border-b border-surface-200/60 dark:border-surface-800/80 mb-6">
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-brand-500" />
                 <h3 className="text-sm font-bold uppercase tracking-wider text-surface-900 dark:text-white">
-                  Faceted Curation Parameters
+                  Filter Parameters
                 </h3>
               </div>
               <button
@@ -257,29 +288,32 @@ export default function ProductsPage() {
               {/* 1. Category Facets */}
               <div>
                 <span className="text-xs font-bold text-surface-500 uppercase tracking-wider block mb-3">
-                  Atelier Discipline
+                  Category
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {categories.map((cat) => (
                     <button
                       key={cat}
-                      onClick={() => setSelectedCategory(cat)}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        updateUrlParams(searchTerm, cat);
+                      }}
                       className={`px-3.5 py-1.5 text-xs font-bold rounded-xl capitalize transition-all ${
                         selectedCategory === cat
                           ? 'bg-brand-600 text-white shadow-md'
                           : 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700'
                       }`}
                     >
-                      {cat === 'all' ? 'All Disciplines' : cat}
+                      {cat === 'all' ? 'All Categories' : cat}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* 2. Material Sciences */}
+              {/* 2. Materials */}
               <div>
                 <span className="text-xs font-bold text-surface-500 uppercase tracking-wider block mb-3">
-                  Heirloom Materials
+                  Crafted Materials
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {LUXURY_MATERIALS.map((mat) => {
@@ -302,7 +336,7 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              {/* 3. Price & Guarantees */}
+              {/* 3. Price & Availability */}
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-2">
@@ -332,7 +366,7 @@ export default function ProductsPage() {
                       onChange={(e) => setInStockOnly(e.target.checked)}
                       className="rounded text-brand-600 focus:ring-brand-500"
                     />
-                    <span>Immediate Workshop Dispatch (In Stock)</span>
+                    <span>In Stock Only</span>
                   </label>
                   <label className="flex items-center gap-2 text-xs font-semibold text-surface-700 dark:text-surface-300 cursor-pointer">
                     <input
@@ -341,7 +375,7 @@ export default function ProductsPage() {
                       onChange={(e) => setVerifiedOnly(e.target.checked)}
                       className="rounded text-brand-600 focus:ring-brand-500"
                     />
-                    <span>Verified Master Guild Only</span>
+                    <span>Verified Makers Only</span>
                   </label>
                 </div>
               </div>
@@ -356,7 +390,10 @@ export default function ProductsPage() {
             {selectedCategory !== 'all' && (
               <span className="specular-pill text-[10px] text-brand-600 flex items-center gap-1">
                 Category: {selectedCategory}
-                <button onClick={() => setSelectedCategory('all')}><X className="h-3 w-3" /></button>
+                <button onClick={() => {
+                  setSelectedCategory('all');
+                  updateUrlParams(searchTerm, 'all');
+                }}><X className="h-3 w-3" /></button>
               </span>
             )}
             {selectedMaterials.map((m) => (
@@ -410,10 +447,10 @@ export default function ProductsPage() {
             <div className="col-span-full py-24 text-center glass-luxury-card specular-border rounded-3xl p-8">
               <ShoppingBag className="h-14 w-14 text-surface-400 mx-auto mb-4" />
               <h3 className="text-2xl font-black text-surface-900 dark:text-white mb-2">
-                No matching atelier specimens found
+                No matching products found
               </h3>
               <p className="text-surface-500 max-w-md mx-auto mb-6 text-sm font-normal">
-                Refine your faceted parameters, search keywords, or reset filters to browse the complete master collection.
+                Try adjusting your search criteria, clearing filters, or exploring other categories.
               </p>
               <Button
                 variant="outline"
@@ -428,5 +465,17 @@ export default function ProductsPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen py-16 px-4 max-w-7xl mx-auto flex items-center justify-center">
+        <div className="animate-pulse text-surface-500 font-medium">Loading catalog...</div>
+      </div>
+    }>
+      <CatalogContent />
+    </Suspense>
   );
 }

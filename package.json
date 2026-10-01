@@ -4,7 +4,7 @@
   "description": "High-concurrency multi-vendor e-commerce and marketplace platform engineered with Next.js 16, React 19, Prisma, PostgreSQL, Stripe Connect Escrow, and BullMQ.",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -22,7 +22,10 @@
     "db:backup": "tsx scripts/backup.ts",
     "db:restore": "tsx scripts/restore.ts",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "doctor": "node scripts/doctor.mjs",
+    "dev:clean": "node -e \"const fs=require('fs'); try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next dev",
+    "skills:validate": "node scripts/validate-agent-skills.mjs"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.5.0",
@@ -62,6 +65,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.4.3",
     "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
@@ -80,6 +84,7 @@
     "eslint-config-next": "16.2.9",
     "jsdom": "^29.1.1",
     "mongodb-memory-server": "^11.2.0",
+    "pg-gateway": "^0.3.0-beta.4",
     "prisma": "^7.9.1",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",

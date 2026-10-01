@@ -80,10 +80,10 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
             {/* Top Badges */}
             <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
               <span className="specular-pill text-[10px] font-bold text-surface-900 dark:text-white shadow-sm">
-                {product.category?.name || product.categoryName || 'Master Specimen'}
+                {product.category?.name || product.categoryName || 'Curated Product'}
               </span>
-              <span className="specular-pill text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
-                Batch 04 &bull; Unit #12
+              <span className="specular-pill text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20">
+                In Stock &bull; Inspected
               </span>
             </div>
 
@@ -114,13 +114,10 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
               </button>
             </div>
 
-            {/* Bottom Live Viewer Urgency Pill */}
+            {/* Escrow Guarantee Pill */}
             <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-white/90 border border-white/10">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>4 collectors currently inspecting this creation</span>
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Verified Direct-Workshop Fulfillment</span>
             </div>
           </div>
 
@@ -158,7 +155,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
                   <span className="text-surface-400 text-[11px]">({reviewCount} reviews)</span>
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <CheckCircle className="h-3.5 w-3.5" /> Ready for Commission
+                  <CheckCircle className="h-3.5 w-3.5" /> In Stock &bull; Ready to Ship
                 </span>
               </div>
 
@@ -194,7 +191,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
                     </span>
                     <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
                   </div>
-                  <p className="text-[11px] text-surface-500">Verified Master Workshop &bull; Kyoto & Florence</p>
+                  <p className="text-[11px] text-surface-500">Verified Independent Creator Studio</p>
                 </div>
               </div>
               <Link href={`/store/${product.sellerId || 'store-1'}`}>

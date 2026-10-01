@@ -12,12 +12,33 @@ import path from 'path';
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
-  turbopack: {
-    root: path.resolve(__dirname, '..'),
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.dummyjson.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dummyjson.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-demo.algolia.com',
+      },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
@@ -41,6 +62,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'fastly.picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
       },
       {
         protocol: 'https',

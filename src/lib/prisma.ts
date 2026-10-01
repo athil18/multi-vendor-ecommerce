@@ -32,7 +32,7 @@ const pool = new pg.Pool({
   ssl: isRemoteDb ? { rejectUnauthorized: false } : undefined,
   max: parseInt(process.env.DB_POOL_MAX || '20', 10),
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 30000,
 });
 
 import { logger } from './logger';

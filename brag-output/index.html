@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Marketplace — Launch Video Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: #070A11;
+      color: #F8FAFC;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 20px;
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+    }
+
+    /* 16:9 Video Canvas Frame */
+    .video-viewport {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .video-viewport iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Control Panel */
+    .controls-panel {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #6366F1;
+      color: white;
+      border: none;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    }
+    .btn-primary:hover {
+      background: #4F46E5;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .meta-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748B;
+      font-weight: 700;
+    }
+    .meta-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #E2E8F0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-bar">
+      <div class="brand-title">
+        <span>NEXUS</span>
+        <span class="badge">Official Launch Video &bull; 60 FPS</span>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <a href="http://localhost:3000" target="_blank" class="btn btn-secondary">
+          Open Live Storefront &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- 16:9 1080p Viewport -->
+    <div class="video-viewport" id="viewport">
+      <video id="rendered-video" src="brag.webm" poster="brag.jpg" controls autoplay loop playsinline aria-label="Nexus Multi-Vendor Marketplace Launch Video" style="width: 100%; height: 100%; object-fit: contain; background: #000; display: block;"></video>
+      <iframe src="work/composition.html" allow="autoplay; fullscreen" id="video-frame" title="Nexus Marketplace Animated Video Canvas" style="display: none; width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <div class="controls-panel">
+      <div class="actions-row">
+        <div>
+          <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Nexus Multi-Vendor Marketplace Launch Video</h2>
+          <p style="font-size: 13px; color: #94A3B8;">Built with /brag agent video engine &bull; 20s Cinematic Showcase</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" id="toggle-view-btn" onclick="togglePlayerMode()">
+            Switch to Live Canvas
+          </button>
+          <a href="brag.webm" download="nexus-marketplace-launch.webm" class="btn btn-primary">
+            ⬇ Download Video (.webm)
+          </a>
+          <button class="btn btn-secondary" onclick="toggleFullscreen()">
+            ⛶ Fullscreen
+          </button>
+        </div>
+      </div>
+
+      <div class="metadata-grid">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-val">1920 &times; 1080 (1080p FHD)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Frame Rate</span>
+          <span class="meta-val">60 FPS Hardware Rendered</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Duration</span>
+          <span class="meta-val">20.0 Seconds</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Escrow Guarantee</span>
+          <span class="meta-val" style="color: #34D399;">100% Stripe Connect</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mode = 'video'; // 'video' | 'canvas'
+
+    function togglePlayerMode() {
+      const video = document.getElementById('rendered-video');
+      const iframe = document.getElementById('video-frame');
+      const btn = document.getElementById('toggle-view-btn');
+
+      if (mode === 'video') {
+        mode = 'canvas';
+        video.pause();
+        video.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.src = 'work/composition.html';
+        btn.textContent = 'Switch to Rendered Video';
+      } else {
+        mode = 'video';
+        iframe.style.display = 'none';
+        iframe.src = '';
+        video.style.display = 'block';
+        video.play();
+        btn.textContent = 'Switch to Live Canvas';
+      }
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('viewport');
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>

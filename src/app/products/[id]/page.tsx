@@ -25,8 +25,13 @@ interface Props {
 
 async function getProductById(id: string) {
   try {
-    const dbProduct = await prisma.product.findUnique({
-      where: { id },
+    const dbProduct = await prisma.product.findFirst({
+      where: {
+        OR: [
+          { id },
+          { slug: id },
+        ],
+      },
       include: {
         category: { select: { id: true, name: true, slug: true } },
         seller: { select: { id: true, name: true, email: true, store: { select: { name: true, id: true, slug: true } } } },

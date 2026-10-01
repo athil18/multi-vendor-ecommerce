@@ -89,9 +89,9 @@ export function NexusLogo({
   );
 
   if (href) {
-    const accessibleLabel = showText ? "Nexus Curated Marketplace" : "Nexus Homepage";
+    const accessibleLabel = "Nexus Homepage"; // Nexus Enterprise Homepage
     return (
-      <Link href={href} aria-label={accessibleLabel} className="inline-flex items-center">
+      <Link href={href} aria-label="Nexus Homepage" data-accessible-label={accessibleLabel} className="inline-flex items-center">
         {content}
       </Link>
     );

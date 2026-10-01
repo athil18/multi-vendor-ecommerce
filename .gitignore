@@ -20,8 +20,6 @@
 !.env.example
 
 # Internal documents & metadata
-.agents/
-**/.agents/
 .ai/
 **/.ai/
 *.pdf
@@ -53,6 +51,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .dev-state.json
+brag-output/work/*.webm
 
 # TypeScript & Cache
 *.tsbuildinfo

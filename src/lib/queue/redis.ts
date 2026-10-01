@@ -19,6 +19,12 @@ let redisConnection: Redis;
 export const getRedisConnection = () => {
   if (!redisConnection) {
     redisConnection = new Redis(getRedisUrl(), redisOptions);
+    redisConnection.on('error', (err) => {
+      // Prevent unhandled error event crash on initial cold connect or transient blip
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('[Redis] Transient connection notice:', err.message);
+      }
+    });
   }
   return redisConnection;
 };

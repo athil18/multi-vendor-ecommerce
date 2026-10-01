@@ -68,78 +68,63 @@ const runSeeds = async () => {
           sellerId: seller1.id,
           name: 'Tech Hub',
           slug: 'tech-hub',
-          description: 'The best gadgets in town.',
+          description: 'The best gadgets and lifestyle goods in town.',
           stripeOnboardingComplete: true,
           payoutsEnabled: true,
         },
       });
     }
 
+    // Load full open source catalog dataset (520+ products)
+    const { default: rawCatalog } = await import('../src/data/products.json');
+    logger.info(`Loaded ${rawCatalog.length} open-source products from dataset.`);
+
     // 3. Seed Categories
     logger.info('Seeding Categories...');
-    let catElectronics = await prisma.category.findUnique({ where: { slug: 'electronics' } });
-    if (!catElectronics) {
-      catElectronics = await prisma.category.create({
-        data: {
-          name: 'Electronics',
-          slug: 'electronics',
+    const catMap = new Map<string, string>();
+    for (const item of rawCatalog) {
+      const catSlug = item.category?.slug || 'general';
+      const catName = item.category?.name || 'General';
+      if (!catMap.has(catSlug)) {
+        let cat = await prisma.category.findUnique({ where: { slug: catSlug } });
+        if (!cat) {
+          cat = await prisma.category.create({
+            data: { name: catName, slug: catSlug }
+          });
         }
-      });
-    }
-
-    let catFashion = await prisma.category.findUnique({ where: { slug: 'fashion' } });
-    if (!catFashion) {
-      catFashion = await prisma.category.create({
-        data: {
-          name: 'Fashion',
-          slug: 'fashion',
-        }
-      });
+        catMap.set(catSlug, cat.id);
+      }
     }
 
     // 4. Seed Products
-    logger.info('Seeding Products...');
-    let prod1 = await prisma.product.findUnique({ where: { slug: 'smartphone-x' } });
-    if (!prod1) {
-      prod1 = await prisma.product.create({
-        data: {
-          sellerId: seller1.id,
-          name: 'Smartphone X',
-          slug: 'smartphone-x',
-          description: 'Latest flagship smartphone with amazing features.',
-          categoryId: catElectronics.id,
-          basePrice: 999.00,
-          images: [],
-          status: 'published',
-          tags: ['tech', 'smartphone', 'gadget'],
-          rating: 0,
-          numReviews: 0,
-          inStock: true
-        }
-      });
+    logger.info(`Seeding ${rawCatalog.length} Products into database...`);
+    let seededCount = 0;
+    for (const item of rawCatalog) {
+      const existing = await prisma.product.findUnique({ where: { slug: item.slug } });
+      if (!existing) {
+        const catSlug = item.category?.slug || 'general';
+        const categoryId = catMap.get(catSlug) || Array.from(catMap.values())[0]!;
+        await prisma.product.create({
+          data: {
+            sellerId: seller1.id,
+            name: item.name,
+            slug: item.slug,
+            description: item.description,
+            categoryId,
+            basePrice: item.basePrice,
+            images: item.images || [],
+            status: 'published',
+            tags: [item.category?.slug || 'catalog', item.source || 'opensource'],
+            rating: item.rating || 4.5,
+            numReviews: item.numReviews || 25,
+            inStock: item.stock > 0,
+          }
+        });
+        seededCount++;
+      }
     }
 
-    let prod2 = await prisma.product.findUnique({ where: { slug: 'wireless-earbuds' } });
-    if (!prod2) {
-      prod2 = await prisma.product.create({
-        data: {
-          sellerId: seller1.id,
-          name: 'Wireless Earbuds Pro',
-          slug: 'wireless-earbuds',
-          description: 'Noise cancelling true wireless earbuds.',
-          categoryId: catElectronics.id,
-          basePrice: 199.00,
-          images: [],
-          status: 'published',
-          tags: ['audio', 'earbuds', 'music'],
-          rating: 0,
-          numReviews: 0,
-          inStock: true
-        }
-      });
-    }
-
-    logger.info('Seeding completed successfully!');
+    logger.info(`Seeding completed successfully! Added ${seededCount} new products (Total catalog size: ${rawCatalog.length}).`);
     process.exit(0);
   } catch (error) {
     logger.error('Seeding failed', { error });
