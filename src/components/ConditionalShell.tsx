@@ -19,13 +19,15 @@ import { AIAssistantWidget } from '@/components/AIAssistantWidget';
 import { LiveBuyerActivityTicker } from '@/components/LiveBuyerActivityTicker';
 import { ProductCompareTray } from '@/components/ProductCompareTray';
 
+import { TrustStrip } from '@/components/TrustStrip';
+
 const Toaster = dynamic(
   () => import('react-hot-toast').then((mod) => mod.Toaster),
   { ssr: false }
 );
 
 /**
- * Conditionally renders the global Navbar, Footer, and AI Copilot Widget
+ * Conditionally renders the global Navbar, TrustStrip, Footer, and AI Copilot Widget
  * based on the current route. Admin/Seller routes use their own sidebar layout.
  */
 export function ConditionalShell({ children }: { children: React.ReactNode }) {
@@ -52,6 +54,9 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
       <Toaster position="bottom-right" reverseOrder={false} />
       {/* Header */}
       <Navbar />
+
+      {/* Level 2: Trust-First Navigation Strip */}
+      <TrustStrip />
 
       {/* Accessible Main Landmark */}
       <main id="main-content" tabIndex={-1} className="flex-grow flex flex-col focus:outline-none">

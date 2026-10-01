@@ -22,6 +22,7 @@ interface AddToCartButtonProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg' | 'icon';
   showLabel?: boolean;
+  quantity?: number;
 }
 
 export function AddToCartButton({ 
@@ -33,6 +34,7 @@ export function AddToCartButton({
   className = '',
   size = 'md',
   showLabel = true,
+  quantity = 1,
 }: AddToCartButtonProps) {
   const [added, setAdded] = useState(false);
   const addToCart = useCartStore((state) => state.addToCart);
@@ -47,7 +49,7 @@ export function AddToCartButton({
         name,
         price,
         image,
-        quantity: 1,
+        quantity: quantity || 1,
       });
 
       const { toast } = await import('@/components/ui/Toast');

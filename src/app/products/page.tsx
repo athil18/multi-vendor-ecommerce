@@ -49,15 +49,18 @@ function CatalogContent() {
   const [viewMode, setViewMode] = useState<'editorial' | 'compact'>('editorial');
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
-  // Sync state if URL query params change (e.g. from navbar navigation)
-  useEffect(() => {
-    if (urlSearch !== searchTerm) {
-      setSearchTerm(urlSearch);
-    }
-    if (urlCategory !== selectedCategory) {
-      setSelectedCategory(urlCategory);
-    }
-  }, [urlSearch, urlCategory]);
+  // Track searchParams changes during render without cascading useEffect renders
+  const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
+  const [prevUrlCategory, setPrevUrlCategory] = useState(urlCategory);
+
+  if (urlSearch !== prevUrlSearch) {
+    setPrevUrlSearch(urlSearch);
+    setSearchTerm(urlSearch);
+  }
+  if (urlCategory !== prevUrlCategory) {
+    setPrevUrlCategory(urlCategory);
+    setSelectedCategory(urlCategory);
+  }
 
   const updateUrlParams = (newSearch: string, newCategory: string) => {
     const params = new URLSearchParams();
@@ -213,7 +216,7 @@ function CatalogContent() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400" />
             <input
               type="text"
-              placeholder="Search by workshop, product name, or material..."
+              placeholder="Search products by workshop, name, or material..."
               aria-label="Search products"
               value={searchTerm}
               onChange={(e) => {

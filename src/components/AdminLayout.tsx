@@ -9,6 +9,7 @@ import {
   Settings,
   HelpCircle,
   Store,
+  Users,
 } from 'lucide-react';
 import { DashboardLayoutShell, NavItem } from './DashboardLayoutShell';
 
@@ -16,7 +17,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Analytics', href: '/admin', icon: BarChart3 },
   { label: 'Governance', href: '/admin/governance', icon: Shield },
   { label: 'Financials', href: '/admin/financials', icon: DollarSign },
-  { label: 'Audit', href: '/admin/audit', icon: FileCheck2 },
+  { label: 'Users & Roles', href: '/admin/users', icon: Users },
+  { label: 'Audit Logs', href: '/admin/audit', icon: FileCheck2 },
 ];
 
 const BOTTOM_NAV: NavItem[] = [

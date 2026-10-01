@@ -20,14 +20,14 @@ export function ErrorState({
 }: ErrorStateProps) {
   const isDev = process.env.NODE_ENV === 'development';
 
-  const Content = () => (
+  const content = (
     <div className="flex flex-col items-center justify-center text-center p-6 gap-4">
       <div className="h-16 w-16 bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-500 rounded-full flex items-center justify-center mb-2">
         <AlertTriangle className="h-8 w-8" />
       </div>
       
-      <div>
-        <h2 className="text-xl font-bold text-surface-900 dark:text-surface-50 mb-2" role="alert">{title}</h2>
+      <div role="alert">
+        <h2 className="text-xl font-bold text-surface-900 dark:text-surface-50 mb-2">{title}</h2>
         <p className="text-sm text-surface-500 max-w-md mx-auto leading-relaxed">{message}</p>
       </div>
 
@@ -62,7 +62,7 @@ export function ErrorState({
       <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex flex-col items-center justify-center p-4">
         <Card className="max-w-xl w-full border-red-200 dark:border-red-900/30">
           <CardContent>
-            <Content />
+            {content}
           </CardContent>
         </Card>
       </div>
@@ -72,7 +72,7 @@ export function ErrorState({
   if (variant === 'inline') {
     return (
       <div className="border border-red-200 dark:border-red-900/30 rounded-xl bg-red-50/50 dark:bg-red-900/10">
-        <Content />
+        {content}
       </div>
     );
   }
@@ -81,7 +81,7 @@ export function ErrorState({
   return (
     <Card className="border-red-200 dark:border-red-900/30">
       <CardContent>
-        <Content />
+        {content}
       </CardContent>
     </Card>
   );

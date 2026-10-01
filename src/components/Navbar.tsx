@@ -23,6 +23,7 @@ import { ShoppingCart, Sun, Moon, LogOut, Store, Shield, X, Trash2, Plus, Minus,
 import { Button } from './ui/Button';
 import { AgentComplianceBadge } from './ui/AgentComplianceBadge';
 import { NexusLogo } from './NexusLogo';
+import { PromotionalBanner } from './PromotionalBanner';
 
 export default function Navbar() {
   const user = useAuthStore((state) => state.user);
@@ -45,6 +46,9 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Level 1: Core Promotional Announcement Banner */}
+      <PromotionalBanner />
+
       <header className="sticky top-0 z-40 w-full border-b border-surface-200/50 dark:border-surface-800/50 bg-white/70 dark:bg-surface-950/70 backdrop-blur-xl shadow-sm">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           
@@ -146,8 +150,8 @@ export default function Navbar() {
               <input
                 type="text"
                 name="search"
-                placeholder="Search catalog or makers..."
-                aria-label="Search catalog"
+                placeholder="Search products or makers..."
+                aria-label="Search products"
                 className="w-full bg-surface-100 dark:bg-surface-900 text-surface-900 dark:text-surface-100 text-xs rounded-full pl-9 pr-4 py-2 border border-surface-200 dark:border-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all placeholder:text-surface-400"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-surface-400" />
@@ -250,18 +254,32 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Free Shipping Progress Indicator */}
+            {/* Free Shipping & Free Gift Milestone Progress */}
             {cart.length > 0 && (
-              <div className="px-6 py-3 bg-brand-50/60 dark:bg-brand-950/40 border-b border-surface-200/60 dark:border-surface-800">
-                <div className="flex justify-between items-center text-xs font-semibold mb-1.5 text-surface-700 dark:text-surface-300">
-                  <span>{cartTotal >= 150 ? '✓ Free carbon-neutral shipping unlocked!' : `Add $${(150 - cartTotal).toFixed(2)} more for Free Shipping`}</span>
-                  <span className="font-bold text-brand-600 dark:text-brand-400">{Math.min(100, Math.round((cartTotal / 150) * 100))}%</span>
+              <div className="px-6 py-3.5 bg-gradient-to-r from-brand-50/80 via-white to-amber-50/60 dark:from-brand-950/40 dark:via-surface-900 dark:to-amber-950/20 border-b border-surface-200/80 dark:border-surface-800 space-y-2">
+                <div className="flex justify-between items-center text-xs font-semibold text-surface-800 dark:text-surface-200">
+                  <span className="flex items-center gap-1.5 truncate">
+                    {cartTotal >= 200 ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓ Free Shipping & $35 Care Gift Unlocked!</span>
+                    ) : cartTotal >= 150 ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">✓ Free Shipping! Add ${(200 - cartTotal).toFixed(2)} for Free $35 Gift</span>
+                    ) : (
+                      <span>Add ${(150 - cartTotal).toFixed(2)} for Free Shipping</span>
+                    )}
+                  </span>
+                  <span className="font-bold text-brand-600 dark:text-brand-400 font-mono text-[11px] flex-shrink-0">
+                    ${cartTotal.toFixed(2)} / $200
+                  </span>
                 </div>
-                <div className="w-full h-1.5 bg-surface-200 dark:bg-surface-800 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-full overflow-hidden relative">
                   <div 
-                    className="h-full bg-brand-600 dark:bg-brand-500 rounded-full transition-all duration-500" 
-                    style={{ width: `${Math.min(100, (cartTotal / 150) * 100)}%` }} 
+                    className="h-full bg-gradient-to-r from-brand-600 via-indigo-600 to-amber-500 rounded-full transition-all duration-500 ease-out" 
+                    style={{ width: `${Math.min(100, Math.round((cartTotal / 200) * 100))}%` }} 
                   />
+                </div>
+                <div className="flex justify-between text-[10px] text-surface-400 font-medium">
+                  <span className={cartTotal >= 150 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}>$150: Free Ship</span>
+                  <span className={cartTotal >= 200 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}>$200: Free $35 Gift</span>
                 </div>
               </div>
             )}

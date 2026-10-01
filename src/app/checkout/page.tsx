@@ -258,7 +258,7 @@ export default function CheckoutPage() {
           </div>
           <h1 className="text-2xl font-black text-surface-900 dark:text-white">Your Cart is Empty</h1>
           <p className="text-sm text-surface-500 leading-relaxed font-normal">
-            You haven't selected any items yet. Explore our curated collections to find handcrafted goods and creator pieces.
+            You haven&apos;t selected any items yet. Explore our curated collections to find handcrafted goods and creator pieces.
           </p>
           <Link href="/products" className="mt-4">
             <Button size="lg" className="rounded-full px-8 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs h-12">

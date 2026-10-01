@@ -149,15 +149,23 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           </p>
         </div>
 
-        {/* Price & Primary Action */}
+        {/* Level 5: Pricing Visual Hierarchy & Primary Action */}
         <div className="pt-4 border-t border-surface-200/50 dark:border-surface-800/80 flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400">
-              Direct Creator Pricing
+              Direct Atelier Pricing
             </span>
-            <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
-              ${(product.basePrice ?? 0).toFixed(2)}
-            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
+                ${(product.basePrice ?? 0).toFixed(2)}
+              </span>
+              <span className="text-xs text-surface-400 line-through font-medium">
+                ${((product.basePrice ?? 0) * 1.25).toFixed(2)}
+              </span>
+              <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                -20%
+              </span>
+            </div>
           </div>
 
           <AddToCartButton
