@@ -7,7 +7,9 @@ import { NextRequest } from 'next/server';
 describe('Authentication API', () => {
   beforeEach(async () => {
     try {
-      await prisma.user.deleteMany({});
+      await prisma.user.deleteMany({
+        where: { email: { in: ['test@example.com', 'login@example.com'] } }
+      });
     } catch {}
   });
 

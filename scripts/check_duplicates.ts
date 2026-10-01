@@ -3,7 +3,7 @@ import prisma from '../src/lib/prisma';
 async function main() {
   const products = await prisma.product.findMany({ select: { id: true, slug: true, name: true } });
   const counts: Record<string, number> = {};
-  const duplicates = [];
+  const duplicates: any[] = [];
   products.forEach(p => {
     if (!counts[p.slug]) counts[p.slug] = 0;
     counts[p.slug]++;

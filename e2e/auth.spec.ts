@@ -23,15 +23,15 @@ test.describe('Authentication & Route Governance Specs', () => {
     await page.goto('/auth/login');
     
     // Verify inputs and submission button exist
-    await expect(page.getByLabel(/Email/i).or(page.getByPlaceholder(/email/i))).toBeVisible();
-    await expect(page.getByLabel(/Password/i).or(page.getByPlaceholder(/password/i))).toBeVisible();
-    await expect(page.getByRole('button', { name: /Sign in|Log in/i })).toBeVisible();
+    await expect(page.locator('main form').locator('#email').or(page.locator('main form').getByLabel(/Email/i))).toBeVisible();
+    await expect(page.locator('main form').locator('#password').or(page.locator('main form').getByLabel(/Password/i))).toBeVisible();
+    await expect(page.locator('main form').getByRole('button', { name: /Sign in|Log in/i })).toBeVisible();
   });
 
   test('login validation prevents empty form submission', async ({ page }) => {
     await page.goto('/auth/login');
     
-    const submitBtn = page.getByRole('button', { name: /Sign in|Log in/i });
+    const submitBtn = page.locator('main form').getByRole('button', { name: /Sign in|Log in/i });
     if (await submitBtn.isVisible()) {
       await submitBtn.click();
     }

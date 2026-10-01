@@ -119,6 +119,12 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
+  const dbUrl = process.env.DATABASE_URL || '';
+  if (dbUrl.includes('neon.tech') && !process.env.ALLOW_REMOTE_DB_TRUNCATE) {
+    // Safety guard: never truncate remote development database during automated test runs
+    return;
+  }
+
   // Clean database tables in reverse order of FK constraints using lowercase mapped names
   const tablenames = [
     'transfer_logs', 'event_logs', 'file_assets', 'wishlists',

@@ -11,7 +11,7 @@ test.describe('Product Catalog & Search E2E Specs', () => {
     
     // Navigation bar and search bar should be present
     await expect(page.getByRole('navigation')).toBeVisible();
-    await expect(page.getByPlaceholder(/Search products/i)).toBeVisible();
+    await expect(page.getByPlaceholder(/Search products/i).first()).toBeVisible();
   });
 
   test('products page lists catalog items and filters', async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe('Product Catalog & Search E2E Specs', () => {
   test('product search input accepts text queries', async ({ page }) => {
     await page.goto('/products');
     
-    const searchInput = page.getByPlaceholder(/Search products/i);
+    const searchInput = page.getByPlaceholder(/Search products/i).first();
     if (await searchInput.isVisible()) {
       await searchInput.fill('Headphones');
       await expect(searchInput).toHaveValue('Headphones');

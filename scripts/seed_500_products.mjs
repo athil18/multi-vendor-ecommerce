@@ -196,6 +196,7 @@ async function main() {
       const maxPrice = vocab.priceRange[1];
       const basePrice = parseFloat((minPrice + Math.random() * (maxPrice - minPrice)).toFixed(2));
       const rating = parseFloat((4.6 + Math.random() * 0.4).toFixed(2));
+      const numReviews = Math.floor(12 + Math.random() * 88);
       const imgIdx = productsToInsert.length % vocab.images.length;
       const primaryImage = vocab.images[imgIdx];
       const secondaryImage = vocab.images[(imgIdx + Math.floor(vocab.images.length / 2)) % vocab.images.length];

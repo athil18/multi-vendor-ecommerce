@@ -29,6 +29,7 @@ describe('IAM security invariants', () => {
     async (status) => {
       const cookieStore = await cookies();
       vi.mocked(cookieStore.set).mockClear();
+      await prisma.user.deleteMany({ where: { email: `${status}@example.com` } });
       await prisma.user.create({
         data: {
           name: 'Disabled User',

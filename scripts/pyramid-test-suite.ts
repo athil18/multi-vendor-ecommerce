@@ -9,6 +9,10 @@
 
 import { loginSchema, registerSchema } from '../src/lib/schemas/auth';
 import { useCartStore } from '../src/store/useCartStore';
+import { NextRequest } from 'next/server';
+import { GET as healthLiveRoute } from '../src/app/api/health/live/route';
+import { GET as productsRoute } from '../src/app/api/products/route';
+import { GET as authMeRoute } from '../src/app/api/auth/me/route';
 
 let totalTests = 0;
 let passedTests = 0;
@@ -219,15 +223,34 @@ async function runSuite() {
   // -------------------------------------------------------------
   console.log('\n>>> LEVEL 3: INTEGRATION TESTS (API Contracts, Health, Security) <<<');
 
+  const baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3000';
+  let serverReachable = false;
+  try {
+    const ping = await fetch(`${baseUrl}/api/health/live`, { signal: AbortSignal.timeout(1200) });
+    serverReachable = ping.ok;
+  } catch {
+    serverReachable = false;
+  }
+
+  if (serverReachable) {
+    console.log(`  ℹ️ Live dev server detected at ${baseUrl} (HTTP mode)`);
+  } else {
+    console.log('  ℹ️ Standalone CLI execution detected (Direct In-Memory Route Handlers mode)');
+  }
+
   await it('Integration 3.1: GET /api/health/live - Platform availability endpoint returns 200', async () => {
-    const res = await fetch('http://localhost:3000/api/health/live');
+    const res = serverReachable
+      ? await fetch(`${baseUrl}/api/health/live`)
+      : await (healthLiveRoute as any)();
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.status).toBe('live');
   });
 
   await it('Integration 3.2: GET /api/products - Storefront catalog returns 200 with contract data', async () => {
-    const res = await fetch('http://localhost:3000/api/products');
+    const res = serverReachable
+      ? await fetch(`${baseUrl}/api/products`)
+      : await productsRoute(new NextRequest(`${baseUrl}/api/products`));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(Array.isArray(body.data)).toBe(true);
@@ -235,7 +258,9 @@ async function runSuite() {
   });
 
   await it('Integration 3.3: GET /api/auth/me - Unauthenticated requests properly rejected with 401', async () => {
-    const res = await fetch('http://localhost:3000/api/auth/me');
+    const res = serverReachable
+      ? await fetch(`${baseUrl}/api/auth/me`)
+      : await authMeRoute(new NextRequest(`${baseUrl}/api/auth/me`));
     expect(res.status).toBe(401);
   });
 
@@ -248,7 +273,11 @@ async function runSuite() {
   }
 }
 
-runSuite().catch((e) => {
-  console.error('Test Suite Failed:', e);
-  process.exit(1);
-});
+runSuite()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((e) => {
+    console.error('Test Suite Failed:', e);
+    process.exit(1);
+  });
