@@ -57,22 +57,24 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     Sentry.setTag('stripe_event_type', event.type);
     
     // Create eventLog with 'pending' status first
-    await prisma.eventLog.create({
-      data: {
-        eventId: event.id,
-        eventType: event.type,
-        status: 'pending',
-        stripeCreatedAt: event.created ? new Date(event.created * 1000) : undefined,
-        requestId,
-        processingNode: process.env.HOSTNAME || 'default',
-      },
-    }).catch((err: any) => {
+    try {
+      await prisma.eventLog.create({
+        data: {
+          eventId: event.id,
+          eventType: event.type,
+          status: 'pending',
+          stripeCreatedAt: event.created ? new Date(event.created * 1000) : undefined,
+          requestId,
+          processingNode: process.env.HOSTNAME || 'default',
+        },
+      });
+    } catch (err: any) {
       if (err.code === 'P2002') { // Prisma Unique constraint violation
         logger.info(`Duplicate Stripe Webhook received: ${event.id}. Responding with 200.`);
-        throw new Response(JSON.stringify({ received: true, duplicate: true }), { status: 200 });
+        return NextResponse.json({ received: true, duplicate: true }, { status: 200 });
       }
       throw err;
-    });
+    }
 
     try {
       await paymentService.handleWebhookEvent(event);

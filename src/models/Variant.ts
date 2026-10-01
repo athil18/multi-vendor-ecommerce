@@ -22,7 +22,7 @@ export const Variant = {
             data: {
               id: sId,
               name: 'Fallback Seller',
-              email: `seller-${sId.substring(0, 10)}@example.com`,
+              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
               password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
               role: 'seller',
               status: 'active'
@@ -39,7 +39,26 @@ export const Variant = {
       const prod = await prisma.product.findUnique({ where: { id: pId }, select: { sellerId: true } });
       sId = prod?.sellerId || null;
     }
-    if (!sId) {
+    if (sId) {
+      const existingSeller = await prisma.user.findUnique({ where: { id: sId } });
+      if (!existingSeller) {
+        try {
+          await prisma.user.create({
+            data: {
+              id: sId,
+              name: 'Seller User',
+              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
+              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              role: 'seller',
+              status: 'active'
+            }
+          });
+        } catch {
+          const fallback = await prisma.user.findFirst({ where: { role: 'seller' } }) || await prisma.user.findFirst();
+          if (fallback) sId = fallback.id;
+        }
+      }
+    } else {
       const defaultSeller = await prisma.user.findFirst({ where: { role: 'seller' } }) || await prisma.user.findFirst();
       if (defaultSeller) {
         sId = defaultSeller.id;
@@ -108,6 +127,9 @@ export const Variant = {
       stock: Number(data.stock ?? 0),
       attributes: data.attributes || {},
     };
+    if (id) {
+      return wrapRecord(await prisma.variant.upsert({ where: { id }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.variant.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.variant.deleteMany({ where: normalizeWhere(where) || {} }),

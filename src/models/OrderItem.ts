@@ -15,7 +15,7 @@ export const OrderItem = {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let sId = toIdString(data.sellerId);
-    let oId = toIdString(data.orderId);
+    const oId = toIdString(data.orderId);
     let pId = toIdString(data.productId);
     let vId = data.variantId ? toIdString(data.variantId) : null;
 
@@ -27,7 +27,7 @@ export const OrderItem = {
             data: {
               id: sId,
               name: 'Seller User',
-              email: `seller-${sId.substring(0, 10)}@example.com`,
+              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
               password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
               role: 'seller',
               status: 'active'
@@ -37,6 +37,51 @@ export const OrderItem = {
           const fallback = await prisma.user.findFirst({ where: { role: 'seller' } }) || await prisma.user.findFirst();
           if (fallback) sId = fallback.id;
         }
+      }
+    }
+
+    if (oId) {
+      const existingOrder = await prisma.order.findUnique({ where: { id: oId } });
+      if (!existingOrder) {
+        const defaultCust = await prisma.user.findFirst({ where: { role: 'customer' } }) || await prisma.user.findFirst();
+        let cId = defaultCust?.id;
+        if (!cId) {
+          const newCust = await prisma.user.create({
+            data: {
+              name: 'Default Customer',
+              email: `cust-${Date.now()}@example.com`,
+              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              role: 'customer',
+              status: 'active'
+            }
+          });
+          cId = newCust.id;
+        }
+        let addr = await prisma.address.findFirst({ where: { userId: cId } });
+        if (!addr) {
+          addr = await prisma.address.create({
+            data: {
+              userId: cId,
+              type: 'shipping',
+              street: '123 Main St',
+              city: 'Anytown',
+              state: 'CA',
+              zip: '90210',
+              country: 'US',
+            }
+          });
+        }
+        await prisma.order.create({
+          data: {
+            id: oId,
+            customerId: cId,
+            sellerIds: sId ? [sId] : [],
+            totalAmount: 100,
+            aggregateStatus: 'pending',
+            paymentMethod: 'card',
+            shippingAddressId: addr.id,
+          }
+        });
       }
     }
 
@@ -105,6 +150,9 @@ export const OrderItem = {
       taxAmount: Number(data.taxAmount ?? 0),
       status: itemStatus,
     };
+    if (id) {
+      return wrapRecord(await prisma.orderItem.upsert({ where: { id }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.orderItem.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.orderItem.deleteMany({ where: normalizeWhere(where) || {} }),

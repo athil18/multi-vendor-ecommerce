@@ -15,6 +15,8 @@ import {
   REFRESH_RATE_LIMIT,
   PUBLIC_API_RATE_LIMIT,
   ADMIN_API_RATE_LIMIT,
+  AI_API_RATE_LIMIT,
+  COUPON_RATE_LIMIT,
 } from '@/lib/rate-limit';
 import { getSecurityHeaders } from '@/lib/security-headers';
 import { getCorsHeaders, isOriginAllowed } from '@/lib/cors';
@@ -332,6 +334,36 @@ export async function middleware(request: NextRequest) {
         }
         forbiddenResponse.headers.set('x-request-id', requestId);
         return forbiddenResponse;
+      }
+    }
+
+    // ── AI Copilot Rate Limiting ─────────────────────────────────────
+    if (pathname.startsWith('/api/ai')) {
+      rlResult = await rateLimit(`ai:${clientIp}`, AI_API_RATE_LIMIT);
+
+      if (!rlResult.allowed) {
+        logSecurityEvent('ai_rate_limit_exceeded', {
+          ip: clientIp,
+          path: pathname,
+          limit: AI_API_RATE_LIMIT.limit,
+          windowSeconds: AI_API_RATE_LIMIT.windowSeconds,
+        }, requestId);
+        return rateLimitResponse(rlResult, securityHeaders);
+      }
+    }
+
+    // ── Coupon Validation Rate Limiting (anti-enumeration) ────────────
+    if (pathname.startsWith('/api/coupons')) {
+      rlResult = await rateLimit(`coupon:${clientIp}`, COUPON_RATE_LIMIT);
+
+      if (!rlResult.allowed) {
+        logSecurityEvent('coupon_rate_limit_exceeded', {
+          ip: clientIp,
+          path: pathname,
+          limit: COUPON_RATE_LIMIT.limit,
+          windowSeconds: COUPON_RATE_LIMIT.windowSeconds,
+        }, requestId);
+        return rateLimitResponse(rlResult, securityHeaders);
       }
     }
 

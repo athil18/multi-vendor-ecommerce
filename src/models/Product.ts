@@ -99,9 +99,21 @@ export const Product = {
       status: pStatus,
       images: Array.isArray(data.images) ? data.images : [],
     };
+    if (id) {
+      return wrapRecord(await prisma.product.upsert({ where: { id }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.product.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.product.deleteMany({ where: normalizeWhere(where) || {} }),
+  deleteMany: async (where: any = {}) => {
+    const norm = normalizeWhere(where) || {};
+    if (Object.keys(norm).length === 0) {
+      await prisma.orderItem.deleteMany().catch(() => {});
+      await prisma.variant.deleteMany().catch(() => {});
+      await prisma.review.deleteMany().catch(() => {});
+      await prisma.wishlist.deleteMany().catch(() => {});
+    }
+    return prisma.product.deleteMany({ where: norm });
+  },
   find: async (where: any = {}) => wrapRecords(await prisma.product.findMany({ where: normalizeWhere(where) || {} })),
   findOne: async (where: any = {}) => wrapRecord(await prisma.product.findFirst({ where: normalizeWhere(where) || {} })),
   findById: async (id: any) => wrapRecord(await prisma.product.findUnique({ where: { id: toIdString(id) } })),

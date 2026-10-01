@@ -7,6 +7,7 @@
 
 import { withErrorHandler } from '@/lib/api-handler';
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
 import { postJournalEntry, ACCOUNTS } from '@/lib/ledger';
@@ -14,8 +15,18 @@ import { logger } from '@/lib/logger';
 
 // Automated / admin trigger for Escrow Release / Payout Scheduler
 export const POST = withErrorHandler(async (req: NextRequest) => {
-  const authHeader = req.headers.get('authorization');
-  if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const authHeader = req.headers.get('authorization') || '';
+  const cronSecret = process.env.CRON_SECRET || '';
+  const expectedAuth = cronSecret ? `Bearer ${cronSecret}` : '';
+  
+  const authBuffer = Buffer.from(authHeader);
+  const expectedBuffer = Buffer.from(expectedAuth);
+
+  const isAuthorized = expectedAuth.length > 0 &&
+    authBuffer.length === expectedBuffer.length &&
+    crypto.timingSafeEqual(authBuffer, expectedBuffer);
+
+  if (!isAuthorized) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

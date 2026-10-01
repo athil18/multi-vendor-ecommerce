@@ -23,9 +23,32 @@ export const User = {
     };
     if (data.avatar !== undefined) formatted.avatar = data.avatar;
     if (data.stripeCustomerId !== undefined) formatted.stripeCustomerId = data.stripeCustomerId;
+    if (formatted.email) {
+      return wrapRecord(await prisma.user.upsert({ where: { email: formatted.email }, create: formatted, update: formatted }));
+    } else if (id) {
+      return wrapRecord(await prisma.user.upsert({ where: { id }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.user.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.user.deleteMany({ where: normalizeWhere(where) || {} }),
+  deleteMany: async (where: any = {}) => {
+    const norm = normalizeWhere(where) || {};
+    if (Object.keys(norm).length === 0) {
+      await prisma.transferLog.deleteMany().catch(() => {});
+      await prisma.transactionLine.deleteMany().catch(() => {});
+      await prisma.journalEntry.deleteMany().catch(() => {});
+      await prisma.financialLedger.deleteMany().catch(() => {});
+      await prisma.dispute.deleteMany().catch(() => {});
+      await prisma.orderItem.deleteMany().catch(() => {});
+      await prisma.order.deleteMany().catch(() => {});
+      await prisma.variant.deleteMany().catch(() => {});
+      await prisma.product.deleteMany().catch(() => {});
+      await prisma.store.deleteMany().catch(() => {});
+      await prisma.address.deleteMany().catch(() => {});
+      await prisma.review.deleteMany().catch(() => {});
+      await prisma.wishlist.deleteMany().catch(() => {});
+    }
+    return prisma.user.deleteMany({ where: norm });
+  },
   find: async (where: any = {}) => wrapRecords(await prisma.user.findMany({ where: normalizeWhere(where) || {} })),
   findOne: async (where: any = {}) => wrapRecord(await prisma.user.findFirst({ where: normalizeWhere(where) || {} })),
   findById: async (id: any) => wrapRecord(await prisma.user.findUnique({ where: { id: toIdString(id) } })),

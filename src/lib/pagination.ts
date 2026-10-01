@@ -7,7 +7,7 @@ export interface PaginationResult {
 export function parsePagination(
   query: Record<string, any>,
   defaultLimit = 20,
-  maxLimit = 1000
+  maxLimit = 100
 ): PaginationResult {
   const rawPage = typeof query.page === 'string' ? query.page : '1';
   const rawLimit = typeof query.limit === 'string' ? query.limit : String(defaultLimit);

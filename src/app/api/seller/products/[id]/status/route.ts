@@ -15,12 +15,22 @@ import { ProductStatus } from '@prisma/client';
 
 export const PRODUCT_STATUS_TRANSITIONS: Record<ProductStatus, ProductStatus[]> = {
   draft: ['pending_review', 'archived'],
-  pending_review: ['approved', 'rejected', 'draft'],
+  pending_review: ['draft'], // Sellers can only withdraw to draft; approval/rejection requires admin moderation
   approved: ['published', 'archived'],
   published: ['archived'],
   rejected: ['draft'],
   archived: ['draft'],
 };
+
+export function isValidProductStatusTransition(
+  currentStatus: ProductStatus,
+  newStatus: ProductStatus,
+  role: 'seller' | 'admin' = 'seller'
+): boolean {
+  if (role === 'admin') return true;
+  const allowed = PRODUCT_STATUS_TRANSITIONS[currentStatus];
+  return !!allowed && allowed.includes(newStatus);
+}
 
 export const PATCH = withErrorHandler(async(
   req: NextRequest,

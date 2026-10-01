@@ -7,11 +7,13 @@
  */
 
 import bcrypt from 'bcryptjs';
-import { IUserRepository, UserEntity } from '@/core/ports/IUserRepository';
+import crypto from 'crypto';
+import { IUserRepository } from '@/core/ports/IUserRepository';
 import { prismaUserRepository } from '@/infrastructure/database/repositories/PrismaUserRepository';
 import { generateToken, generateRefreshToken, verifyRefreshToken } from '@/lib/jwt';
 import { AppError } from '@/lib/errors';
-import { sanitizeObject } from '@/lib/pii';
+
+const hashToken = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
 
 export interface RegisterDTO {
   name: string;
@@ -58,8 +60,9 @@ export class AuthService {
 
     const accessToken = generateToken({ id: user.id, email: user.email, role: user.role });
     const refreshToken = generateRefreshToken({ id: user.id, email: user.email, role: user.role });
+    const hashedRefreshToken = hashToken(refreshToken);
 
-    await this.userRepo.updateRefreshTokens(user.id, [refreshToken]);
+    await this.userRepo.updateRefreshTokens(user.id, [hashedRefreshToken]);
 
     return {
       accessToken,
@@ -90,10 +93,11 @@ export class AuthService {
 
     const accessToken = generateToken({ id: user.id, email: user.email, role: user.role });
     const refreshToken = generateRefreshToken({ id: user.id, email: user.email, role: user.role });
+    const hashedRefreshToken = hashToken(refreshToken);
 
-    // Rotate refresh token
+    // Rotate refresh token securely
     const existingTokens = (user.refreshTokens || []).slice(-4);
-    existingTokens.push(refreshToken);
+    existingTokens.push(hashedRefreshToken);
     await this.userRepo.updateRefreshTokens(user.id, existingTokens);
 
     return {
@@ -114,16 +118,18 @@ export class AuthService {
       throw new AppError('Invalid or expired refresh token', 401, 'AUTH_TOKEN_EXPIRED');
     }
 
+    const hashedToken = hashToken(token);
     const user = await this.userRepo.findById(payload.id);
-    if (!user || !user.refreshTokens?.includes(token)) {
+    if (!user || !user.refreshTokens?.includes(hashedToken)) {
       throw new AppError('Refresh token revoked or invalid', 401, 'AUTH_TOKEN_REVOKED');
     }
 
     const newAccessToken = generateToken({ id: user.id, email: user.email, role: user.role });
     const newRefreshToken = generateRefreshToken({ id: user.id, email: user.email, role: user.role });
+    const newHashedRefreshToken = hashToken(newRefreshToken);
 
-    const updatedTokens = user.refreshTokens.filter((t) => t !== token);
-    updatedTokens.push(newRefreshToken);
+    const updatedTokens = user.refreshTokens.filter((t) => t !== hashedToken);
+    updatedTokens.push(newHashedRefreshToken);
     await this.userRepo.updateRefreshTokens(user.id, updatedTokens);
 
     return {

@@ -75,3 +75,8 @@ Desktop.ini
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Backups & Local Archives
+backups/
+PROJECT_ARCHIVE/
+*.gz

@@ -13,13 +13,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withErrorHandler } from '@/lib/api-handler';
 import { getAuthUser } from '@/lib/auth';
+import { ValidationError } from '@/lib/errors';
 import { copilotService } from '@/services/AICopilotService';
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
   const user = await getAuthUser(req);
   const body = await req.json();
-  const rawPrompt: string = body.prompt || '';
-  const history = Array.isArray(body.messages) ? body.messages : [];
+  const rawPrompt: string = typeof body.prompt === 'string' ? body.prompt : '';
+  
+  if (rawPrompt.length > 2000) {
+    throw new ValidationError('Prompt exceeds maximum allowed length of 2,000 characters');
+  }
+
+  const rawHistory = Array.isArray(body.messages) ? body.messages : [];
+  const history = rawHistory.slice(-20).map((m: any) => ({
+    role: m?.role === 'assistant' ? 'assistant' : 'user',
+    content: typeof m?.content === 'string' ? m.content.slice(0, 2000) : '',
+  }));
 
   const copilotResponse = await copilotService.handleCustomerQuery(
     rawPrompt,

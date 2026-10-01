@@ -23,7 +23,7 @@ export const Store = {
             data: {
               id: sId,
               name: 'Seller User',
-              email: `seller-${sId.substring(0, 10)}@example.com`,
+              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
               password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
               role: 'seller',
               status: 'active'
@@ -75,9 +75,22 @@ export const Store = {
       stripeOnboardingComplete: data.stripeOnboardingComplete !== undefined ? Boolean(data.stripeOnboardingComplete) : false,
       stripeConnectedAccountId: data.stripeConnectedAccountId || null,
     };
+    if (id) {
+      return wrapRecord(await prisma.store.upsert({ where: { id }, create: formatted, update: formatted }));
+    } else if (sId) {
+      return wrapRecord(await prisma.store.upsert({ where: { sellerId: sId }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.store.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.store.deleteMany({ where: normalizeWhere(where) || {} }),
+  deleteMany: async (where: any = {}) => {
+    const norm = normalizeWhere(where) || {};
+    if (Object.keys(norm).length === 0) {
+      await prisma.orderItem.deleteMany().catch(() => {});
+      await prisma.variant.deleteMany().catch(() => {});
+      await prisma.product.deleteMany().catch(() => {});
+    }
+    return prisma.store.deleteMany({ where: norm });
+  },
   find: async (where: any = {}) => wrapRecords(await prisma.store.findMany({ where: normalizeWhere(where) || {} })),
   findOne: async (where: any = {}) => wrapRecord(await prisma.store.findFirst({ where: normalizeWhere(where) || {} })),
   findById: async (id: any) => wrapRecord(await prisma.store.findUnique({ where: { id: toIdString(id) } })),

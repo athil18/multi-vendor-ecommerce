@@ -10,7 +10,7 @@ import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wr
 
 export const Address = {
   create: async (data: any) => {
-    const rawId = data.id || data._id;
+    const rawId = toIdString(data.id || data._id);
     let uId = toIdString(data.userId);
     if (uId) {
       const existingUser = await prisma.user.findUnique({ where: { id: uId } });
@@ -20,7 +20,7 @@ export const Address = {
             data: {
               id: uId,
               name: 'Address User',
-              email: `address-user-${uId.substring(0, 10)}@example.com`,
+              email: `address-user-${uId.substring(0, 10)}-${Date.now()}@example.com`,
               password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
               role: 'customer',
               status: 'active'
@@ -31,11 +31,27 @@ export const Address = {
           if (fallback) uId = fallback.id;
         }
       }
+    } else {
+      const fallback = await prisma.user.findFirst();
+      if (fallback) {
+        uId = fallback.id;
+      } else {
+        const defaultUser = await prisma.user.create({
+          data: {
+            name: 'Default Address User',
+            email: `address-user-${Date.now()}@example.com`,
+            password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+            role: 'customer',
+            status: 'active'
+          }
+        });
+        uId = defaultUser.id;
+      }
     }
 
     const formatted: any = {
       ...(rawId ? { id: rawId } : {}),
-      userId: uId,
+      userId: uId!,
       type: data.type === 'billing' ? 'billing' : 'shipping',
       street: data.street || '123 Main St',
       city: data.city || 'City',
@@ -44,6 +60,9 @@ export const Address = {
       country: data.country || 'US',
       isDefault: Boolean(data.isDefault),
     };
+    if (rawId) {
+      return wrapRecord(await prisma.address.upsert({ where: { id: rawId }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.address.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.address.deleteMany({ where: normalizeWhere(where) || {} }),

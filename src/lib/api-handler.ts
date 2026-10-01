@@ -69,6 +69,9 @@ export function withErrorHandler<T = any>(handler: AsyncRouteHandler<T>): AsyncR
       response = await handler(req, context);
       statusCode = response.status;
     } catch (error: any) {
+      if (error instanceof Response) {
+        return error as NextResponse;
+      }
       errorToLog = error;
       let appError: AppError;
 

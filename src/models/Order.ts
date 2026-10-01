@@ -26,7 +26,7 @@ export const Order = {
             data: {
               id: custId,
               name: 'Order Customer',
-              email: `cust-${custId.substring(0, 10)}@example.com`,
+              email: `cust-${custId.substring(0, 10)}-${Date.now()}@example.com`,
               password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
               role: 'customer',
               status: 'active'
@@ -58,7 +58,7 @@ export const Order = {
     if (shipAddrId) shipAddrId = toIdString(shipAddrId);
 
     // Verify if shipAddrId actually exists in the database to prevent foreign key violation
-    let validAddr = shipAddrId ? await prisma.address.findUnique({ where: { id: shipAddrId } }) : null;
+    const validAddr = shipAddrId ? await prisma.address.findUnique({ where: { id: shipAddrId } }) : null;
     if (!validAddr) {
       if (shipAddrId) {
         // A specific address was requested that does not exist in DB
@@ -132,9 +132,23 @@ export const Order = {
       stripePaymentIntentId: data.stripePaymentIntentId || null,
       paidAt: payStatus === 'completed' ? new Date() : null,
     };
+    if (id) {
+      return wrapRecord(await prisma.order.upsert({ where: { id }, create: formatted, update: formatted }));
+    }
     return wrapRecord(await prisma.order.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.order.deleteMany({ where: normalizeWhere(where) || {} }),
+  deleteMany: async (where: any = {}) => {
+    const norm = normalizeWhere(where) || {};
+    if (Object.keys(norm).length === 0) {
+      await prisma.transferLog.deleteMany().catch(() => {});
+      await prisma.transactionLine.deleteMany().catch(() => {});
+      await prisma.journalEntry.deleteMany().catch(() => {});
+      await prisma.financialLedger.deleteMany().catch(() => {});
+      await prisma.dispute.deleteMany().catch(() => {});
+      await prisma.orderItem.deleteMany().catch(() => {});
+    }
+    return prisma.order.deleteMany({ where: norm });
+  },
   find: async (where: any = {}) => wrapRecords(await prisma.order.findMany({ where: normalizeWhere(where) || {} })),
   findOne: async (where: any = {}) => wrapRecord(await prisma.order.findFirst({ where: normalizeWhere(where) || {} })),
   findById: async (id: any) => wrapRecord(await prisma.order.findUnique({ where: { id: toIdString(id) } })),

@@ -57,12 +57,16 @@ export const generateUploadUrl = async (
     return { uploadUrl, publicUrl, provider: 's3' };
   } else {
     // Local development implementation
-    // We sign the URL with our own secret to prevent arbitrary uploads
-    const secret = process.env.JWT_SECRET || 'local-dev-secret';
+    // We sign the URL with our secret to prevent arbitrary uploads
+    const secret = process.env.JWT_SECRET;
+    if (!secret && process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET must be set to generate signed upload URLs');
+    }
+    const signingSecret = secret || 'local-dev-secret';
     const expiresAt = Date.now() + expiresInSeconds * 1000;
     
     const signature = crypto
-      .createHmac('sha256', secret)
+      .createHmac('sha256', signingSecret)
       .update(`${key}:${expiresAt}`)
       .digest('hex');
       

@@ -180,7 +180,10 @@ const deleteReviewHandler = async (req: NextRequest, { params }: { params: Promi
       throw new AppError('Review not found', 404, 'NOT_FOUND');
     }
 
-    await tx.review.delete({ where: { id: existing.id } });
+    await tx.review.update({
+      where: { id: existing.id },
+      data: { deletedAt: new Date() },
+    });
 
     const product = await tx.product.findUnique({ where: { id } });
     if (product && product.numReviews > 0) {

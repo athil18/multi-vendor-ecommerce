@@ -19,14 +19,25 @@ export const PASSWORD_RATE_LIMIT: Required<RateLimitOptions> = { limit: 5, windo
 export const REFRESH_RATE_LIMIT: Required<RateLimitOptions> = { limit: 20, windowMs: 60 * 1000, windowSeconds: 60 };
 export const PUBLIC_API_RATE_LIMIT: Required<RateLimitOptions> = { limit: 100, windowMs: 60 * 1000, windowSeconds: 60 };
 export const ADMIN_API_RATE_LIMIT: Required<RateLimitOptions> = { limit: 60, windowMs: 60 * 1000, windowSeconds: 60 };
+export const AI_API_RATE_LIMIT: Required<RateLimitOptions> = { limit: 20, windowMs: 60 * 1000, windowSeconds: 60 };
+export const COUPON_RATE_LIMIT: Required<RateLimitOptions> = { limit: 10, windowMs: 60 * 1000, windowSeconds: 60 };
 
 interface Bucket {
   tokens: number;
   lastRefill: number;
 }
 
-// In-memory store for Edge environment (local development)
+// In-memory store with bounded capacity and TTL-based eviction
+const MAX_MEMORY_BUCKETS = 10000;
 const memoryStore = new Map<string, Bucket>();
+
+function pruneExpiredBuckets(now: number, maxAgeMs: number = 300000): void {
+  for (const [k, b] of memoryStore.entries()) {
+    if (now - b.lastRefill > maxAgeMs) {
+      memoryStore.delete(k);
+    }
+  }
+}
 
 /**
  * Edge-compatible token bucket rate limiter supporting NextRequest or string keys.
@@ -46,6 +57,16 @@ export async function rateLimit(reqOrKey: NextRequest | string, options: Partial
     const ip = reqOrKey.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
     const path = reqOrKey.nextUrl.pathname;
     key = `ratelimit:${ip}:${path}`;
+  }
+
+  // Periodic capacity control to prevent unbounded memory growth
+  if (memoryStore.size >= MAX_MEMORY_BUCKETS) {
+    pruneExpiredBuckets(now, windowMs);
+    // If still at capacity, evict oldest 20% entries
+    if (memoryStore.size >= MAX_MEMORY_BUCKETS) {
+      const keysToDelete = Array.from(memoryStore.keys()).slice(0, Math.floor(MAX_MEMORY_BUCKETS * 0.2));
+      for (const k of keysToDelete) memoryStore.delete(k);
+    }
   }
 
   try {

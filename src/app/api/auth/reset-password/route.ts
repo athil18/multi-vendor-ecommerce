@@ -30,7 +30,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw new ValidationError('Invalid or expired password reset token');
   }
 
-  const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt(12);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // Update password and clear reset fields and all refresh tokens

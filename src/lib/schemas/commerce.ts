@@ -3,11 +3,12 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
 extendZodWithOpenApi(z);
 
-const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+export const idRegex = /^(c[a-z0-9]{20,}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[a-f0-9]{24})$/i;
 
 // Reusable fields
-const objectIdField = z.string().regex(objectIdRegex, 'Invalid ID format').optional();
-const requiredObjectIdField = z.string().regex(objectIdRegex, 'Invalid ID format');
+export const idSchema = z.string().regex(idRegex, 'Invalid ID format');
+export const objectIdField = idSchema.optional();
+export const requiredObjectIdField = idSchema;
 
 // ---------------------------------------------------------
 // Products

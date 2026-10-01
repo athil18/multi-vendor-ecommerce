@@ -31,6 +31,18 @@ export function normalizeWhere(where: any): any {
 
   const clean: any = {};
   for (const [key, val] of Object.entries(where)) {
+    if (val && typeof val === 'object' && !(val instanceof Date)) {
+      const v = val as any;
+      if (
+        v.constructor?.name === 'MockObjectId' ||
+        (v.id && typeof v.id === 'string' && Object.keys(v).length === 1) ||
+        (v._id && typeof v._id === 'string' && Object.keys(v).length === 1)
+      ) {
+        clean[key === '_id' ? 'id' : key] = toIdString(val);
+        continue;
+      }
+    }
+
     if (key === '_id') {
       if (val && typeof val === 'object' && !Array.isArray(val) && (val as any).in) {
         clean.id = { in: (val as any).in.map(toIdString).filter(Boolean) };
@@ -41,6 +53,8 @@ export function normalizeWhere(where: any): any {
       clean[key] = Array.isArray(val) ? val.map(normalizeWhere) : normalizeWhere(val);
     } else if (val && typeof val === 'object' && !Array.isArray(val) && (val as any).in) {
       clean[key] = { in: (val as any).in.map(toIdString).filter(Boolean) };
+    } else if (key.endsWith('Id') && val && typeof val === 'object' && !((val as any).in || (val as any).notIn || (val as any).equals || (val as any).not)) {
+      clean[key] = toIdString(val);
     } else if (val && typeof val === 'object' && !(val instanceof Date)) {
       clean[key] = normalizeWhere(val);
     } else {

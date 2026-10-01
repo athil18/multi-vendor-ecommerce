@@ -24,12 +24,16 @@ export function getSecurityHeaders(config?: Partial<SecurityHeadersConfig>): Rec
   // ─── Content Security Policy ──────────────────────────────────────────
   // Restrictive CSP that allows self-hosted resources, inline styles (required
   // by Next.js), and specific trusted CDNs for fonts/images.
+  const scriptDirectives = process.env.NODE_ENV === 'production'
+    ? "script-src 'self' 'unsafe-inline'"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Next.js requires unsafe-eval in dev
+    scriptDirectives,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data: blob:",
-    "img-src 'self' https://images.unsplash.com https://via.placeholder.com data: blob:",
+    "img-src 'self' https://images.unsplash.com https://images.pexels.com https://cdn.dummyjson.com https://dummyjson.com https://placehold.co https://raw.githubusercontent.com https://upload.wikimedia.org https://via.placeholder.com https://cdn-demo.algolia.com https://i.imgur.com https://*.amazonaws.com data: blob:",
     "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.stripe.network https://m.stripe.network",
     "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.stripe.network",
     "worker-src 'self' blob:",

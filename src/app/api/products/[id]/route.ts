@@ -133,9 +133,20 @@ export const DELETE = withErrorHandler(async(
     throw new ValidationError('Cannot delete a published product. Archive it first.');
   }
 
-  // Cascade delete variants and product
-  await prisma.variant.deleteMany({ where: { productId: id } });
-  await prisma.product.delete({ where: { id } });
+  // Enforce soft-deletion invariant (preserves ledger consistency and order integrity)
+  await prisma.$transaction([
+    prisma.variant.updateMany({
+      where: { productId: id },
+      data: { isActive: false },
+    }),
+    prisma.product.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+        status: 'archived',
+      },
+    }),
+  ]);
 
-  return NextResponse.json({ message: 'Product and its variants deleted successfully' });
+  return NextResponse.json({ message: 'Product archived and soft-deleted successfully' });
 });
