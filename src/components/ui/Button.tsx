@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'glass';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'glass' | 'subtle';
   size?: 'sm' | 'md' | 'lg' | 'icon';
   loading?: boolean;
   disabled?: boolean;
@@ -24,19 +24,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading = false, disabled, children, ...props }, ref) => {
     
     const variants = {
-      primary: 'bg-brand-600 text-white hover:bg-brand-500 shadow-[0_0_15px_rgba(124,58,237,0.3)] hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] border border-brand-500/50',
+      primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm border border-brand-700/20 active:bg-brand-800',
       secondary: 'bg-surface-800 text-white hover:bg-surface-700 shadow-sm border border-surface-700',
-      outline: 'border-2 border-surface-200 dark:border-surface-700 text-surface-900 dark:text-surface-100 hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 bg-transparent',
+      outline: 'border border-surface-300 dark:border-surface-700 text-surface-900 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-800 bg-transparent',
       ghost: 'text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 hover:text-surface-900 dark:hover:text-white',
-      danger: 'bg-red-500 text-white hover:bg-red-600 shadow-sm border border-red-500/50',
-      glass: 'bg-white/10 dark:bg-surface-800/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-surface-900 dark:text-white hover:bg-white/20 dark:hover:bg-surface-700/50 shadow-[0_4px_30px_rgba(0,0,0,0.1)]',
+      danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm border border-red-700/20',
+      glass: 'bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white hover:bg-surface-200 dark:hover:bg-surface-700 shadow-sm',
+      subtle: 'bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white hover:bg-surface-200 dark:hover:bg-surface-700 shadow-sm',
     };
 
     const sizes = {
-      sm: 'h-9 px-4 text-xs rounded-full',
-      md: 'h-11 px-6 py-2 text-sm rounded-full',
-      lg: 'h-14 px-8 text-base rounded-full',
-      icon: 'h-11 w-11 justify-center rounded-full',
+      sm: 'h-9 px-3.5 text-xs rounded-md font-medium',
+      md: 'h-10 px-4 py-2 text-sm rounded-lg font-medium',
+      lg: 'h-12 px-6 text-base rounded-lg font-semibold',
+      icon: 'h-10 w-10 justify-center rounded-lg',
     };
 
     return (

@@ -12,9 +12,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, ShieldCheck, Award, Leaf, HeartHandshake, Star, Flame, Compass, PackageOpen, Layers } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Award, Leaf, HeartHandshake } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { VendorCard } from '@/components/VendorCard';
+import { StorefrontUXShowcase } from '@/components/storefront/StorefrontUXShowcase';
 import prisma from '@/lib/prisma';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 import { unstable_cache } from 'next/cache';
@@ -107,80 +108,79 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden ambient-gradient-mesh">
-      {/* ─── 1. Luxury Editorial Hero ────────────────────────────────────────── */}
-      <section className="relative w-full pt-28 pb-20 md:pt-40 md:pb-28 overflow-hidden flex flex-col items-center justify-center">
-        {/* Architectural Swiss Precision Grid Overlay */}
-        <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none opacity-80" />
+      {/* ─── 1. Authentic Editorial Hero ────────────────────────────────────────── */}
+      <section className="relative w-full pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden flex flex-col items-center justify-center">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none opacity-60" />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-          {/* Status Badge */}
-          <div className="specular-pill mb-6 text-brand-700 dark:text-brand-300 shadow-sm px-5 py-2">
-            <Sparkles className="h-3.5 w-3.5 text-brand-500" />
-            <span>The Swiss Precision Standard &bull; Global Independent Ateliers</span>
-          </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+          {/* Authentic Editorial Kicker */}
+          <p className="text-xs uppercase font-bold tracking-widest text-surface-500 dark:text-surface-400 mb-4 select-none">
+            Independent Workshop Marketplace &bull; Stripe Connect Escrow
+          </p>
 
-          {/* Cinematic Title */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-surface-900 dark:text-white leading-[1.06] mb-6 font-sans">
-            Curated with Intent. <br className="hidden md:block" />
-            <span className="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 dark:from-brand-400 dark:via-indigo-300 dark:to-purple-300 bg-clip-text text-transparent inline-block">
-              Engineered to Endure.
+          {/* Concrete Headline */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] mb-6 font-sans">
+            Direct from independent workshops. <br className="hidden md:block" />
+            <span className="text-brand-600 dark:text-brand-400">
+              Protected by escrow.
             </span>
           </h1>
 
-          {/* Editorial Subtitle */}
-          <p className="text-base sm:text-lg md:text-xl text-surface-600 dark:text-surface-300 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
-            A high-consideration marketplace uniting discerning collectors directly with verified artisans, bespoke workshops, and independent creators worldwide.
+          {/* Concrete Subtitle */}
+          <p className="text-base sm:text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+            Nexus connects discerning buyers directly with verified specialized workshops. Every order is secured with Stripe Connect escrow and released only upon carrier-confirmed delivery.
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
+          <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full justify-center">
             <Link
               href="/products"
-              aria-label="Explore the curated luxury product collection"
-              className="w-full sm:w-auto inline-flex items-center justify-center h-13 px-9 text-base shadow-xl bg-surface-900 dark:bg-white text-white dark:text-surface-900 rounded-full transition-all font-bold hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              aria-label="Browse product catalog"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-11 px-7 text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
-              Explore The Collection <ArrowRight className="ml-2 w-4 h-4" />
+              Browse catalog <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
             <Link
               href="/seller/register"
               prefetch={false}
-              aria-label="Apply to join Nexus as a verified independent atelier"
-              className="w-full sm:w-auto inline-flex items-center justify-center h-13 px-8 text-base border border-surface-300 dark:border-surface-700 bg-white/80 dark:bg-surface-900/80 text-surface-900 dark:text-white rounded-full font-bold backdrop-blur-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              aria-label="Apply to open a seller account"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-11 px-7 text-sm font-semibold border border-surface-300 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-900 dark:text-white rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
-              Apply as an Atelier
+              Apply to sell
             </Link>
           </div>
 
-          {/* Live Metric Badges */}
-          <div className="mt-14 flex items-center justify-center gap-6 sm:gap-12 flex-wrap text-surface-600 dark:text-surface-400 font-semibold text-xs sm:text-sm">
+          {/* Authentic Trust Indicators */}
+          <div className="mt-12 flex items-center justify-center gap-6 sm:gap-10 flex-wrap text-surface-600 dark:text-surface-400 font-medium text-xs sm:text-sm">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>$4.8M+ Escrow Protected</span>
+              <span>Stripe Connect Escrow Holds</span>
             </div>
             <div className="flex items-center gap-2">
               <Award className="h-4 w-4 text-brand-500" />
-              <span>120+ Master Ateliers</span>
+              <span>Verified Independent Workshops</span>
             </div>
             <div className="flex items-center gap-2">
               <Leaf className="h-4 w-4 text-emerald-600" />
-              <span>100% Carbon-Neutral Inspected Logistics</span>
+              <span>Carrier-Inspected 30-Day Returns</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── 2. Interactive Provenance & Craftsmanship Grid ─────────────────── */}
-      <section className="py-24 border-y border-surface-200/60 dark:border-surface-800/80 relative section-contained">
+      {/* ─── 2. Platform Commitments & Workshop Standards ─────────────────── */}
+      <section className="py-20 border-y border-surface-200 dark:border-surface-800 relative section-contained bg-surface-50/50 dark:bg-surface-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest text-xs mb-2 block">
-              Architectural Provenance
+          <div className="text-center mb-14">
+            <span className="text-brand-600 dark:text-brand-400 font-bold uppercase tracking-wider text-xs mb-2 block">
+              Platform Standards
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-sans mb-4">
-              The Nexus Atelier Benchmark
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-surface-900 dark:text-white tracking-tight font-sans mb-3">
+              How Nexus Protects Buyers and Makers
             </h2>
             <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto text-sm sm:text-base">
-              Every creation meets uncompromising standards of provenance, material integrity, and ethical direct-maker commerce.
+              Every transaction follows transparent double-entry accounting and verified logistics.
             </p>
           </div>
 
@@ -188,33 +188,33 @@ export default async function Home() {
             {[
               { 
                 icon: Award, 
-                title: 'Top 3% Vetted Ateliers', 
-                desc: 'Specialized workshops undergo rigorous forensic review for authentic craftsmanship, heirloom materials, and artisanal mastery.' 
+                title: 'Vetted Workshops', 
+                desc: 'Independent makers undergo business verification and product inspection before catalog publishing.' 
               },
               { 
                 icon: HeartHandshake, 
-                title: '90% Direct Creator Payout', 
-                desc: 'Escrow splits remit 90% of checkout proceeds directly to independent makers with automated double-entry ledger reconciliation.' 
+                title: '90% Direct Disbursal', 
+                desc: 'Checkout proceeds remit directly to makers upon confirmed fulfillment with 10% platform maintenance fee.' 
               },
               { 
                 icon: ShieldCheck, 
-                title: 'Bank-Grade Escrow Vault', 
-                desc: 'Funds are securely locked in institutional escrow until you receive and physically inspect your handcrafted specimen.' 
+                title: 'Stripe Connect Escrow', 
+                desc: 'Buyer funds remain locked in escrow until verified delivery confirmation by national carriers.' 
               },
               { 
                 icon: Leaf, 
-                title: 'Carbon-Neutral Direct Route', 
-                desc: 'Sustainable direct-dispatch packaging with 100% certified carbon offsetting across all international maritime routes.' 
+                title: 'Standardized Tracking', 
+                desc: 'Every parcel is dispatched with verifiable carrier tracking numbers and full shipping insurance.' 
               },
             ].map((pillar, idx) => (
               <div
                 key={idx}
-                className="tactile-card glass-luxury-card specular-border p-8 rounded-3xl transition-all duration-300 group"
+                className="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-6 shadow-sm transition-all duration-200 hover:border-surface-300 dark:hover:border-surface-700"
               >
-                <div className="h-12 w-12 rounded-2xl bg-brand-500/10 dark:bg-brand-400/10 flex items-center justify-center mb-6 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform">
-                  <pillar.icon className="h-6 w-6" />
+                <div className="h-10 w-10 rounded-lg bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-5 text-brand-600 dark:text-brand-400">
+                  <pillar.icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-bold text-surface-900 dark:text-white mb-2">{pillar.title}</h3>
+                <h3 className="text-base font-bold text-surface-900 dark:text-white mb-2">{pillar.title}</h3>
                 <p className="text-xs sm:text-sm text-surface-600 dark:text-surface-300 leading-relaxed font-normal">{pillar.desc}</p>
               </div>
             ))}
@@ -222,44 +222,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── 3. Trending Curations Showcase ──────────────────────────────────── */}
-      <section className="py-24 relative section-contained">
+      {/* ─── 3. Storefront UX Showcase (20 Laws of UX + Editorial Curation) ── */}
+      <section className="py-24 relative section-contained border-t border-surface-200/60 dark:border-surface-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="flex h-2.5 w-2.5 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live Studio Curations</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-sans">
-                Coveted Specimen Drops
-              </h2>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <Link
-                href="/products"
-                aria-label={`View full catalog of ${products.length} coveted specimen drops`}
-                className="inline-flex items-center rounded-full px-6 py-2.5 text-xs font-bold border border-surface-300 dark:border-surface-700 bg-white/60 dark:bg-surface-900/60 backdrop-blur-md text-surface-900 dark:text-white hover:bg-surface-100 dark:hover:bg-surface-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-              >
-                View Full Catalog ({products.length}) <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product, idx) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-                priority={idx === 0}
-              />
-            ))}
-          </div>
+          <StorefrontUXShowcase products={products} />
         </div>
       </section>
 
@@ -267,14 +233,14 @@ export default async function Home() {
       <section className="py-28 relative overflow-hidden border-t border-surface-200/60 dark:border-surface-800/80 section-contained">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <span className="text-brand-600 dark:text-brand-400 font-bold tracking-widest uppercase text-xs mb-3 block">
-              Direct Maker Guilds
+            <span className="text-brand-600 dark:text-brand-400 font-bold tracking-wider uppercase text-xs mb-3 block">
+              Verified Sellers
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 tracking-tight font-sans text-surface-900 dark:text-white">
-              Featured Independent Studios
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 tracking-tight font-sans text-surface-900 dark:text-white">
+              Featured Independent Workshops
             </h2>
             <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto text-sm sm:text-base">
-              Direct from the master workshops of Kyoto, Geneva, and Florence. Every commission sustains ancestral craft.
+              Specialized creators with established fulfillment track records and verified business credentials.
             </p>
           </div>
 

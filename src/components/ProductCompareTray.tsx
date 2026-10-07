@@ -29,22 +29,22 @@ export function ProductCompareTray() {
         aria-label="Product Comparison Bar"
         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-300"
       >
-        <div className="glass-dock p-3 sm:p-4 rounded-3xl flex items-center justify-between gap-4 shadow-2xl">
+        <div className="p-3 sm:p-4 rounded-xl border border-surface-300 dark:border-surface-700 bg-white dark:bg-surface-900 flex items-center justify-between gap-4 shadow-xl">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-bold shadow-md shadow-brand-500/20">
+            <div className="h-10 w-10 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold shadow-sm">
               <Scale className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs sm:text-sm font-bold text-surface-900 dark:text-white">
-                  Compare Atelier Curations
+                  Compare Products
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">
                   {items.length} / 4 Selected
                 </span>
               </div>
               <p className="text-[11px] text-surface-500 hidden sm:block">
-                Evaluate craftsmanship, materials, and maker guarantees side-by-side.
+                Evaluate specifications, materials, and pricing side-by-side.
               </p>
             </div>
           </div>
@@ -55,7 +55,7 @@ export function ProductCompareTray() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="relative h-9 w-9 rounded-xl overflow-hidden border-2 border-white dark:border-surface-900 bg-surface-100 dark:bg-surface-800 shadow-sm"
+                  className="relative h-9 w-9 rounded-md overflow-hidden border-2 border-white dark:border-surface-900 bg-surface-100 dark:bg-surface-800 shadow-sm"
                 >
                   {item.image ? (
                     <Image src={item.image} alt={item.name} fill className="object-cover" sizes="36px" />
@@ -69,7 +69,7 @@ export function ProductCompareTray() {
             <Button
               size="sm"
               onClick={() => setIsOpen(!isOpen)}
-              className="rounded-full px-4 text-xs font-bold bg-surface-900 dark:bg-white text-white dark:text-surface-900 hover:bg-brand-600 dark:hover:bg-brand-500 transition-all flex items-center gap-1.5 shadow-md"
+              className="rounded-lg px-3.5 text-xs font-semibold bg-surface-900 dark:bg-white text-white dark:text-surface-900 hover:bg-brand-600 dark:hover:bg-brand-500 transition-all flex items-center gap-1.5 shadow-sm"
             >
               {isOpen ? 'Close' : 'Compare'}
               {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronUp className="h-3.5 w-3.5" />}
@@ -78,7 +78,7 @@ export function ProductCompareTray() {
             <button
               onClick={clearCompare}
               title="Clear comparison list"
-              className="p-2 text-surface-400 hover:text-red-500 transition-colors rounded-full"
+              className="p-2 text-surface-400 hover:text-red-500 transition-colors rounded-md"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -88,26 +88,26 @@ export function ProductCompareTray() {
 
       {/* Expanded Side-by-Side Modal / Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-5xl max-h-[90vh] glass-luxury-card rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-white/20 dark:border-surface-700/60">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-5xl max-h-[90vh] bg-white dark:bg-surface-900 rounded-xl overflow-hidden flex flex-col shadow-2xl border border-surface-200 dark:border-surface-700">
             {/* Modal Header */}
-            <div className="p-6 border-b border-surface-200 dark:border-surface-800 flex items-center justify-between bg-surface-50/50 dark:bg-surface-900/50">
+            <div className="p-6 border-b border-surface-200 dark:border-surface-800 flex items-center justify-between bg-surface-50 dark:bg-surface-950">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold">
+                <div className="h-10 w-10 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold">
                   <Scale className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-surface-900 dark:text-white tracking-tight">
-                    Side-by-Side Atelier Comparison
+                  <h2 className="text-xl font-bold text-surface-900 dark:text-white tracking-tight">
+                    Product Specification Comparison
                   </h2>
                   <p className="text-xs text-surface-500">
-                    Detailed technical specifications, artisan provenance, and consumer protections.
+                    Side-by-side technical specifications, maker information, and prices.
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-500 transition-colors"
+                className="p-2 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-500 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -122,12 +122,12 @@ export function ProductCompareTray() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex flex-col bg-white dark:bg-surface-850 rounded-2xl p-5 border border-surface-200/80 dark:border-surface-800 shadow-sm relative group"
+                    className="flex flex-col bg-surface-50 dark:bg-surface-850 rounded-xl p-5 border border-surface-200 dark:border-surface-800 shadow-sm relative group"
                   >
                     {/* Remove button */}
                     <button
                       onClick={() => removeFromCompare(item.id)}
-                      className="absolute top-3 right-3 p-1.5 rounded-full bg-surface-100 dark:bg-surface-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-400 text-surface-400 transition-all z-10"
+                      className="absolute top-3 right-3 p-1.5 rounded-md bg-surface-200/60 dark:bg-surface-800 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-400 text-surface-500 transition-all z-10"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -190,7 +190,7 @@ export function ProductCompareTray() {
                             quantity: 1,
                           });
                         }}
-                        className="w-full rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs h-10 shadow-sm"
+                        className="w-full rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs h-10 shadow-sm"
                       >
                         Add to Cart
                       </Button>
@@ -198,7 +198,7 @@ export function ProductCompareTray() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full rounded-xl text-xs font-semibold h-9 border-surface-200 dark:border-surface-700"
+                          className="w-full rounded-lg text-xs font-semibold h-9 border-surface-200 dark:border-surface-700"
                         >
                           View Full Details
                         </Button>

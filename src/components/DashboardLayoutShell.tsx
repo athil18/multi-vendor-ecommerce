@@ -85,7 +85,7 @@ export function DashboardLayoutShell({
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -148,7 +148,7 @@ export function DashboardLayoutShell({
       {/* Main Content Area */}
       <main className="flex-1 md:ml-60 flex flex-col min-h-screen overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 flex items-center justify-between px-6 md:px-10 w-full h-16 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
+        <header className="sticky top-0 z-30 flex items-center justify-between px-6 md:px-10 w-full h-16 bg-surface border-b border-outline-variant/10 shadow-sm">
           <div className="flex items-center gap-4">
             {/* Mobile Menu Toggle */}
             <button

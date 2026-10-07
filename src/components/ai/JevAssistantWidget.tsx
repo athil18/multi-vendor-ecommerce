@@ -64,27 +64,25 @@ export default function JevAssistantWidget() {
         <button
           onClick={() => setIsOpen(true)}
           aria-label="Open JEV AI Fast Decision Engine"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-slate-900/90 text-slate-100 border border-cyan-500/30 shadow-[0_0_25px_rgba(56,189,248,0.25)] hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(56,189,248,0.4)] transition-all duration-300 backdrop-blur-md cursor-pointer group"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-surface-900 text-surface-100 border border-surface-700 shadow-lg hover:border-surface-600 hover:bg-surface-800 transition-colors cursor-pointer group"
         >
-          <div className="relative w-3 h-3 rounded-full bg-cyan-400 animate-pulse">
-            <div className="absolute inset-0 rounded-full bg-cyan-400 animate-ping opacity-75"></div>
-          </div>
-          <span className="font-semibold text-xs tracking-wider uppercase bg-gradient-to-r from-cyan-300 via-teal-200 to-indigo-300 bg-clip-text text-transparent">
-            JEV AI System-1
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="font-semibold text-xs tracking-wider uppercase text-white">
+            JEV Decision Engine
           </span>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/40">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-800 text-surface-300 font-mono border border-surface-700">
             &lt;1ms
           </span>
         </button>
       ) : (
-        <div className="w-80 md:w-96 rounded-2xl bg-slate-950/90 text-slate-100 border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl p-5 overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5">
+        <div className="w-80 md:w-96 rounded-xl bg-surface-950 text-surface-100 border border-surface-800 shadow-2xl p-5 overflow-hidden transition-all">
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-surface-800">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981]"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               <h3 className="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
-                JEV AI Engine
-                <span className="text-[10px] uppercase font-mono font-medium text-cyan-400 bg-cyan-950/80 px-1.5 py-0.5 rounded border border-cyan-800">
+                JEV Decision Engine
+                <span className="text-[10px] uppercase font-mono font-medium text-surface-400 bg-surface-900 px-1.5 py-0.5 rounded border border-surface-800">
                   Strict Mode
                 </span>
               </h3>
@@ -92,7 +90,7 @@ export default function JevAssistantWidget() {
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close JEV AI Widget"
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800/60 transition-colors"
+              className="text-surface-400 hover:text-white p-1 rounded-md hover:bg-surface-800 transition-colors"
             >
               ✕
             </button>
@@ -100,10 +98,10 @@ export default function JevAssistantWidget() {
 
           {/* Task Selector */}
           <div className="mb-4">
-            <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-semibold text-surface-400 uppercase tracking-wider mb-1.5">
               Select Fast Decision Task
             </label>
-            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800">
+            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-lg bg-surface-900 border border-surface-800">
               {(['OPTIMIZE_PRICING', 'CLASSIFY_PRODUCT', 'DETECT_FRAUD'] as const).map((t) => (
                 <button
                   key={t}
@@ -114,10 +112,10 @@ export default function JevAssistantWidget() {
                     else if (t === 'CLASSIFY_PRODUCT') setInputVal('Wireless Headphones');
                     else setInputVal('2500');
                   }}
-                  className={`py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${
+                  className={`py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${
                     task === t
-                      ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-md'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                      ? 'bg-brand-600 text-white shadow-sm'
+                      : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800'
                   }`}
                 >
                   {t === 'OPTIMIZE_PRICING' ? 'Price' : t === 'CLASSIFY_PRODUCT' ? 'Catalog' : 'Fraud'}
@@ -128,14 +126,14 @@ export default function JevAssistantWidget() {
 
           {/* Input field */}
           <div className="mb-4">
-            <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-semibold text-surface-400 uppercase tracking-wider mb-1.5">
               {task === 'OPTIMIZE_PRICING' ? 'Base Price ($)' : task === 'CLASSIFY_PRODUCT' ? 'Product Name' : 'Transaction Amount ($)'}
             </label>
             <input
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+              className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-surface-900 border border-surface-700 text-surface-100 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
               placeholder="Enter value..."
             />
           </div>
@@ -144,22 +142,22 @@ export default function JevAssistantWidget() {
           <button
             onClick={handleRunDecision}
             disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-600 text-white font-semibold text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] active:scale-[0.99] disabled:opacity-50 transition-all cursor-pointer"
+            className="w-full py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-semibold text-xs tracking-wider uppercase transition-colors disabled:opacity-50 cursor-pointer"
           >
-            {loading ? 'Executing JEV Decision...' : 'Run JEV Decision (< 1ms)'}
+            {loading ? 'Executing Decision...' : 'Run Decision (< 1ms)'}
           </button>
 
           {/* Results display */}
           {result && (
-            <div className="mt-4 p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2 animate-in fade-in">
-              <div className="flex items-center justify-between text-[11px] border-b border-slate-800 pb-1.5">
-                <span className="font-mono text-cyan-400 font-semibold">{result.engine}</span>
-                <span className="text-slate-400 font-mono">{result.latencyMs} ms | Conf: {(result.confidence * 100).toFixed(0)}%</span>
+            <div className="mt-4 p-3 rounded-lg bg-surface-900 border border-surface-800 text-xs space-y-2">
+              <div className="flex items-center justify-between text-[11px] border-b border-surface-800 pb-1.5">
+                <span className="font-mono text-brand-400 font-semibold">{result.engine}</span>
+                <span className="text-surface-400 font-mono">{result.latencyMs} ms | Conf: {(result.confidence * 100).toFixed(0)}%</span>
               </div>
-              <p className="text-slate-200 font-medium leading-relaxed italic">
-                "{result.reasoning}"
+              <p className="text-surface-200 font-medium leading-relaxed italic">
+                &ldquo;{result.reasoning}&rdquo;
               </p>
-              <div className="p-2 rounded bg-slate-950 font-mono text-[10px] text-teal-300 overflow-x-auto border border-slate-800">
+              <div className="p-2 rounded bg-surface-950 font-mono text-[10px] text-emerald-400 overflow-x-auto border border-surface-800">
                 <pre>{JSON.stringify(result.decision, null, 2)}</pre>
               </div>
             </div>

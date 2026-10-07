@@ -15,7 +15,6 @@ import React from 'react';
 import Link from 'next/link';
 import { NexusLogo } from './NexusLogo';
 import { NewsletterForm } from './NewsletterForm';
-import { AgentComplianceBadge } from './ui/AgentComplianceBadge';
 import { 
   ShieldCheck, 
   Lock, 
@@ -25,6 +24,17 @@ import {
   Share2,
   Mail
 } from 'lucide-react';
+import {
+  VisaCardIcon,
+  MastercardIcon,
+  StripePaymentIcon,
+  ApplePayIcon,
+  GooglePayIcon,
+  SecureLockIcon,
+  BuyerProtectionIcon,
+  ShippingTruckIcon,
+  ReturnPolicyIcon
+} from './ui/icons';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -55,6 +65,9 @@ export function Footer() {
   const legalLinks = [
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Terms of Service', href: '/terms' },
+    { label: 'Cookie Policy', href: '/cookies' },
+    { label: 'Shipping & Delivery', href: '/shipping' },
+    { label: 'Refunds & Returns', href: '/returns' },
     { label: 'Security Disclosures', href: '/security-policy' },
     { label: 'Accessibility (WCAG 2.1 AA)', href: '/accessibility' },
   ];
@@ -63,19 +76,19 @@ export function Footer() {
     <footer 
       role="contentinfo" 
       aria-label="Site Footer"
-      className="w-full border-t border-surface-200/60 dark:border-surface-800/60 bg-surface-50/80 dark:bg-surface-950/80 backdrop-blur-xl transition-colors duration-300"
+      className="w-full border-t border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-950 transition-colors duration-300"
     >
       {/* Top Banner: Marketplace Trust Guarantee */}
       <div className="border-b border-surface-200/40 dark:border-surface-800/40 py-4 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-400/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-              <ShieldCheck className="h-4 w-4" />
+              <BuyerProtectionIcon size={18} />
             </div>
             <div>
               <p className="text-xs font-semibold text-surface-900 dark:text-surface-100 flex items-center gap-1.5">
                 Nexus Buyer Protection
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 border border-emerald-300 dark:border-emerald-700">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 border border-emerald-300 dark:border-emerald-700">
                   GUARANTEED
                 </span>
               </p>
@@ -84,10 +97,16 @@ export function Footer() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs text-surface-600 dark:text-surface-300">
-            <span className="font-semibold text-surface-900 dark:text-surface-100">Direct Artisan Payouts</span>
+          <div className="flex items-center gap-6 text-xs text-surface-600 dark:text-surface-300">
+            <div className="flex items-center gap-1.5">
+              <ShippingTruckIcon size={16} className="text-brand-500" />
+              <span className="font-semibold text-surface-900 dark:text-surface-100">Direct Artisan Payouts</span>
+            </div>
             <span className="text-surface-300 dark:text-surface-700">&bull;</span>
-            <span>Carbon-Neutral Logistics</span>
+            <div className="flex items-center gap-1.5">
+              <ReturnPolicyIcon size={16} className="text-amber-500" />
+              <span>30-Day Escrow Returns</span>
+            </div>
           </div>
         </div>
       </div>
@@ -201,14 +220,40 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Verified Payment Methods & Escrow Gateway Bar */}
+        <div className="mt-12 pt-6 border-t border-surface-200/50 dark:border-surface-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-surface-500 dark:text-surface-400">
+            <SecureLockIcon size={16} className="text-emerald-500" />
+            <span>Encrypted Multi-Vendor Settlement Gateways:</span>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="px-2.5 py-1.5 rounded-lg bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center text-surface-700 dark:text-surface-300 hover:text-brand-500 transition-colors" title="Visa International">
+              <VisaCardIcon size={28} />
+            </div>
+            <div className="px-2.5 py-1.5 rounded-lg bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center text-surface-700 dark:text-surface-300 hover:text-brand-500 transition-colors" title="Mastercard">
+              <MastercardIcon size={24} />
+            </div>
+            <div className="px-2.5 py-1.5 rounded-lg bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center text-surface-700 dark:text-surface-300 hover:text-brand-500 transition-colors" title="Stripe Escrow Connect">
+              <StripePaymentIcon size={26} />
+            </div>
+            <div className="px-2.5 py-1.5 rounded-lg bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center text-surface-700 dark:text-surface-300 hover:text-brand-500 transition-colors" title="Apple Pay">
+              <ApplePayIcon size={26} />
+            </div>
+            <div className="px-2.5 py-1.5 rounded-lg bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 flex items-center text-surface-700 dark:text-surface-300 hover:text-brand-500 transition-colors" title="Google Pay">
+              <GooglePayIcon size={26} />
+            </div>
+          </div>
+        </div>
+
         {/* Bottom Bar: Copyright, Security & Compliance */}
-        <div className="mt-12 pt-8 border-t border-surface-200/60 dark:border-surface-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-surface-600 dark:text-surface-300 font-medium">
+        <div className="mt-6 pt-6 border-t border-surface-200/60 dark:border-surface-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-surface-600 dark:text-surface-300 font-medium">
           <div className="flex flex-wrap items-center gap-4">
             <span>&copy; {currentYear} Nexus Commerce Inc. All rights reserved.</span>
             <span className="hidden sm:inline text-surface-300 dark:text-surface-700">•</span>
             <span className="flex items-center gap-1">
               <Lock className="h-3 w-3 text-emerald-500" />
-              PCI-DSS Compliant & Double-Entry Secured
+              PCI-DSS Level 1 Escrow Secured
             </span>
           </div>
 

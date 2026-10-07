@@ -162,7 +162,7 @@ export default function CustomerPage() {
                 <div
                   key={order._id}
                   onClick={() => handleViewOrderDetail(order._id)}
-                  className={`glass-panel rounded-xl p-5 cursor-pointer transition-all hover:border-primary/30 ${
+                  className={`bg-surface-container rounded-xl border border-white/5 p-5 cursor-pointer transition-all hover:border-primary/30 ${
                     selectedOrder?._id === order._id ? 'border-primary ring-1 ring-primary/20' : ''
                   }`}
                 >
@@ -273,7 +273,7 @@ export default function CustomerPage() {
 
       {/* Review Modal */}
       {reviewModalOpen && reviewingProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
           <div className="bg-surface rounded-2xl max-w-md w-full overflow-hidden shadow-2xl relative">
             <div className="p-6 border-b border-outline-variant/30 flex justify-between items-center">
               <h3 className="text-title-lg font-bold">Write a Review</h3>

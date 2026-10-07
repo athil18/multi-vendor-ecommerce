@@ -57,7 +57,7 @@ export const AgentComplianceBadge: React.FC<AgentComplianceBadgeProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border backdrop-blur-sm transition-all duration-200 hover:scale-105 ${config.color} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium border transition-colors ${config.color} ${className}`}
       title={`Governed by ${agentName} (${config.label})`}
     >
       <Icon className="w-3.5 h-3.5 animate-pulse" />

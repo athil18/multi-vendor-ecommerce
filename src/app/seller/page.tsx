@@ -16,12 +16,14 @@ import { Label } from '@/components/ui/Label';
 import { Select } from '@/components/ui/Select';
 import { Card, CardContent } from '@/components/ui/Card';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { SellerProductPublishModal } from '@/components/seller/SellerProductPublishModal';
 
 export default function SellerPage() {
   const user = useAuthStore((state) => state.user);
   const queryClient = useQueryClient();
 
   const [creatingStore, setCreatingStore] = useState(false);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   // Form states for Store creation
   const [storeName, setStoreName] = useState('');
@@ -161,7 +163,7 @@ export default function SellerPage() {
     return (
       <div className="mx-auto max-w-2xl px-6 py-16 flex flex-col gap-8">
         <div className="flex flex-col items-center text-center gap-2">
-          <div className="rounded-full bg-primary-container/20 p-4 border border-primary/20 text-primary">
+          <div className="rounded-xl bg-primary-container/20 p-4 border border-primary/20 text-primary">
             <Store className="h-8 w-8" />
           </div>
           <h1 className="text-display-lg text-on-surface">Set Up Your Store</h1>
@@ -244,68 +246,62 @@ export default function SellerPage() {
             </Badge>
           )}
           
-          <Button variant="primary">
+          <Button variant="primary" onClick={() => setIsPublishModalOpen(true)}>
             <Plus className="h-4 w-4 mr-1.5" />
             New Product
           </Button>
         </div>
       </div>
 
-      {/* Metrics Grid — Glass Panels */}
+      {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-container/10 rounded-full blur-xl group-hover:bg-tertiary-container/20 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-label-md text-on-surface-variant mb-1">Gross Revenue</p>
             <p className="text-headline-lg text-on-surface">${(metrics?.totalRevenue || 0).toFixed(2)}</p>
-            <p className="text-xs font-medium text-tertiary mt-1 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" /> +14.5% vs last month
-            </p>
+            <p className="text-xs text-on-surface-variant mt-1">Settled payments</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+          <div className="w-10 h-10 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-tertiary">
             <DollarSign className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-xl group-hover:bg-secondary/10 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-label-md text-on-surface-variant mb-1">Pending Payout</p>
             <p className="text-headline-lg text-on-surface">${(metrics?.pendingPayout || 0).toFixed(2)}</p>
-            <p className="text-xs text-on-surface-variant mt-1">Available for withdrawal</p>
+            <p className="text-xs text-on-surface-variant mt-1">Held in escrow</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+          <div className="w-10 h-10 rounded-lg bg-secondary-container/20 flex items-center justify-center text-secondary">
             <DollarSign className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-label-md text-on-surface-variant mb-1">Total Orders</p>
             <p className="text-headline-lg text-on-surface">{metrics?.totalOrders || 0}</p>
-            <p className="text-xs text-on-surface-variant mt-1">All-time units moved</p>
+            <p className="text-xs text-on-surface-variant mt-1">All orders processed</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
             <ShoppingBag className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-label-md text-on-surface-variant mb-1">Active Products</p>
             <p className="text-headline-lg text-on-surface">{metrics?.activeProducts || 0}</p>
-            <p className="text-xs text-on-surface-variant mt-1">Live on marketplace</p>
+            <p className="text-xs text-on-surface-variant mt-1">Listed in catalog</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
             <Package className="h-5 w-5" />
           </div>
         </div>
       </div>
 
       {/* Orders Management Table */}
-      <div className="glass-panel rounded-xl border border-white/5 flex flex-col overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.4)]">
+      <div className="bg-surface-container rounded-xl border border-white/10 flex flex-col overflow-hidden shadow-lg">
         <div className="border-b border-white/10 p-4 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-title-md text-on-surface">Recent Fulfillment Queue</h2>
           <Button variant="outline" size="sm" onClick={() => loadSellerData()}>
@@ -324,7 +320,7 @@ export default function SellerPage() {
             />
           ) : (
             <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-surface-container-high/90 backdrop-blur-md z-10 text-label-md text-on-surface-variant border-b border-white/10">
+              <thead className="sticky top-0 bg-surface-container-high z-10 text-label-md text-on-surface-variant border-b border-white/10">
                 <tr>
                   <th className="py-3 px-4 font-medium">Order ID / Date</th>
                   <th className="py-3 px-4 font-medium">Item Details</th>
@@ -373,6 +369,15 @@ export default function SellerPage() {
           )}
         </div>
       </div>
+
+      {/* Tesler's Law (#19) Progressive Disclosure Product Publish Modal */}
+      <SellerProductPublishModal
+        isOpen={isPublishModalOpen}
+        onClose={() => setIsPublishModalOpen(false)}
+        onProductCreated={() => {
+          queryClient.invalidateQueries({ queryKey: ['sellerMetrics'] });
+        }}
+      />
       
     </div>
   );

@@ -192,7 +192,7 @@ export default function ProductsPage() {
         </div>
 
         {/* ─── Control Toolbar ──────────────────────────────────────────────── */}
-        <div className="glass-luxury-card specular-border rounded-3xl p-4 sm:p-5 mb-8 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl p-4 sm:p-5 mb-8 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
           {/* Search Bar */}
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400" />
@@ -202,7 +202,7 @@ export default function ProductsPage() {
               aria-label="Search products"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-surface-50/80 dark:bg-surface-900/80 text-surface-900 dark:text-white text-sm rounded-2xl border border-surface-200 dark:border-surface-700/80 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium placeholder:text-surface-400"
+              className="w-full pl-11 pr-4 py-2.5 bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-white text-sm rounded-lg border border-surface-200 dark:border-surface-700 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium placeholder:text-surface-400"
             />
             {searchTerm && (
               <button
@@ -219,7 +219,7 @@ export default function ProductsPage() {
             <Button
               variant="outline"
               onClick={() => setIsFilterDrawerOpen(!isFilterDrawerOpen)}
-              className={`rounded-2xl px-5 h-12 text-xs font-bold border-surface-300 dark:border-surface-700 flex items-center gap-2 ${
+              className={`rounded-lg px-4 h-10 text-xs font-bold border-surface-300 dark:border-surface-700 flex items-center gap-2 ${
                 activeFilterCount > 0 ? 'bg-brand-50 dark:bg-brand-950/60 border-brand-500 text-brand-600 dark:text-brand-400' : ''
               }`}
             >
@@ -227,7 +227,7 @@ export default function ProductsPage() {
               <span>Filters {activeFilterCount > 0 ? `(${activeFilterCount})` : ''}</span>
             </Button>
 
-            <div className="flex items-center gap-2 bg-surface-50/80 dark:bg-surface-900/80 px-3.5 py-2 rounded-2xl border border-surface-200 dark:border-surface-700/80">
+            <div className="flex items-center gap-2 bg-surface-50 dark:bg-surface-800 px-3.5 py-2 rounded-lg border border-surface-200 dark:border-surface-700">
               <ArrowUpDown className="h-4 w-4 text-surface-400 flex-shrink-0" />
               <select
                 value={sortBy}
@@ -246,7 +246,7 @@ export default function ProductsPage() {
 
         {/* ─── Expandable Faceted Luxury Filter Panel ───────────────────────── */}
         {isFilterDrawerOpen && (
-          <div className="glass-luxury-card specular-border rounded-3xl p-6 sm:p-8 mb-10 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl p-6 sm:p-8 mb-10 shadow-md">
             <div className="flex items-center justify-between pb-4 border-b border-surface-200/60 dark:border-surface-800/80 mb-6">
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-brand-500" />
@@ -297,9 +297,9 @@ export default function ProductsPage() {
                       <button
                         key={mat}
                         onClick={() => toggleMaterial(mat)}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 ${
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
                           isSelected
-                            ? 'bg-purple-600 text-white shadow-md'
+                            ? 'bg-surface-900 dark:bg-white text-white dark:text-surface-900 shadow-sm'
                             : 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700'
                         }`}
                       >
@@ -318,7 +318,7 @@ export default function ProductsPage() {
                     <span className="text-xs font-bold text-surface-500 uppercase tracking-wider">
                       Maximum Price Limit
                     </span>
-                    <span className="text-sm font-black text-surface-900 dark:text-white font-geist">
+                    <span className="text-sm font-bold text-surface-900 dark:text-white font-mono">
                       ${maxPriceFilter}
                     </span>
                   </div>
@@ -341,7 +341,7 @@ export default function ProductsPage() {
                       onChange={(e) => setInStockOnly(e.target.checked)}
                       className="rounded text-brand-600 focus:ring-brand-500"
                     />
-                    <span>Immediate Workshop Dispatch (In Stock)</span>
+                    <span>Immediate Dispatch (In Stock)</span>
                   </label>
                   <label className="flex items-center gap-2 text-xs font-semibold text-surface-700 dark:text-surface-300 cursor-pointer">
                     <input
@@ -350,7 +350,7 @@ export default function ProductsPage() {
                       onChange={(e) => setVerifiedOnly(e.target.checked)}
                       className="rounded text-brand-600 focus:ring-brand-500"
                     />
-                    <span>Verified Master Guild Only</span>
+                    <span>Verified Sellers Only</span>
                   </label>
                 </div>
               </div>
@@ -358,24 +358,24 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* ─── Active Filter Badges ─────────────────────────────────────────── */}
+        {/* Active Filter Badges */}
         {activeFilterCount > 0 && (
           <div className="flex items-center gap-2 flex-wrap mb-6">
             <span className="text-xs text-surface-400 font-semibold mr-1">Active Filters:</span>
             {selectedCategory !== 'all' && (
-              <span className="specular-pill text-[10px] text-brand-600 flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300">
                 Category: {selectedCategory}
                 <button onClick={() => setSelectedCategory('all')}><X className="h-3 w-3" /></button>
               </span>
             )}
             {selectedMaterials.map((m) => (
-              <span key={m} className="specular-pill text-[10px] text-purple-600 flex items-center gap-1">
+              <span key={m} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300">
                 {m}
                 <button onClick={() => toggleMaterial(m)}><X className="h-3 w-3" /></button>
               </span>
             ))}
             {inStockOnly && (
-              <span className="specular-pill text-[10px] text-emerald-600 flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300">
                 In Stock Only
                 <button onClick={() => setInStockOnly(false)}><X className="h-3 w-3" /></button>
               </span>
@@ -399,7 +399,7 @@ export default function ProductsPage() {
             Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[420px] rounded-3xl glass-luxury-card animate-pulse border border-surface-200 dark:border-surface-800"
+                className="h-[420px] rounded-xl bg-surface-100 dark:bg-surface-800 animate-pulse border border-surface-200 dark:border-surface-800"
               />
             ))
           ) : filteredProducts.length > 0 ? (
@@ -416,18 +416,18 @@ export default function ProductsPage() {
               />
             ))
           ) : (
-            <div className="col-span-full py-24 text-center glass-luxury-card specular-border rounded-3xl p-8">
-              <ShoppingBag className="h-14 w-14 text-surface-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-black text-surface-900 dark:text-white mb-2">
-                No matching atelier specimens found
+            <div className="col-span-full py-20 text-center bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl p-8">
+              <ShoppingBag className="h-12 w-12 text-surface-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-surface-900 dark:text-white mb-2">
+                No products found
               </h3>
-              <p className="text-surface-500 max-w-md mx-auto mb-6 text-sm font-normal">
-                Refine your faceted parameters, search keywords, or reset filters to browse the complete master collection.
+              <p className="text-surface-500 max-w-md mx-auto mb-6 text-sm">
+                Try adjusting your search terms or filters to find what you are looking for.
               </p>
               <Button
                 variant="outline"
                 onClick={resetAllFilters}
-                className="rounded-full px-6"
+                className="rounded-lg px-5 py-2 font-medium"
               >
                 Reset All Filters
               </Button>

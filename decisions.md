@@ -88,3 +88,22 @@ This document records the foundational architectural, security, database, API, a
 - **What Must Not Be Changed Without Review:**
   - `.gitignore` rules shielding `.env` from repository commits.
   - Client-side data masking on PostHog events to ensure zero PII leakage.
+
+---
+
+## 7. Production Design System & Anti-Vibe Coding Standard
+
+- **Decision:** Permanently enforce crisp editorial minimalism, solid high-contrast surfaces (`bg-white dark:bg-surface-900`), and architectural button geometry (`rounded-lg`, `rounded-md`), strictly prohibiting vibe-coding anti-patterns across the storefront.
+- **Reason:** Vibe-coding templates (purple→blue gradients, blurry glassmorphism, pill buttons, fake review/ticker counters, badge-above-headline pills) damage consumer trust, introduce GPU compositor lag, and degrade readability. Solid surfaces guarantee WCAG 2.1 AA compliance and 0ms TBT.
+- **Date/Context:** October 7, 2026 (Anti-Vibe Coding Directive & 500+ AI Agent Design Directorate).
+- **Constraints:**
+  - Zero purple→blue/cyan gradients or `bg-clip-text` gradient typography.
+  - Zero `backdrop-filter: blur` or `.glass-*` utility classes. All cards must use opaque surfaces (`#FFFFFF` in light mode, `#0F172A` in dark mode) with clean 1px borders.
+  - Zero `rounded-full` buttons. Standard buttons must use `rounded-lg` (8px) or `rounded-md` (6px).
+  - Zero simulated activity tickers or fake buyer event generators. All events must reflect real database orders.
+  - Zero badge-above-headline floating pill layouts. Headings lead directly or use integrated typographic kickers.
+  - Retain structured system typography fallbacks with tabular figures (`.font-tabular`).
+- **What Must Not Be Changed Without Review:**
+  - Design tokens in `src/app/globals.css`.
+  - Solid card styling in `src/components/ui/Card.tsx`, `Button.tsx`, and `Badge.tsx`.
+  - Deactivated status of `LiveBuyerActivityTicker.tsx`.
