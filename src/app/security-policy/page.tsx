@@ -26,10 +26,10 @@ export default function SecurityPolicyPage() {
           </Link>
         </div>
 
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold uppercase tracking-widest mb-4">
-            <Lock className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-            Zero-Trust Architecture
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 text-xs font-semibold uppercase tracking-wider mb-4">
+            <Lock className="h-3.5 w-3.5 text-surface-600 dark:text-surface-400" />
+            Security Architecture
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
             Security & Cryptographic Standards

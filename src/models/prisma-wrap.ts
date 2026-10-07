@@ -8,15 +8,16 @@
 /**
  * Safe string conversion for IDs (handling strings, numbers, cuid/uuid, MockObjectId, nested objects)
  */
-export function toIdString(val: any): string | undefined {
+export function toIdString(val: unknown): string | undefined {
   if (val === null || val === undefined) return undefined;
   if (typeof val === 'string') return val;
   if (typeof val === 'number') return String(val);
   if (typeof val === 'object') {
-    if (val._id !== undefined) return toIdString(val._id);
-    if (val.id !== undefined) return toIdString(val.id);
-    if (typeof val.toString === 'function' && val.toString !== Object.prototype.toString) {
-      return val.toString();
+    const obj = val as Record<string, unknown>;
+    if (obj._id !== undefined) return toIdString(obj._id);
+    if (obj.id !== undefined) return toIdString(obj.id);
+    if (typeof obj.toString === 'function' && obj.toString !== Object.prototype.toString) {
+      return obj.toString();
     }
   }
   return String(val);
@@ -25,22 +26,22 @@ export function toIdString(val: any): string | undefined {
 /**
  * Recursively normalizes query objects so legacy `_id` fields are rewritten to Prisma `id`
  */
-export function normalizeWhere(where: any): any {
-  if (!where || typeof where !== 'object') return where;
-  if (Array.isArray(where)) return where.map(normalizeWhere);
+export function normalizeWhere<T = Record<string, unknown>>(where: unknown): T {
+  if (!where || typeof where !== 'object') return where as T;
+  if (Array.isArray(where)) return where.map(normalizeWhere) as unknown as T;
 
-  const clean: any = {};
-  for (const [key, val] of Object.entries(where)) {
+  const clean: Record<string, unknown> = {};
+  for (const [key, val] of Object.entries(where as Record<string, unknown>)) {
     if (key === '_id') {
-      if (val && typeof val === 'object' && !Array.isArray(val) && (val as any).in) {
-        clean.id = { in: (val as any).in.map(toIdString).filter(Boolean) };
+      if (val && typeof val === 'object' && !Array.isArray(val) && 'in' in val && Array.isArray((val as { in: unknown[] }).in)) {
+        clean.id = { in: (val as { in: unknown[] }).in.map(toIdString).filter((id): id is string => Boolean(id)) };
       } else {
         clean.id = toIdString(val);
       }
     } else if (key.endsWith('Id') || key === 'sellerId' || key === 'productId' || key === 'orderId' || key === 'userId' || key === 'categoryId' || key === 'shippingAddressId' || key === 'variantId') {
       if (val && typeof val === 'object' && !Array.isArray(val)) {
-        if ((val as any).in) {
-          clean[key] = { in: (val as any).in.map(toIdString).filter(Boolean) };
+        if ('in' in val && Array.isArray((val as { in: unknown[] }).in)) {
+          clean[key] = { in: (val as { in: unknown[] }).in.map(toIdString).filter((id): id is string => Boolean(id)) };
         } else {
           clean[key] = toIdString(val);
         }
@@ -49,33 +50,51 @@ export function normalizeWhere(where: any): any {
       }
     } else if (key === 'OR' || key === 'AND' || key === 'NOT') {
       clean[key] = Array.isArray(val) ? val.map(normalizeWhere) : normalizeWhere(val);
-    } else if (val && typeof val === 'object' && !Array.isArray(val) && (val as any).in) {
-      clean[key] = { in: (val as any).in.map(toIdString).filter(Boolean) };
+    } else if (val && typeof val === 'object' && !Array.isArray(val) && 'in' in val && Array.isArray((val as { in: unknown[] }).in)) {
+      clean[key] = { in: (val as { in: unknown[] }).in.map(toIdString).filter((id): id is string => Boolean(id)) };
     } else if (val && typeof val === 'object' && !(val instanceof Date)) {
       clean[key] = normalizeWhere(val);
     } else {
       clean[key] = val;
     }
   }
-  return clean;
+  return clean as T;
 }
 
-export function wrapRecord<T extends Record<string, any>>(record: T | null): any {
+export type WithLegacyId<T> = T & { _id?: string };
+
+export function wrapRecord<T extends Record<string, unknown>>(record: T | null): WithLegacyId<T> | null {
   if (!record) return record;
   if (record && typeof record === 'object') {
-    if (record.id && !record._id) {
+    if ('id' in record && !('_id' in record)) {
       Object.defineProperty(record, '_id', {
-        value: record.id,
+        value: (record as Record<string, unknown>).id,
         enumerable: true,
         configurable: true,
         writable: true,
       });
     }
   }
-  return record;
+  return record as WithLegacyId<T>;
 }
 
-export function wrapRecords<T extends Record<string, any>>(records: T[]): any[] {
-  if (!Array.isArray(records)) return records;
-  return records.map(wrapRecord);
+export function wrapRecords<T extends Record<string, unknown>>(records: T[]): WithLegacyId<T>[] {
+  if (!Array.isArray(records)) return [];
+  return records.map(wrapRecord).filter((r): r is WithLegacyId<T> => r !== null);
 }
+
+/**
+ * Generates a cryptographically random, locked password placeholder token
+ * for automated relational fallbacks, preventing hardcoded credential reuse.
+ */
+export function getSecureDummyPasswordHash(): string {
+  const rand = Math.random().toString(36).substring(2) + Date.now().toString(36);
+  // Uses Node crypto if available in runtime
+  try {
+    const crypto = require('crypto');
+    return `$locked$argon2id$${crypto.randomBytes(24).toString('hex')}`;
+  } catch {
+    return `$locked$argon2id$${rand}`;
+  }
+}
+

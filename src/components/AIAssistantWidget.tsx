@@ -27,18 +27,13 @@ export function AIAssistantWidget() {
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "AI Copilot - Close AI Assistant" : "AI Copilot - Open AI Assistant"}
+          aria-label={isOpen ? "Customer Support - Close Assistant" : "Customer Support - Open Assistant"}
           aria-expanded={isOpen}
           aria-controls="nexus-ai-copilot-chat"
-          className="group relative flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 text-white rounded-full shadow-2xl hover:shadow-brand-500/25 hover:scale-105 transition-all duration-300 border border-white/20 backdrop-blur-md cursor-pointer"
+          className="group relative flex items-center gap-2 px-3.5 py-2.5 bg-surface-900 dark:bg-white text-white dark:text-surface-900 rounded-lg shadow-lg hover:bg-surface-800 dark:hover:bg-surface-100 transition-colors border border-surface-200 dark:border-surface-800 cursor-pointer text-sm font-medium"
         >
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </span>
-          <Bot className="h-5 w-5 animate-pulse" />
-          <span className="font-semibold text-sm tracking-wide hidden sm:inline">AI Copilot</span>
-          <Sparkles className="h-4 w-4 text-amber-300 group-hover:rotate-12 transition-transform" />
+          <Bot className="h-4 w-4" />
+          <span className="hidden sm:inline">Help & Support</span>
         </button>
       </div>
 

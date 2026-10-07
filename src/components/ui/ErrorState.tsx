@@ -11,18 +11,22 @@ export interface ErrorStateProps {
   variant?: 'fullscreen' | 'card' | 'inline';
 }
 
-export function ErrorState({
-  title = 'Something went wrong',
-  message = "We're sorry, but we encountered an unexpected error while loading this section.",
+function ErrorContent({
+  title,
+  message,
   error,
   reset,
-  variant = 'card'
-}: ErrorStateProps) {
-  const isDev = process.env.NODE_ENV === 'development';
-
-  const Content = () => (
+  isDev,
+}: {
+  title: string;
+  message: string;
+  error?: Error;
+  reset?: () => void;
+  isDev: boolean;
+}) {
+  return (
     <div className="flex flex-col items-center justify-center text-center p-6 gap-4">
-      <div className="h-16 w-16 bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-500 rounded-full flex items-center justify-center mb-2">
+      <div className="h-16 w-16 bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-500 rounded-lg flex items-center justify-center mb-2">
         <AlertTriangle className="h-8 w-8" />
       </div>
       
@@ -56,13 +60,23 @@ export function ErrorState({
       </div>
     </div>
   );
+}
+
+export function ErrorState({
+  title = 'Something went wrong',
+  message = "We're sorry, but we encountered an unexpected error while loading this section.",
+  error,
+  reset,
+  variant = 'card'
+}: ErrorStateProps) {
+  const isDev = process.env.NODE_ENV === 'development';
 
   if (variant === 'fullscreen') {
     return (
       <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex flex-col items-center justify-center p-4">
         <Card className="max-w-xl w-full border-red-200 dark:border-red-900/30">
           <CardContent>
-            <Content />
+            <ErrorContent title={title} message={message} error={error} reset={reset} isDev={isDev} />
           </CardContent>
         </Card>
       </div>
@@ -72,7 +86,7 @@ export function ErrorState({
   if (variant === 'inline') {
     return (
       <div className="border border-red-200 dark:border-red-900/30 rounded-xl bg-red-50/50 dark:bg-red-900/10">
-        <Content />
+        <ErrorContent title={title} message={message} error={error} reset={reset} isDev={isDev} />
       </div>
     );
   }
@@ -81,7 +95,7 @@ export function ErrorState({
   return (
     <Card className="border-red-200 dark:border-red-900/30">
       <CardContent>
-        <Content />
+        <ErrorContent title={title} message={message} error={error} reset={reset} isDev={isDev} />
       </CardContent>
     </Card>
   );

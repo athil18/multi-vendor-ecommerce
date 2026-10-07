@@ -31,15 +31,15 @@ export default function NewArrivalsPage() {
         </div>
 
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-widest mb-4">
-            <Sparkles className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
-            Fresh From The Ateliers
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-semibold mb-4">
+            <Clock className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
+            <span>Recently Listed Products</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
-            New Artisan Arrivals
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white tracking-tight font-geist mb-4">
+            New Arrivals
           </h1>
           <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
-            Recently completed handcrafted releases and limited production runs from our vetted creators.
+            Recently added catalog releases and small-batch items from verified sellers.
           </p>
         </div>
 

@@ -128,7 +128,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       };
 
       response = {
-        message: `🛒 **AI Agent Cart Pushing Executed!**\n\nI matched and staged **${matchedProduct.name}** directly from atelier **${sellerName}** for your cart.\n\n• **Price**: $${price.toFixed(2)}\n• **Category**: ${matchedProduct.category?.name || 'Curated'}\n• **Escrow Split**: $${escrowSplit.sellerAmount.toFixed(2)} (90% Seller Escrow) + $${escrowSplit.platformFee.toFixed(2)} (10% Platform Fee)\n• **Buyer Guarantee**: 100% Escrow Protection & 48h Merchant Dispatch\n\nClick **"Push to Cart"** below to confirm this item into your active cart!`,
+        message: `**Cart Staging Confirmed**\n\nI matched and staged **${matchedProduct.name}** directly from workshop **${sellerName}** for your cart.\n\n• **Price**: $${price.toFixed(2)}\n• **Category**: ${matchedProduct.category?.name || 'Curated'}\n• **Escrow Split**: $${escrowSplit.sellerAmount.toFixed(2)} (90% Seller Escrow) + $${escrowSplit.platformFee.toFixed(2)} (10% Platform Fee)\n• **Buyer Guarantee**: 100% Escrow Protection & 48h Merchant Dispatch\n\nClick **"Push to Cart"** below to confirm this item into your active cart!`,
         dispatchedAgents: [
           'product-behavioral-nudge-engine',
           'engineering-payments-billing-engineer',
@@ -138,14 +138,14 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
         action: 'ADD_TO_CART',
         itemToCart,
         suggestedActions: [
-          { label: `🛒 Push "${matchedProduct.name.slice(0, 22)}..." to Cart`, action: 'PUSH_TO_CART', item: itemToCart },
+          { label: `Push "${matchedProduct.name.slice(0, 22)}..." to Cart`, action: 'PUSH_TO_CART', item: itemToCart },
           { label: 'Proceed to Checkout', href: '/checkout' },
           { label: 'Browse All Categories', href: '/categories' },
         ],
       };
     } else {
       response = {
-        message: `I was unable to locate a matching product right now. Please explore our 500+ verified catalog items across categories.`,
+        message: `I was unable to locate a matching product right now. Please explore our verified catalog items across categories.`,
         dispatchedAgents: ['product-behavioral-nudge-engine', '04-sql-query-agent'],
         suggestedActions: [{ label: 'Explore Products', href: '/products' }],
       };
@@ -198,7 +198,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     });
 
     const productList = featuredProducts.map(
-      (p) => `• **${p.name}** - $${p.basePrice.toFixed(2)} (⭐ ${p.rating.toFixed(1)}/5.0)`
+      (p) => `• **${p.name}** - $${p.basePrice.toFixed(2)} (Rating: ${p.rating.toFixed(1)}/5.0)`
     ).join('\n');
 
     response = {
@@ -212,7 +212,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   } else if (lowerPrompt.includes('seller') || lowerPrompt.includes('store') || lowerPrompt.includes('sales') || lowerPrompt.includes('vendor') || lowerPrompt.includes('seo') || lowerPrompt.includes('traffic')) {
     // Dispatched to marketing-seo-specialist & 08-data-analysis-agent & finance-financial-analyst
     response = {
-      message: `### 📈 Nexus Multi-Vendor Growth Insights\n\n1. **Stripe Connect Instant Payouts**: Ensure your Express Connected account is verified to unlock automatic 48h settlement.\n2. **Catalog Optimization**: High-converting stores include at least 3 high-res images and detailed variant matrices (sizes/colors).\n3. **Trust Score Elevation**: Maintain 0 disputes and 4.8+ ratings to earn the **Verified Top Vendor** compliance badge.\n4. **AI-Optimized Metadata**: Include target keywords in product titles and descriptions for maximum marketplace search visibility.`,
+      message: `### Nexus Multi-Vendor Growth Insights\n\n1. **Stripe Connect Instant Payouts**: Ensure your Express Connected account is verified to unlock automatic 48h settlement.\n2. **Catalog Optimization**: High-converting stores include at least 3 high-res images and detailed variant matrices (sizes/colors).\n3. **Trust Score Elevation**: Maintain 0 disputes and 4.8+ ratings to earn the **Verified Top Vendor** compliance badge.\n4. **Search Optimization**: Include relevant keywords in product titles and descriptions for maximum marketplace search visibility.`,
       dispatchedAgents: ['marketing-seo-specialist', '08-data-analysis-agent', 'finance-financial-analyst'],
       suggestedActions: [
         { label: 'Open Seller Dashboard', href: '/seller' },
@@ -222,23 +222,23 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   } else if (lowerPrompt.includes('protect') || lowerPrompt.includes('refund') || lowerPrompt.includes('dispute') || lowerPrompt.includes('security') || lowerPrompt.includes('guarantee')) {
     // Dispatched to security-appsec-engineer & engineering-payments-billing-engineer
     response = {
-      message: `### 🛡️ Nexus Buyer & Vendor Protection Protocol\n\n• **Double-Entry Escrow**: Customer funds are securely held in Stripe Escrow until delivery is confirmed.\n• **Zero-Risk Dispute Resolution**: If an item arrives damaged or not as described, our automated dispute resolution engine allows 1-click admin mediation and instant refund.\n• **Bank-Grade Encryption**: All transactions and card details are encrypted with TLS 1.3 and PCI-DSS Level 1 Stripe standards.\n• **PII Redaction**: Personal identities and addresses are strictly protected from leakage.`,
+      message: `### Nexus Buyer & Vendor Protection Protocol\n\n• **Double-Entry Escrow**: Customer funds are securely held in Stripe Escrow until delivery is confirmed.\n• **Zero-Risk Dispute Resolution**: If an item arrives damaged or not as described, our automated dispute resolution engine allows 1-click admin mediation and instant refund.\n• **Bank-Grade Encryption**: All transactions and card details are encrypted with TLS 1.3 and PCI-DSS Level 1 Stripe standards.\n• **PII Redaction**: Personal identities and addresses are strictly protected from leakage.`,
       dispatchedAgents: ['security-appsec-engineer', 'engineering-payments-billing-engineer', 'finance-financial-analyst'],
       suggestedActions: [
-        { label: 'View AI Agent Ecosystem', href: '/agent-ecosystem' },
         { label: 'Customer Support Portal', href: '/customer' },
+        { label: 'Buyer Protection Details', href: '/buyer-protection' },
       ],
     };
   } else {
-    // General AI Assistant query
+    // General Assistant query
     response = {
-      message: `Hello! I am your **Nexus Marketplace AI Assistant**, orchestrated by our **500+ AI Agent Ecosystem**.\n\nI can help you with:\n• 📦 **Order Tracking & Delivery Status**\n• ✨ **Curated Product Recommendations**\n• 📈 **Seller Analytics, SEO & Payout Insights**\n• 🛡️ **Buyer Protection, Escrow & Refund Inquiries**\n\nHow may I assist you today?`,
+      message: `Hello. I am the **Nexus Marketplace Assistant**.\n\nI can help you with:\n• **Order Tracking & Delivery Status**\n• **Curated Product Recommendations**\n• **Seller Analytics & Payout Insights**\n• **Buyer Protection & Escrow Inquiries**\n\nHow may I assist you today?`,
       dispatchedAgents: ['13-customer-support-agent', 'engineering-backend-architect', 'design-ui-designer'],
       suggestedActions: [
-        { label: '✨ Recommend Trending Items' },
-        { label: '📦 Track My Orders' },
-        { label: '📈 Seller Store Tips' },
-        { label: '🛡️ Buyer Protection Policy' },
+        { label: 'Recommend Trending Items' },
+        { label: 'Track My Orders' },
+        { label: 'Seller Store Tips' },
+        { label: 'Buyer Protection Policy' },
       ],
     };
   }

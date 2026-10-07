@@ -76,3 +76,8 @@ Desktop.ini
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Tooling reports & local metadata
+.gsd/
+eslint*.json
+

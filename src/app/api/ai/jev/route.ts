@@ -38,7 +38,6 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const result = await jev.decide(decisionReq);
 
   return NextResponse.json({
-    success: true,
     timestamp: new Date().toISOString(),
     ...result,
   });

@@ -30,16 +30,16 @@ export default function DealsPage() {
           </Link>
         </div>
 
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-widest mb-4">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4">
             <Tag className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-            Limited Studio Drops
+            Special Offers
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
-            Deals & Special Collections
+          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight mb-3">
+            Deals and Promotions
           </h1>
-          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
-            Exclusive pricing offered directly by independent creators for select seasonal batches and showcase pieces.
+          <p className="text-base text-surface-600 dark:text-surface-300 max-w-xl mx-auto leading-relaxed">
+            Discounted prices offered directly by sellers across active catalog categories.
           </p>
         </div>
 

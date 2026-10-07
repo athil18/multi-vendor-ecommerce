@@ -107,17 +107,17 @@ export default async function ProductIdPage({ params }: Props) {
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-20 max-w-4xl text-center">
-        <div className="glass-luxury-card specular-border rounded-3xl p-12 shadow-xl">
-          <PackageCheck className="w-16 h-16 text-brand-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-black text-surface-900 dark:text-white mb-2 font-sans">
-            Atelier Specimen Not Found
+        <div className="bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl p-10 shadow-sm">
+          <PackageCheck className="w-12 h-12 text-surface-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-surface-900 dark:text-white mb-2 font-sans">
+            Product Not Found
           </h2>
           <p className="text-surface-500 max-w-md mx-auto mb-6 text-sm">
-            This commission ID does not exist or has been completed and retired by the master workshop.
+            This product does not exist or is no longer available.
           </p>
           <Link href="/products">
-            <Button className="rounded-full px-8 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs h-11">
-              Browse Active Masterpieces
+            <Button className="rounded-lg px-6 bg-surface-900 dark:bg-white text-white dark:text-surface-900 font-medium text-sm h-11 hover:bg-surface-800 dark:hover:bg-surface-100">
+              Browse Products
             </Button>
           </Link>
         </div>
@@ -126,7 +126,7 @@ export default async function ProductIdPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 ambient-gradient-mesh">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <ProductJsonLd product={product} />
 
@@ -134,13 +134,13 @@ export default async function ProductIdPage({ params }: Props) {
         <div className="mb-6 flex items-center justify-between">
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 text-xs font-bold text-surface-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-surface-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Master Collection
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Products
           </Link>
 
-          <span className="specular-pill text-[10px] text-brand-600">
-            Certified Atelier Commission
+          <span className="inline-flex items-center text-[11px] font-medium text-surface-600 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 px-2.5 py-0.5 rounded-md">
+            Verified Seller Listing
           </span>
         </div>
 

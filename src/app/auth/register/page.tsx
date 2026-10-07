@@ -87,7 +87,7 @@ function RegisterForm() {
         
         {/* Header Logo */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="rounded-full bg-primary-container p-3 text-on-primary-container shadow-lg ambient-shadow-primary">
+          <div className="rounded-xl bg-primary-container p-3 text-on-primary-container border border-outline-variant/30 shadow-sm">
             <Store className="h-6 w-6" />
           </div>
           <h1 className="text-headline-lg text-on-surface">Create an Account</h1>

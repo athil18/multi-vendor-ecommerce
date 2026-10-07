@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   turbopack: {
-    root: path.resolve(__dirname, '..'),
+    root: path.resolve(__dirname),
   },
   images: {
     formats: ['image/avif', 'image/webp'],

@@ -6,11 +6,27 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface AddressCreateDTO {
+  id?: string;
+  _id?: string;
+  userId?: string;
+  type?: 'billing' | 'shipping' | string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  isDefault?: boolean;
+  [key: string]: unknown;
+}
 
 export const Address = {
-  create: async (data: any) => {
+  create: async (data: AddressCreateDTO) => {
     const rawId = data.id || data._id;
+    const id = rawId ? toIdString(rawId) : undefined;
     let uId = toIdString(data.userId);
     if (uId) {
       const existingUser = await prisma.user.findUnique({ where: { id: uId } });
@@ -21,7 +37,7 @@ export const Address = {
               id: uId,
               name: 'Address User',
               email: `address-user-${uId.substring(0, 10)}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              password: getSecureDummyPasswordHash(),
               role: 'customer',
               status: 'active'
             }
@@ -33,9 +49,9 @@ export const Address = {
       }
     }
 
-    const formatted: any = {
-      ...(rawId ? { id: rawId } : {}),
-      userId: uId,
+    const formatted: Prisma.AddressUncheckedCreateInput = {
+      ...(id ? { id } : {}),
+      userId: uId!,
       type: data.type === 'billing' ? 'billing' : 'shipping',
       street: data.street || '123 Main St',
       city: data.city || 'City',
@@ -46,11 +62,11 @@ export const Address = {
     };
     return wrapRecord(await prisma.address.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.address.deleteMany({ where: normalizeWhere(where) || {} }),
-  find: async (where: any = {}) => wrapRecords(await prisma.address.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.address.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.address.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.AddressWhereInput = {}) => prisma.address.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.AddressWhereInput = {}) => wrapRecords(await prisma.address.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.AddressWhereInput = {}) => wrapRecord(await prisma.address.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.address.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.AddressUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

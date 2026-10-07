@@ -11,8 +11,9 @@ const getRedisUrl = () => {
 const redisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
-  connectTimeout: 5000,
-  commandTimeout: 2500,
+  connectTimeout: 10000,
+  commandTimeout: 8000,
+  keepAlive: 10000,
 };
 
 // Singleton Redis instance for queues

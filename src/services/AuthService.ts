@@ -6,7 +6,7 @@
  * @agent security-appsec-engineer
  */
 
-import bcrypt from 'bcryptjs';
+import { hashPassword, verifyPassword, needsRehash } from '@/lib/password';
 import { IUserRepository, UserEntity } from '@/core/ports/IUserRepository';
 import { prismaUserRepository } from '@/infrastructure/database/repositories/PrismaUserRepository';
 import { generateToken, generateRefreshToken, verifyRefreshToken } from '@/lib/jwt';
@@ -45,8 +45,7 @@ export class AuthService {
       throw new AppError('Email address already registered', 409, 'AUTH_USER_EXISTS');
     }
 
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(dto.password, salt);
+    const hashedPassword = await hashPassword(dto.password);
 
     const user = await this.userRepo.create({
       name: dto.name,
@@ -83,9 +82,19 @@ export class AuthService {
       throw new AppError('Account has been suspended. Please contact support.', 403, 'AUTH_ACCOUNT_SUSPENDED');
     }
 
-    const isMatch = await bcrypt.compare(dto.password, user.password);
+    const isMatch = await verifyPassword(dto.password, user.password);
     if (!isMatch) {
       throw new AppError('Invalid email or password', 401, 'AUTH_INVALID_CREDENTIALS');
+    }
+
+    // Transparently upgrade legacy bcrypt hashes to Argon2id on successful login
+    if (needsRehash(user.password)) {
+      try {
+        const upgradedHash = await hashPassword(dto.password);
+        await this.userRepo.update(user.id, { password: upgradedHash });
+      } catch {
+        // Non-blocking background upgrade
+      }
     }
 
     const accessToken = generateToken({ id: user.id, email: user.email, role: user.role });

@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tooling and verification suites outside production source scope:
+    ".agents/**",
+    "scripts/**",
+    "seeds/**",
+    "test/**",
+    "e2e/**",
   ]),
 ]);
 

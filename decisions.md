@@ -107,3 +107,4 @@ This document records the foundational architectural, security, database, API, a
   - Design tokens in `src/app/globals.css`.
   - Solid card styling in `src/components/ui/Card.tsx`, `Button.tsx`, and `Badge.tsx`.
   - Deactivated status of `LiveBuyerActivityTicker.tsx`.
+

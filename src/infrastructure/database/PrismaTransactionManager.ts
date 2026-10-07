@@ -5,6 +5,6 @@ export class PrismaTransactionManager implements ITransactionManager {
   async executeInTransaction<T>(work: (ctx: ITransactionContext) => Promise<T>): Promise<T> {
     return prisma.$transaction(async (tx) => {
       return work({ tx });
-    });
+    }, { timeout: 30000, maxWait: 10000 });
   }
 }

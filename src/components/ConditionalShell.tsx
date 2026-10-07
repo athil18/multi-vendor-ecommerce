@@ -14,21 +14,6 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
-const AIAssistantWidget = dynamic(
-  () => import('@/components/AIAssistantWidget').then((mod) => mod.AIAssistantWidget),
-  { ssr: false }
-);
-
-const JevAssistantWidget = dynamic(
-  () => import('@/components/ai/JevAssistantWidget'),
-  { ssr: false }
-);
-
-const LiveBuyerActivityTicker = dynamic(
-  () => import('@/components/LiveBuyerActivityTicker').then((mod) => mod.LiveBuyerActivityTicker),
-  { ssr: false }
-);
-
 const ProductCompareTray = dynamic(
   () => import('@/components/ProductCompareTray').then((mod) => mod.ProductCompareTray),
   { ssr: false }
@@ -40,7 +25,7 @@ const Toaster = dynamic(
 );
 
 /**
- * Conditionally renders the global Navbar, Footer, and AI Copilot Widget
+ * Conditionally renders the global Navbar, Footer, and comparison tray
  * based on the current route. Admin/Seller routes use their own sidebar layout.
  */
 export function ConditionalShell({ children }: { children: React.ReactNode }) {
@@ -50,15 +35,13 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
   const hasSidebarLayout = isAdminRoute || isSellerRoute;
 
   if (hasSidebarLayout) {
-    // Admin/Seller routes render children directly with the AI Assistant Copilot mounted
+    // Admin/Seller routes render children directly
     return (
       <>
         <Toaster position="bottom-right" reverseOrder={false} />
         <main id="main-content" tabIndex={-1} className="flex-grow flex flex-col focus:outline-none">
           {children}
         </main>
-        <AIAssistantWidget />
-        <JevAssistantWidget />
       </>
     );
   }
@@ -74,11 +57,8 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Floating 25-Lakh Luxury Utilities */}
-      <LiveBuyerActivityTicker />
+      {/* Product Comparison Tray */}
       <ProductCompareTray />
-      <AIAssistantWidget />
-      <JevAssistantWidget />
 
       {/* Footer */}
       <Footer />

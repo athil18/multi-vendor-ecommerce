@@ -35,16 +35,16 @@ export default function CategoriesPage() {
           </Link>
         </div>
 
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-widest mb-4">
-            <Layers className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
-            Curated Collections
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 text-xs font-semibold uppercase tracking-wider mb-4">
+            <Layers className="h-3.5 w-3.5 text-surface-600 dark:text-surface-400" />
+            Catalog Directory
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
-            Featured Categories
+          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight mb-3">
+            Product Categories
           </h1>
-          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
-            Discover precision goods categorized by craft discipline and artisan mastery.
+          <p className="text-base text-surface-600 dark:text-surface-300 max-w-xl mx-auto leading-relaxed">
+            Explore products organized by department and category.
           </p>
         </div>
 
@@ -53,10 +53,10 @@ export default function CategoriesPage() {
             const Icon = cat.icon;
             return (
               <Link key={cat.slug} href={`/products?category=${encodeURIComponent(cat.slug)}`} className="group">
-                <Card className="h-full bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 hover:border-brand-500/50 hover:shadow-xl transition-all duration-300">
+                <Card className="h-full bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 hover:border-surface-400 dark:hover:border-surface-600 transition-colors shadow-sm">
                   <CardContent className="p-8 flex flex-col justify-between h-full">
                     <div>
-                      <div className="h-12 w-12 rounded-2xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200/60 dark:border-brand-800/60 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-6 group-hover:scale-110 transition-transform">
+                      <div className="h-12 w-12 rounded-lg bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 flex items-center justify-center text-surface-700 dark:text-surface-300 mb-6">
                         <Icon className="h-6 w-6" />
                       </div>
                       <h2 className="text-xl font-bold text-surface-900 dark:text-white mb-2 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">

@@ -6,13 +6,14 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords } from './prisma-wrap';
+import { Prisma } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
 
 export const Category = {
-  create: async (data: any) => wrapRecord(await prisma.category.create({ data })),
-  deleteMany: (where: any = {}) => prisma.category.deleteMany({ where: where || {} }),
-  find: async (where: any = {}) => wrapRecords(await prisma.category.findMany({ where: where || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.category.findFirst({ where: where || {} })),
-  findById: async (id: string) => wrapRecord(await prisma.category.findUnique({ where: { id } })),
-  findByIdAndUpdate: async (id: string, data: any) => wrapRecord(await prisma.category.update({ where: { id }, data })),
+  create: async (data: Prisma.CategoryCreateInput) => wrapRecord(await prisma.category.create({ data })),
+  deleteMany: (where: Prisma.CategoryWhereInput = {}) => prisma.category.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.CategoryWhereInput = {}) => wrapRecords(await prisma.category.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.CategoryWhereInput = {}) => wrapRecord(await prisma.category.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.category.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.CategoryUpdateInput) => wrapRecord(await prisma.category.update({ where: { id: toIdString(id) }, data })),
 };

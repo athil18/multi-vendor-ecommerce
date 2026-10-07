@@ -93,42 +93,39 @@ export default function StoresPage() {
   return (
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950 transition-colors duration-200">
       {/* Header Banner */}
-      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-brand-500/10 dark:bg-brand-600/15 blur-[120px] rounded-full pointer-events-none" />
-
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/50 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-widest mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
-            Verified Creator Ecosystem
+      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center border-b border-surface-200 dark:border-surface-800">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 text-xs font-semibold uppercase tracking-wider mb-6">
+            Store Directory
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-6">
-            Independent Creator Stores
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-surface-900 dark:text-white tracking-tight mb-4">
+            Independent Seller Stores
           </h1>
 
-          <p className="text-base sm:text-xl text-surface-600 dark:text-surface-300 max-w-3xl mx-auto leading-relaxed font-medium">
-            Explore dedicated storefronts operated by vetted makers, designers, and artisans. Every purchase directly empowers independent commerce with escrow buyer protection.
+          <p className="text-base sm:text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
+            Browse dedicated storefronts from vetted independent creators and workshops. Purchases are secured with escrow buyer protection.
           </p>
 
-          <div className="mt-10 flex items-center justify-center gap-6 sm:gap-12 text-xs sm:text-sm font-semibold text-surface-600 dark:text-surface-400">
+          <div className="mt-8 flex items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm font-medium text-surface-600 dark:text-surface-400">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>100% Escrow Protected</span>
+              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Escrow Protected</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-              <span>Peer Reviewed Ratings</span>
+              <span>Verified Reviews</span>
             </div>
             <div className="flex items-center gap-2">
-              <Store className="h-4 w-4 text-brand-500" />
-              <span>6 Premier Stores Active</span>
+              <Store className="h-4 w-4 text-surface-500" />
+              <span>Direct Workshop Shipping</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stores Directory Grid */}
-      <section className="py-12 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="py-12 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {STORES_DIRECTORY.map((store) => (
             <div key={store._id} className="h-full">
@@ -138,16 +135,16 @@ export default function StoresPage() {
         </div>
 
         {/* Call to Action for New Sellers */}
-        <div className="mt-20 glass-panel-luxury p-8 sm:p-12 text-center rounded-3xl border border-surface-200 dark:border-surface-800 relative overflow-hidden">
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-white mb-4">
-              Are you an independent creator or maker?
+        <div className="mt-16 p-8 sm:p-12 text-center rounded-xl bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-white mb-3">
+              Sell on Nexus
             </h2>
             <p className="text-surface-600 dark:text-surface-300 text-sm sm:text-base mb-8 leading-relaxed">
-              Launch your branded storefront on Nexus in minutes. Enjoy automated Stripe escrow settlements, zero listing fees, and reach thousands of passionate buyers.
+              Launch your storefront on Nexus. Manage your catalog, receive automated Stripe escrow payouts, and connect directly with customers.
             </p>
             <Link href="/seller/store" prefetch={false}>
-              <Button size="lg" className="rounded-full px-8 py-3.5 shadow-lg shadow-brand-500/20">
+              <Button size="lg" className="rounded-lg px-6 py-3 font-medium">
                 Open Your Storefront <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

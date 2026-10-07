@@ -11,7 +11,8 @@ interface Props {
 
 async function getOrderDetails(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/orders/${id}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://nexus-marketplace.com' : 'http://localhost:3000');
+    const res = await fetch(`${baseUrl}/api/orders/${id}`, {
       cache: 'no-store',
     });
     if (!res.ok) return null;
@@ -30,7 +31,7 @@ export default async function CustomerOrderDetailPage({ params }: Props) {
     return (
       <div className="container mx-auto px-4 py-12 max-w-4xl text-center">
         <h2 className="text-title-lg font-bold text-on-surface mb-4">Order Not Found</h2>
-        <p className="text-body-md text-on-surface-variant mb-6">We couldn't retrieve the details for order #{id}.</p>
+        <p className="text-body-md text-on-surface-variant mb-6">We couldn&apos;t retrieve the details for order #{id}.</p>
         <Link href="/customer" className="text-primary font-semibold hover:underline">
           Return to Account Dashboard
         </Link>

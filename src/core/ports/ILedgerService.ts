@@ -20,7 +20,7 @@ export interface ILedgerService {
     idempotencyKey: string;
     eventName: "ORDER_PAID" | "VENDOR_SETTLED" | "REFUND_ISSUED";
     currency: string;
-    orderId: any;
+    orderId: string;
     lines: LineItemInput[];
   }, ctx?: ITransactionContext): Promise<void>;
 }

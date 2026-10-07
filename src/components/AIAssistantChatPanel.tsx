@@ -12,6 +12,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Bot, Send, X, Shield, RefreshCw, ChevronRight, Zap, ShoppingCart, Check, Store, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
@@ -40,6 +41,22 @@ interface ChatMessage {
   timestamp: Date;
 }
 
+let nextMessageSeq = 0;
+function createMessageRecord(
+  sender: 'user' | 'agent',
+  text: string,
+  extra: Partial<ChatMessage> = {}
+): ChatMessage {
+  nextMessageSeq += 1;
+  return {
+    id: `${sender}-${nextMessageSeq}`,
+    sender,
+    text,
+    timestamp: new Date(),
+    ...extra,
+  };
+}
+
 export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
   const [inputPrompt, setInputPrompt] = useState('');
   const [loading, setLoading] = useState(false);
@@ -62,13 +79,13 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
     {
       id: 'welcome-msg',
       sender: 'agent',
-      text: '👋 Hello! I am the **Nexus AI Copilot**, backed by our **500+ AI Agent Ecosystem**.\n\nAsk me anything about products, order tracking, seller insights, or tell me to **push products to your cart**!',
-      dispatchedAgents: ['product-behavioral-nudge-engine', '13-customer-support-agent', 'engineering-payments-billing-engineer'],
+      text: 'Hello. I can assist with product search, order tracking, and escrow protections.',
+      dispatchedAgents: ['support-agent', 'payments-engineer'],
       suggestedActions: [
-        { label: '🛒 Push Top Tech Item to Cart' },
-        { label: '🎧 Push ANC Headphones to Cart' },
-        { label: '📦 Track My Orders' },
-        { label: '🛡️ Buyer Protection Policy' },
+        { label: 'Push Top Tech Item to Cart' },
+        { label: 'Push ANC Headphones to Cart' },
+        { label: 'Track My Orders' },
+        { label: 'Buyer Protection Policy' },
       ],
       timestamp: new Date(),
     },
@@ -88,12 +105,7 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
     const textToSend = (customPrompt || inputPrompt).trim();
     if (!textToSend || loading) return;
 
-    const userMessage: ChatMessage = {
-      id: `usr-${Date.now()}`,
-      sender: 'user',
-      text: textToSend,
-      timestamp: new Date(),
-    };
+    const userMessage = createMessageRecord('user', textToSend);
 
     setMessages((prev) => [...prev, userMessage]);
     setInputPrompt('');
@@ -108,25 +120,17 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
 
       const data = await res.json();
 
-      const agentMessage: ChatMessage = {
-        id: `agt-${Date.now()}`,
-        sender: 'agent',
-        text: data.message || 'I processed your request with the 500+ AI Agent network.',
-        dispatchedAgents: data.dispatchedAgents || ['13-customer-support-agent'],
+      const agentMessage = createMessageRecord('agent', data.message || 'Request completed.', {
+        dispatchedAgents: data.dispatchedAgents || ['support-agent'],
         suggestedActions: data.suggestedActions,
         itemToCart: data.itemToCart,
-        timestamp: new Date(),
-      };
+      });
 
       setMessages((prev) => [...prev, agentMessage]);
     } catch {
-      const errorMsg: ChatMessage = {
-        id: `err-${Date.now()}`,
-        sender: 'agent',
-        text: '⚠️ An error occurred while communicating with the AI Agent network. Please try again.',
+      const errorMsg = createMessageRecord('agent', 'An error occurred while processing your request. Please try again.', {
         dispatchedAgents: ['engineering-sre'],
-        timestamp: new Date(),
-      };
+      });
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setLoading(false);
@@ -139,23 +143,23 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="Nexus AI Copilot Chat"
-      className="fixed inset-y-0 right-0 sm:right-6 sm:bottom-24 sm:inset-y-auto w-full sm:w-[420px] sm:h-[620px] bg-white/95 dark:bg-surface-950/95 backdrop-blur-2xl sm:rounded-3xl border border-surface-200 dark:border-surface-800 shadow-2xl z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300"
+      className="fixed inset-y-0 right-0 sm:right-6 sm:bottom-24 sm:inset-y-auto w-full sm:w-[420px] sm:h-[620px] bg-white dark:bg-surface-950 sm:rounded-xl border border-surface-200 dark:border-surface-800 shadow-xl z-50 flex flex-col overflow-hidden"
     >
       {/* Header */}
-      <div className="px-5 py-4 border-b border-surface-200/80 dark:border-surface-800/80 bg-gradient-to-r from-brand-600/10 via-purple-600/10 to-indigo-600/10 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-br from-brand-500 to-purple-600 text-white rounded-xl shadow-md">
+          <div className="p-2 bg-surface-900 dark:bg-white text-white dark:text-surface-900 rounded-lg">
             <Bot className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-surface-900 dark:text-white text-sm">Nexus AI Copilot</h3>
-              <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-brand-100 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
-                500+ AI Agents
+              <h3 className="font-bold text-surface-900 dark:text-white text-sm">Customer Support Assistant</h3>
+              <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+                Online
               </span>
             </div>
             <p className="text-[11px] text-surface-500 flex items-center gap-1 mt-0.5">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active Multi-Agent Orchestration
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Instant catalog & order lookup
             </p>
           </div>
         </div>
@@ -217,10 +221,13 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
               {msg.itemToCart && (
                 <div className="mt-3 p-3 bg-white dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800 shadow-sm space-y-2.5 text-surface-900 dark:text-white">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-surface-100 dark:bg-surface-900 overflow-hidden flex-shrink-0 border border-surface-200/60 dark:border-surface-800/60">
-                      <img
+                    <div className="w-12 h-12 rounded-lg bg-surface-100 dark:bg-surface-900 overflow-hidden flex-shrink-0 border border-surface-200/60 dark:border-surface-800/60 relative">
+                      <Image
                         src={msg.itemToCart.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'}
                         alt={msg.itemToCart.name}
+                        width={48}
+                        height={48}
+                        unoptimized
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -251,19 +258,19 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
                     type="button"
                     onClick={() => handlePushToCart(msg.itemToCart!)}
                     disabled={pushedItems[msg.itemToCart.productId]}
-                    className={`w-full py-2 px-3 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    className={`w-full py-2 px-3 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer ${
                       pushedItems[msg.itemToCart.productId]
                         ? 'bg-emerald-600 text-white shadow-sm'
-                        : 'bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white shadow-md hover:shadow-lg active:scale-[0.98]'
+                        : 'bg-surface-900 dark:bg-white text-white dark:text-surface-900 hover:bg-surface-800 dark:hover:bg-surface-100 shadow-sm'
                     }`}
                   >
                     {pushedItems[msg.itemToCart.productId] ? (
                       <>
-                        <Check className="h-3.5 w-3.5" /> Pushed to Cart Successfully!
+                        <Check className="h-3.5 w-3.5" /> Added to Cart!
                       </>
                     ) : (
                       <>
-                        <ShoppingCart className="h-3.5 w-3.5" /> Push to Live Cart — ${msg.itemToCart.price.toFixed(2)}
+                        <ShoppingCart className="h-3.5 w-3.5" /> Add to Cart: ${msg.itemToCart.price.toFixed(2)}
                       </>
                     )}
                   </button>
@@ -280,7 +287,7 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
                       key={idx}
                       href={action.href}
                       onClick={onClose}
-                      className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/60 rounded-full border border-brand-200 dark:border-brand-800 transition-colors"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md border border-surface-200 dark:border-surface-700 transition-colors"
                     >
                       {action.label}
                       <ChevronRight className="h-3 w-3" />
@@ -290,7 +297,7 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
                       key={idx}
                       type="button"
                       onClick={() => handlePushToCart(action.item!)}
-                      className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium bg-brand-600 text-white hover:bg-brand-500 rounded-full shadow-sm transition-all cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-surface-900 dark:bg-white text-white dark:text-surface-900 hover:bg-surface-800 dark:hover:bg-surface-100 rounded-md shadow-sm transition-colors cursor-pointer"
                     >
                       <ShoppingCart className="h-3 w-3" />
                       {action.label}
@@ -300,7 +307,7 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
                       key={idx}
                       type="button"
                       onClick={() => handleSendMessage(action.label)}
-                      className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium bg-surface-100 dark:bg-surface-800/60 text-surface-700 dark:text-surface-300 hover:bg-brand-50 dark:hover:bg-brand-950/40 hover:text-brand-600 dark:hover:text-brand-400 rounded-full border border-surface-200 dark:border-surface-700 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md border border-surface-200 dark:border-surface-700 transition-colors cursor-pointer"
                     >
                       {action.label}
                     </button>
