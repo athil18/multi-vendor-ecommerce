@@ -34,14 +34,30 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: 'URL expired' }, { status: 403 });
     }
 
-    const secret = process.env.JWT_SECRET || 'local-dev-secret';
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
     const expectedSig = crypto
       .createHmac('sha256', secret)
       .update(`${key}:${expires}`)
       .digest('hex');
 
-    if (sig !== expectedSig) {
+    const sigBuf = Buffer.from(sig, 'utf8');
+    const expectedBuf = Buffer.from(expectedSig, 'utf8');
+
+    if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
+    }
+
+    // ── Early Payload Size Guard (5MB Max Asset Upload) ─────────────────
+    const MAX_LOCAL_UPLOAD_BYTES = 5 * 1024 * 1024; // 5MB
+    const contentLength = req.headers.get('content-length');
+    if (contentLength && parseInt(contentLength, 10) > MAX_LOCAL_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Payload Too Large', message: 'File size exceeds maximum permitted limit of 5MB' },
+        { status: 413 }
+      );
     }
 
     if (!req.body) {
@@ -55,15 +71,23 @@ export const POST = async (req: NextRequest) => {
     }
 
     const buffer = req.body ? await req.arrayBuffer() : null;
-    if (!buffer) {
+    if (!buffer || buffer.byteLength === 0) {
       return NextResponse.json({ error: 'Empty body' }, { status: 400 });
     }
+
+    if (buffer.byteLength > MAX_LOCAL_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Payload Too Large', message: 'File size exceeds maximum permitted limit of 5MB' },
+        { status: 413 }
+      );
+    }
+
     fs.writeFileSync(filepath, Buffer.from(buffer));
 
     return NextResponse.json({ success: true, message: 'File uploaded locally' });
   } catch (error: any) {
     logger.error('Local upload error', { error: String(error.message || error) });
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error', message: 'Failed to process asset upload' }, { status: 500 });
   }
 };
 

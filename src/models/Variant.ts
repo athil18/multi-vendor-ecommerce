@@ -108,6 +108,12 @@ export const Variant = {
       stock: Number(data.stock ?? 0),
       attributes: data.attributes || {},
     };
+    if (id) {
+      const existing = await prisma.variant.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.variant.update({ where: { id }, data: formatted }));
+      }
+    }
     return wrapRecord(await prisma.variant.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.variant.deleteMany({ where: normalizeWhere(where) || {} }),

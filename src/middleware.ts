@@ -21,6 +21,10 @@ import { getCorsHeaders, isOriginAllowed } from '@/lib/cors';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
+const MAX_URL_LENGTH = 2048; // Max permitted URI length (RFC 7230 / OWASP)
+const MAX_JSON_BODY_BYTES = 1 * 1024 * 1024; // 1MB payload cap for standard JSON API endpoints
+const MAX_UPLOAD_BODY_BYTES = 10 * 1024 * 1024; // 10MB payload cap for upload endpoints
+
 const protectedPaths = [
   { path: '/admin', roles: ['admin'] },
   { path: '/seller', roles: ['seller', 'admin'] },
@@ -178,8 +182,20 @@ export async function middleware(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') || crypto.randomUUID();
   request.headers.set('x-request-id', requestId);
 
+  // ── URI Length Verification (OWASP Resource Exhaustion Guard) ────────
+  if ((pathname + search).length > MAX_URL_LENGTH) {
+    logSecurityEvent('uri_too_long', { ip: clientIp, path: pathname, length: (pathname + search).length }, requestId);
+    const uriTooLongResponse = NextResponse.json(
+      { error: 'URI Too Long', message: 'Request URI exceeds the maximum permitted length of 2048 characters.' },
+      { status: 414 }
+    );
+    for (const [k, v] of Object.entries(securityHeaders)) uriTooLongResponse.headers.set(k, v);
+    uriTooLongResponse.headers.set('x-request-id', requestId);
+    return uriTooLongResponse;
+  }
+
   // ──────────────────────────────────────────────────────────────────────
-  // 1. CORS Preflight (OPTIONS) — handle before anything else
+  // 1. CORS Preflight (OPTIONS): handle before anything else
   // ──────────────────────────────────────────────────────────────────────
   if (request.method === 'OPTIONS' && pathname.startsWith('/api')) {
     if (!isOriginAllowed(origin)) {
@@ -196,9 +212,41 @@ export async function middleware(request: NextRequest) {
   }
 
   // ──────────────────────────────────────────────────────────────────────
-  // 2. API Routes — Rate Limiting, CORS, Security Headers
+  // 2. API Routes: Early Payload Limiting, Rate Limiting, CORS, Security Headers
   // ──────────────────────────────────────────────────────────────────────
   if (pathname.startsWith('/api')) {
+    // ── Early Payload Size Enforcement (Oversized Requests / Resource Exhaustion) ──
+    const contentLengthHeader = request.headers.get('content-length');
+    if (contentLengthHeader) {
+      const contentLength = parseInt(contentLengthHeader, 10);
+      const isUploadRoute = pathname.startsWith('/api/upload');
+      const maxAllowedBytes = isUploadRoute ? MAX_UPLOAD_BODY_BYTES : MAX_JSON_BODY_BYTES;
+
+      if (!isNaN(contentLength) && contentLength > maxAllowedBytes) {
+        logSecurityEvent('payload_too_large', {
+          ip: clientIp,
+          path: pathname,
+          contentLength,
+          maxAllowedBytes,
+        }, requestId);
+
+        const payloadTooLargeResponse = NextResponse.json(
+          {
+            error: 'Payload Too Large',
+            message: `Request body exceeds the maximum permitted size limit of ${isUploadRoute ? '10MB' : '1MB'}.`,
+          },
+          { status: 413 }
+        );
+        for (const [k, v] of Object.entries(securityHeaders)) payloadTooLargeResponse.headers.set(k, v);
+        if (origin) {
+          const corsHeaders = getCorsHeaders(origin);
+          for (const [k, v] of Object.entries(corsHeaders)) if (v) payloadTooLargeResponse.headers.set(k, v);
+        }
+        payloadTooLargeResponse.headers.set('x-request-id', requestId);
+        return payloadTooLargeResponse;
+      }
+    }
+
     let rlResult: Awaited<ReturnType<typeof rateLimit>> | null = null;
 
     // ── Auth Endpoint Rate Limiting ───────────────────────────────────

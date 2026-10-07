@@ -22,7 +22,22 @@ export const User = {
       status: data.status || 'active',
     };
     if (data.avatar !== undefined) formatted.avatar = data.avatar;
-    if (data.stripeCustomerId !== undefined) formatted.stripeCustomerId = data.stripeCustomerId;
+    if (id) {
+      const existing = await prisma.user.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.user.update({ where: { id }, data: formatted }));
+      }
+      if (formatted.email) {
+        await prisma.user.deleteMany({ where: { email: formatted.email } });
+      }
+      return wrapRecord(await prisma.user.create({ data: formatted }));
+    }
+    if (formatted.email) {
+      const existingByEmail = await prisma.user.findUnique({ where: { email: formatted.email } });
+      if (existingByEmail) {
+        return wrapRecord(await prisma.user.update({ where: { email: formatted.email }, data: formatted }));
+      }
+    }
     return wrapRecord(await prisma.user.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.user.deleteMany({ where: normalizeWhere(where) || {} }),

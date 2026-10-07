@@ -25,14 +25,16 @@ if (
   connectionString += (connectionString.includes('?') ? '&' : '?') + 'uselibpqcompat=true';
 }
 
-// Configure resilient connection pool with safety bounds
+// Configure resilient connection pool with safety bounds & keep-alive
 const isRemoteDb = connectionString.includes('sslmode=') || connectionString.includes('neon.tech');
 const pool = new pg.Pool({
   connectionString,
   ssl: isRemoteDb ? { rejectUnauthorized: false } : undefined,
   max: parseInt(process.env.DB_POOL_MAX || '20', 10),
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 300000, // 5 minutes (prevent rapid connection teardown & SSL re-negotiation)
+  connectionTimeoutMillis: 15000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
 });
 
 import { logger } from './logger';
@@ -41,6 +43,17 @@ import { logger } from './logger';
 pool.on('error', (err) => {
   logger.error('[PostgreSQL Pool Error]: Unexpected client error on idle connection', { error: String(err) });
 });
+
+// Periodic lightweight keepalive ping to maintain connection warm state and avoid cold start spikes
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(async () => {
+    try {
+      await pool.query('SELECT 1');
+    } catch {
+      // Ignored - will naturally reconnect on demand
+    }
+  }, 240000).unref(); // Every 4 minutes, unrefed to avoid blocking process exit
+}
 
 const adapter = new PrismaPg(pool);
 

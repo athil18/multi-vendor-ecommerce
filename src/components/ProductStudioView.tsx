@@ -62,7 +62,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
   return (
     <div className="relative">
       {/* ─── Main Two-Column Studio Layout ──────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-2xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 tactile-card glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-2xl">
         
         {/* Left Column: Interactive Multi-Angle Gallery (7 cols) */}
         <div className="lg:col-span-7 flex flex-col gap-5">
@@ -182,7 +182,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
             </div>
 
             {/* Atelier Maker Card */}
-            <div className="p-4 rounded-2xl glass-luxury-card specular-border flex items-center justify-between">
+            <div className="p-4 rounded-2xl tactile-card glass-luxury-card specular-border flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-12 w-12 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-lg">
                   <Store className="h-6 w-6" />
@@ -244,7 +244,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
       </div>
 
       {/* ─── Technical Dossier & Provenance Tabs ───────────────────────────── */}
-      <div className="mt-12 glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-xl">
+      <div className="mt-12 tactile-card glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-xl">
         <div className="flex items-center gap-3 border-b border-surface-200/60 dark:border-surface-800/80 pb-4 overflow-x-auto scrollbar-none">
           {[
             { id: 'provenance', label: 'Provenance & Materials', icon: Award },

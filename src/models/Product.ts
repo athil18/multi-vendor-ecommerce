@@ -60,19 +60,19 @@ export const Product = {
             data: {
               id: catId,
               name: 'Test Category',
-              slug: `cat-${catId.substring(0, 10)}-${Date.now()}`
+              slug: `cat-${catId.substring(0, 8)}-${Math.random().toString(36).substring(2, 8)}`
             }
           });
         } catch {
           const fallback = await prisma.category.findFirst() || await prisma.category.create({
-            data: { name: 'Default Category', slug: `default-${Date.now()}` }
+            data: { name: 'Default Category', slug: `default-${Math.random().toString(36).substring(2, 8)}` }
           });
           catId = fallback.id;
         }
       }
     } else {
       const defaultCat = await prisma.category.findFirst() || await prisma.category.create({
-        data: { name: 'Default Category', slug: `default-${Date.now()}` }
+        data: { name: 'Default Category', slug: `default-${Math.random().toString(36).substring(2, 8)}` }
       });
       catId = defaultCat.id;
     }
@@ -99,6 +99,12 @@ export const Product = {
       status: pStatus,
       images: Array.isArray(data.images) ? data.images : [],
     };
+    if (id) {
+      const existing = await prisma.product.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.product.update({ where: { id }, data: formatted }));
+      }
+    }
     return wrapRecord(await prisma.product.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.product.deleteMany({ where: normalizeWhere(where) || {} }),

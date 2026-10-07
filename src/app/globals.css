@@ -530,4 +530,50 @@ body {
   color: #e2e8f0;
 }
 
+/* ─── Architectural Swiss Grid & Precision Atelier Foundations ─────────────── */
+
+.swiss-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+.dark .swiss-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+.tactile-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 4px 16px -2px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .tactile-card {
+  background: #15171e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+.tactile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.08), 0 0 0 1px #cbd5e1;
+}
+
+.dark .tactile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.4);
+}
+
+/* GPU-Accelerated Rendering & Offscreen Layout Containment */
+.section-contained {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
+
+
 

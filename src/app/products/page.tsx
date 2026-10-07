@@ -43,11 +43,15 @@ export default function ProductsPage() {
   const [viewMode, setViewMode] = useState<'editorial' | 'compact'>('editorial');
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
-  const { data: products = [], isLoading } = useQuery({
+  const { data: products = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['products', 'all'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/products?limit=200');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s resilient timeout to prevent premature fallbacks
+        const res = await fetch('/api/products?limit=500', { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (!res.ok) throw new Error('Failed to load products');
         const json = await res.json();
         const dbItems = json.data || [];
@@ -61,10 +65,15 @@ export default function ProductsPage() {
           }));
         }
         return FALLBACK_PRODUCTS_LIST;
-      } catch {
+      } catch (err: any) {
+        console.warn('[Catalog Query Warning]:', err.message);
         return FALLBACK_PRODUCTS_LIST;
       }
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes fresh in client memory (prevents network re-fetching on focus/navigation)
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const categories = useMemo(() => {
@@ -223,7 +232,7 @@ export default function ProductsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                aria-label="Sort curations by"
+                aria-label="Sort products by"
                 className="bg-transparent text-surface-800 dark:text-surface-200 text-xs font-bold focus:outline-none cursor-pointer pr-2"
               >
                 <option value="featured">Featured Curations</option>

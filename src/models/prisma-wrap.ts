@@ -37,6 +37,16 @@ export function normalizeWhere(where: any): any {
       } else {
         clean.id = toIdString(val);
       }
+    } else if (key.endsWith('Id') || key === 'sellerId' || key === 'productId' || key === 'orderId' || key === 'userId' || key === 'categoryId' || key === 'shippingAddressId' || key === 'variantId') {
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        if ((val as any).in) {
+          clean[key] = { in: (val as any).in.map(toIdString).filter(Boolean) };
+        } else {
+          clean[key] = toIdString(val);
+        }
+      } else {
+        clean[key] = toIdString(val);
+      }
     } else if (key === 'OR' || key === 'AND' || key === 'NOT') {
       clean[key] = Array.isArray(val) ? val.map(normalizeWhere) : normalizeWhere(val);
     } else if (val && typeof val === 'object' && !Array.isArray(val) && (val as any).in) {

@@ -57,7 +57,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <article
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex flex-col h-full min-h-[550px] glass-luxury-card specular-border rounded-3xl overflow-hidden will-change-transform transition-all duration-300"
+      className="group relative flex flex-col h-full min-h-[550px] tactile-card glass-luxury-card specular-border rounded-3xl overflow-hidden will-change-transform transition-all duration-300"
     >
       {/* Visual Image Container with Dual-Angle Scrub */}
       <div className="block relative h-[280px] w-full overflow-hidden bg-surface-100 dark:bg-surface-950">

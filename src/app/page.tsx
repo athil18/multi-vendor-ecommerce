@@ -13,7 +13,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, ArrowRight, ShieldCheck, Award, Leaf, HeartHandshake, Star, Flame, Compass, PackageOpen, Layers } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ProductCard';
 import { VendorCard } from '@/components/VendorCard';
 import prisma from '@/lib/prisma';
@@ -34,7 +33,7 @@ const getCachedProducts = unstable_cache(
       });
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('DB_TIMEOUT')), 1200)
+        setTimeout(() => reject(new Error('DB_TIMEOUT')), 2500)
       );
 
       const dbProducts = await Promise.race([queryPromise, timeoutPromise]);
@@ -64,7 +63,7 @@ const getCachedProducts = unstable_cache(
     }
   },
   ['featured-storefront-products-luxury'],
-  { revalidate: 60, tags: ['featured-products'] }
+  { revalidate: 300, tags: ['featured-products'] }
 );
 
 export default async function Home() {
@@ -110,15 +109,14 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen overflow-x-hidden ambient-gradient-mesh">
       {/* ─── 1. Luxury Editorial Hero ────────────────────────────────────────── */}
       <section className="relative w-full pt-28 pb-20 md:pt-40 md:pb-28 overflow-hidden flex flex-col items-center justify-center">
-        {/* Floating Ambient Orbs */}
-        <div className="absolute -top-[15%] left-[15%] w-[550px] h-[550px] bg-brand-500/15 dark:bg-brand-600/20 blur-[120px] rounded-full pointer-events-none animate-orb-1 will-change-transform" />
-        <div className="absolute top-[25%] -right-[10%] w-[650px] h-[650px] bg-indigo-500/15 dark:bg-purple-600/20 blur-[130px] rounded-full pointer-events-none animate-orb-2 will-change-transform" />
+        {/* Architectural Swiss Precision Grid Overlay */}
+        <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none opacity-80" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
           {/* Status Badge */}
           <div className="specular-pill mb-6 text-brand-700 dark:text-brand-300 shadow-sm px-5 py-2">
-            <Sparkles className="h-3.5 w-3.5 text-brand-500 animate-pulse" />
-            <span>The 25-Lakh Flagship Standard &bull; Global Independent Ateliers</span>
+            <Sparkles className="h-3.5 w-3.5 text-brand-500" />
+            <span>The Swiss Precision Standard &bull; Global Independent Ateliers</span>
           </div>
 
           {/* Cinematic Title */}
@@ -136,15 +134,20 @@ export default async function Home() {
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-            <Link href="/products" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto h-13 px-9 text-base shadow-xl bg-surface-900 dark:bg-white text-white dark:text-surface-900 border-none rounded-full transition-all font-bold hover:scale-105">
-                Explore The Collection <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
+            <Link
+              href="/products"
+              aria-label="Explore the curated luxury product collection"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-13 px-9 text-base shadow-xl bg-surface-900 dark:bg-white text-white dark:text-surface-900 rounded-full transition-all font-bold hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              Explore The Collection <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
-            <Link href="/seller/register" prefetch={false} className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto h-13 px-8 text-base border border-surface-300 dark:border-surface-700 bg-white/80 dark:bg-surface-900/80 rounded-full font-bold backdrop-blur-md hover:bg-surface-100 dark:hover:bg-surface-800">
-                Apply as an Atelier
-              </Button>
+            <Link
+              href="/seller/register"
+              prefetch={false}
+              aria-label="Apply to join Nexus as a verified independent atelier"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-13 px-8 text-base border border-surface-300 dark:border-surface-700 bg-white/80 dark:bg-surface-900/80 text-surface-900 dark:text-white rounded-full font-bold backdrop-blur-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              Apply as an Atelier
             </Link>
           </div>
 
@@ -167,7 +170,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 2. Interactive Provenance & Craftsmanship Grid ─────────────────── */}
-      <section className="py-24 border-y border-surface-200/60 dark:border-surface-800/80 relative">
+      <section className="py-24 border-y border-surface-200/60 dark:border-surface-800/80 relative section-contained">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest text-xs mb-2 block">
@@ -206,7 +209,7 @@ export default async function Home() {
             ].map((pillar, idx) => (
               <div
                 key={idx}
-                className="glass-luxury-card specular-border p-8 rounded-3xl transition-all duration-300 group"
+                className="tactile-card glass-luxury-card specular-border p-8 rounded-3xl transition-all duration-300 group"
               >
                 <div className="h-12 w-12 rounded-2xl bg-brand-500/10 dark:bg-brand-400/10 flex items-center justify-center mb-6 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform">
                   <pillar.icon className="h-6 w-6" />
@@ -220,7 +223,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 3. Trending Curations Showcase ──────────────────────────────────── */}
-      <section className="py-24 relative">
+      <section className="py-24 relative section-contained">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
@@ -237,10 +240,12 @@ export default async function Home() {
             </div>
             
             <div className="flex items-center gap-4">
-              <Link href="/products">
-                <Button variant="outline" className="rounded-full px-6 text-xs font-bold border-surface-300 dark:border-surface-700 bg-white/60 dark:bg-surface-900/60 backdrop-blur-md">
-                  View Full Catalog ({products.length}) <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
+              <Link
+                href="/products"
+                aria-label={`View full catalog of ${products.length} coveted specimen drops`}
+                className="inline-flex items-center rounded-full px-6 py-2.5 text-xs font-bold border border-surface-300 dark:border-surface-700 bg-white/60 dark:bg-surface-900/60 backdrop-blur-md text-surface-900 dark:text-white hover:bg-surface-100 dark:hover:bg-surface-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              >
+                View Full Catalog ({products.length}) <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </div>
           </div>
@@ -259,7 +264,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 4. Verified Atelier Showcase ───────────────────────────────────── */}
-      <section className="py-28 relative overflow-hidden border-t border-surface-200/60 dark:border-surface-800/80">
+      <section className="py-28 relative overflow-hidden border-t border-surface-200/60 dark:border-surface-800/80 section-contained">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <span className="text-brand-600 dark:text-brand-400 font-bold tracking-widest uppercase text-xs mb-3 block">

@@ -132,6 +132,12 @@ export const Order = {
       stripePaymentIntentId: data.stripePaymentIntentId || null,
       paidAt: payStatus === 'completed' ? new Date() : null,
     };
+    if (id) {
+      const existing = await prisma.order.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.order.update({ where: { id }, data: formatted }));
+      }
+    }
     return wrapRecord(await prisma.order.create({ data: formatted }));
   },
   deleteMany: (where: any = {}) => prisma.order.deleteMany({ where: normalizeWhere(where) || {} }),

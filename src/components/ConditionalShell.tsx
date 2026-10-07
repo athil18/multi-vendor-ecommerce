@@ -14,10 +14,25 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
-import { AIAssistantWidget } from '@/components/AIAssistantWidget';
+const AIAssistantWidget = dynamic(
+  () => import('@/components/AIAssistantWidget').then((mod) => mod.AIAssistantWidget),
+  { ssr: false }
+);
 
-import { LiveBuyerActivityTicker } from '@/components/LiveBuyerActivityTicker';
-import { ProductCompareTray } from '@/components/ProductCompareTray';
+const JevAssistantWidget = dynamic(
+  () => import('@/components/ai/JevAssistantWidget'),
+  { ssr: false }
+);
+
+const LiveBuyerActivityTicker = dynamic(
+  () => import('@/components/LiveBuyerActivityTicker').then((mod) => mod.LiveBuyerActivityTicker),
+  { ssr: false }
+);
+
+const ProductCompareTray = dynamic(
+  () => import('@/components/ProductCompareTray').then((mod) => mod.ProductCompareTray),
+  { ssr: false }
+);
 
 const Toaster = dynamic(
   () => import('react-hot-toast').then((mod) => mod.Toaster),
@@ -43,6 +58,7 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
         <AIAssistantWidget />
+        <JevAssistantWidget />
       </>
     );
   }
@@ -62,6 +78,7 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
       <LiveBuyerActivityTicker />
       <ProductCompareTray />
       <AIAssistantWidget />
+      <JevAssistantWidget />
 
       {/* Footer */}
       <Footer />

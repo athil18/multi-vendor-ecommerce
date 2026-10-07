@@ -17,21 +17,28 @@ import prisma from '@/lib/prisma';
 import { FALLBACK_CATALOG_MAP } from '@/lib/catalog-fallbacks';
 import { Metadata } from 'next';
 import { ProductJsonLd } from '@/components/ProductJsonLd';
+import { cache } from 'react';
 import { ProductStudioView } from '@/components/ProductStudioView';
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-async function getProductById(id: string) {
+const getProductById = cache(async (id: string) => {
   try {
-    const dbProduct = await prisma.product.findUnique({
+    const queryPromise = prisma.product.findUnique({
       where: { id },
       include: {
         category: { select: { id: true, name: true, slug: true } },
         seller: { select: { id: true, name: true, email: true, store: { select: { name: true, id: true, slug: true } } } },
       },
     });
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('DB_TIMEOUT')), 1800)
+    );
+
+    const dbProduct = await Promise.race([queryPromise, timeoutPromise]);
 
     if (dbProduct && !dbProduct.deletedAt && dbProduct.status === 'published') {
       return {
@@ -47,11 +54,11 @@ async function getProductById(id: string) {
       };
     }
   } catch {
-    // Database fallback during build or offline
+    // Database fallback during build, offline, or transient timeout
   }
 
   return FALLBACK_CATALOG_MAP[id] || null;
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;

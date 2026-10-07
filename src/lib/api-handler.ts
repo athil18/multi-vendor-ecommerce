@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-import { AppError, ValidationError } from '@/lib/errors';
+import { AppError, ValidationError, BadRequestError, PayloadTooLargeError } from '@/lib/errors';
 import { apiError } from '@/lib/api-response';
 import { logger } from '@/lib/logger';
 import jwt from 'jsonwebtoken';
@@ -82,6 +82,8 @@ export function withErrorHandler<T = any>(handler: AsyncRouteHandler<T>): AsyncR
           }
         }
         appError = new ValidationError('Validation failed', formattedErrors);
+      } else if (error instanceof SyntaxError || error?.name === 'SyntaxError') {
+        appError = new BadRequestError('Malformed JSON payload in request body');
       } else {
         // Unhandled exceptions
         appError = new AppError('Internal server error', 500, 'INTERNAL_ERROR', undefined, false);

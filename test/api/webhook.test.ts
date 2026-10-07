@@ -41,7 +41,7 @@ describe('Stripe Webhook API Hardening & Idempotency', () => {
     await OrderItem.deleteMany({});
     await EventLog.deleteMany({});
 
-    // Create user
+    // Create users
     await User.create({
       _id: customerId,
       name: 'Test Customer',
@@ -49,6 +49,26 @@ describe('Stripe Webhook API Hardening & Idempotency', () => {
       password: 'Hash123!',
       role: 'customer',
       status: 'active',
+    });
+
+    await User.create({
+      _id: sellerId,
+      name: 'Test Seller',
+      email: 'seller@example.com',
+      password: 'Hash123!',
+      role: 'seller',
+      status: 'active',
+    });
+
+    // Create Product
+    await Product.create({
+      _id: productId,
+      sellerId: sellerId,
+      name: 'Test Product',
+      slug: 'test-product',
+      description: 'Test Description',
+      basePrice: 100,
+      status: 'published',
     });
 
     // Create variant with stock 5

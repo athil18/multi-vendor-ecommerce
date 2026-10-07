@@ -13,6 +13,7 @@ interface NexusLogoProps {
   showText?: boolean;
   className?: string;
   href?: string;
+  accessibleLabel?: string;
 }
 
 export function NexusLogo({
@@ -89,9 +90,8 @@ export function NexusLogo({
   );
 
   if (href) {
-    const accessibleLabel = showText ? "Nexus Curated Marketplace" : "Nexus Homepage";
     return (
-      <Link href={href} aria-label={accessibleLabel} className="inline-flex items-center">
+      <Link href={href} aria-label="Nexus Homepage" className="inline-flex items-center">
         {content}
       </Link>
     );
