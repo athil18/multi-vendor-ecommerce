@@ -11,7 +11,7 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Bot, Sparkles } from 'lucide-react';
+import { Bot } from 'lucide-react';
 
 const AIAssistantChatPanel = dynamic(
   () => import('./AIAssistantChatPanel').then((mod) => mod.AIAssistantChatPanel),

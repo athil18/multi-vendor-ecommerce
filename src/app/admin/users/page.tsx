@@ -14,10 +14,9 @@ import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
   Users, Shield, Store, ShoppingBag, 
-  Search, RefreshCw, CheckCircle2, Ban, UserCheck 
+  Search, RefreshCw 
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { Input } from '@/components/ui/Input';
 import { toast } from '@/components/ui/Toast';

@@ -11,7 +11,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Store, Star, CheckCircle, ArrowRight, Sparkles, Search, ShieldCheck } from 'lucide-react';
+import { Store, Star, ArrowRight, ShieldCheck } from 'lucide-react';
 import { VendorCard } from '@/components/VendorCard';
 import { Button } from '@/components/ui/Button';
 

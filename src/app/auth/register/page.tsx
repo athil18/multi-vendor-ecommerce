@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '@/lib/schemas/auth';
-import { UserPlus, Mail, Lock, User, Store } from 'lucide-react';
+import { UserPlus, Mail, User, Store } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
 import { z } from 'zod';
 import { useAuthStore } from '@/store/useAuthStore';

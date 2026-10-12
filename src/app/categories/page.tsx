@@ -8,7 +8,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Layers, Cpu, Dumbbell, Leaf, Watch, Armchair, Coffee, ArrowRight } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/Card';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

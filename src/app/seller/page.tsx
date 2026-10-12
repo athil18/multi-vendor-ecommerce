@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Store, DollarSign, Package, TrendingUp, Plus, RefreshCw, ShoppingBag, CheckCircle } from 'lucide-react';
+import { Store, DollarSign, Package, Plus, RefreshCw, ShoppingBag, CheckCircle } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
 
 import { Button } from '@/components/ui/Button';

@@ -10,10 +10,9 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Star, ShieldCheck, CheckCircle2, PackageOpen, Award, MapPin, Sparkles, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Star, CheckCircle2, PackageOpen, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
 import { ProductCard } from '@/components/ProductCard';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 import { Metadata } from 'next';

@@ -1,19 +1,31 @@
 /**
  * Shared Fallback Product Catalog & Seed Assets
- * Multi-Category Lifestyle Showcase (Tech, Sports, Sustainable, Luxury, Home, Fashion)
- * Curated from multiple open-source verified repositories (DummyJSON, EscuelaJS, Algolia)
+ * US Premium-Retail Lifestyle Showcase (Tech, Fragrance, Fashion, Footwear, Horology, Architectural Living)
  * 
- * STRICT MODE: Tech & Electronics products are strictly prioritized at the top of the catalog.
- * Beauty items are demoted or excluded from the starting product showcase.
+ * Curated flagship collection with authentic specifications, realistic variants, and verified imagery.
  */
 
 import rawProducts from '@/data/products.json';
+
+export interface ProductVariantItem {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  priceModifier: number;
+  colorHex?: string;
+  stock: number;
+  isPopular?: boolean;
+  imageIndex: number;
+  attributes?: Record<string, string>;
+}
 
 export interface FallbackProduct {
   id: string;
   _id: string;
   name: string;
   slug?: string;
+  brand?: string;
   description: string;
   basePrice: number;
   price?: number;
@@ -32,57 +44,16 @@ export interface FallbackProduct {
   averageRating?: number;
   numReviews: number;
   reviewCount?: number;
-  variants: any[];
+  inStock?: boolean;
+  specs?: Record<string, string | undefined>;
+  benefits?: string[];
+  variants?: ProductVariantItem[];
+  tags?: string[];
+  materials?: string;
   source?: string;
 }
 
-export const isTechProduct = (p: { category?: { name?: string; slug?: string }; categoryName?: string; name?: string; slug?: string }): boolean => {
-  const cat = (p.category?.name || p.categoryName || '').toLowerCase();
-  const slug = (p.category?.slug || p.slug || '').toLowerCase();
-  const name = (p.name || '').toLowerCase();
-  return (
-    cat.includes('tech') ||
-    cat.includes('electronic') ||
-    cat.includes('audio') ||
-    slug.includes('tech') ||
-    slug.includes('laptop') ||
-    slug.includes('headphone') ||
-    name.includes('macbook') ||
-    name.includes('laptop') ||
-    name.includes('keyboard') ||
-    name.includes('headphone') ||
-    name.includes('monitor')
-  );
-};
-
-export const isBeautyProduct = (p: { category?: { name?: string; slug?: string }; categoryName?: string; name?: string; slug?: string }): boolean => {
-  const cat = (p.category?.name || p.categoryName || '').toLowerCase();
-  const name = (p.name || '').toLowerCase();
-  const slug = (p.slug || '').toLowerCase();
-  return (
-    cat.includes('beauty') ||
-    cat.includes('cosmetic') ||
-    name.includes('mascara') ||
-    name.includes('lipstick') ||
-    name.includes('eyeshadow') ||
-    name.includes('nail polish') ||
-    name.includes('powder canister') ||
-    slug.includes('beauty')
-  );
-};
-
-const allRaw = rawProducts as FallbackProduct[];
-
-// Strict Mode: Re-order so Tech products are always at the start and beauty products are at the very back
-const techList = allRaw.filter(isTechProduct);
-const otherList = allRaw.filter((p) => !isTechProduct(p) && !isBeautyProduct(p));
-const beautyList = allRaw.filter(isBeautyProduct);
-
-export const FALLBACK_PRODUCTS_LIST: FallbackProduct[] = [
-  ...techList,
-  ...otherList,
-  ...beautyList,
-];
+export const FALLBACK_PRODUCTS_LIST: FallbackProduct[] = rawProducts as unknown as FallbackProduct[];
 
 export const FALLBACK_CATALOG_MAP: Record<string, FallbackProduct> = Object.fromEntries(
   FALLBACK_PRODUCTS_LIST.map((p) => [p.id, p])

@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Package, Plus, Search, RefreshCw, Edit, Trash2 } from 'lucide-react';
+import { Package, Search, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';

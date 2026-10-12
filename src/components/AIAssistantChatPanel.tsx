@@ -14,7 +14,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Bot, Send, X, Shield, RefreshCw, ChevronRight, Zap, ShoppingCart, Check, Store, ShieldCheck, Trash2, Star } from 'lucide-react';
+import { Bot, Send, X, RefreshCw, ChevronRight, ShoppingCart, Check, Store, Trash2, Star } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
 interface CartItemPayload {

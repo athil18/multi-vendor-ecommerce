@@ -10,7 +10,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Lock, Eye, Database, FileText, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, Database, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function PrivacyPolicyPage() {

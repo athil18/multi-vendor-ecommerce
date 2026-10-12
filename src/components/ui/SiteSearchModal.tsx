@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, X, Loader2, ArrowRight, CornerDownLeft, Tag, Store, AlertCircle } from 'lucide-react';
+import { Search, X, Loader2, ArrowRight, Tag, Store, AlertCircle } from 'lucide-react';
 
 interface SearchResult {
   id: string;

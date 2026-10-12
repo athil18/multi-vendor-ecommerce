@@ -14,7 +14,6 @@ import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { FileCheck2, Shield, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { useQuery } from '@tanstack/react-query';
 

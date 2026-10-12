@@ -12,7 +12,7 @@
 
 import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Settings, Shield, Save, Database, DollarSign, Clock, Truck } from 'lucide-react';
+import { Settings, Save, DollarSign, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';

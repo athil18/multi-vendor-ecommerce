@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
   DollarSign, ShieldCheck, Lock, RefreshCw, 
-  ArrowUpRight, Clock, CheckCircle2, AlertCircle 
+  ArrowUpRight, CheckCircle2 
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';

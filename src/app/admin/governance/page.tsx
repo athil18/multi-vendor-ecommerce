@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
   Shield, Store, CheckCircle2, AlertTriangle, 
-  Ban, RefreshCw, Search, ExternalLink, Award 
+  RefreshCw, Search, ExternalLink 
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';

@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/lib/schemas/auth';
 import { useAuthStore } from '@/store/useAuthStore';
 import { logError } from '@/lib/logger';
-import { Mail, Lock, Store } from 'lucide-react';
+import { Mail, Store } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
 import { z } from 'zod';
 

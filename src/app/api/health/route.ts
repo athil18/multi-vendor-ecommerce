@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import connectDB from '@/lib/db';
 import { getRedisConnection } from '@/lib/queue/redis';
 import { logger } from '@/lib/logger';
 
@@ -13,7 +12,7 @@ export async function GET() {
   try {
     // 1. Database check via Prisma
     try {
-      await connectDB();
+      await prisma.$connect();
       await prisma.$queryRaw`SELECT 1`;
       dbStatus = 'connected';
       checks.database = 'connected';

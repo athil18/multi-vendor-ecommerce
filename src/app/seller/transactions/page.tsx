@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Receipt, RefreshCw, CheckCircle2, Clock, Truck } from 'lucide-react';
+import { Receipt, RefreshCw, CheckCircle2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';

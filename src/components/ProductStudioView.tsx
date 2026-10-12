@@ -21,9 +21,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  Star, ShieldCheck, Truck, RotateCcw, PackageCheck, 
-  Store, CheckCircle, Sparkles, Scale, Check, Eye, 
-  Award, Leaf, Clock, ArrowRight, Shield, HeartHandshake, CheckCircle2
+  Star, ShieldCheck, Truck, RotateCcw, 
+  Store, CheckCircle, Sparkles, Scale, Check, 
+  Award, Leaf, CheckCircle2
 } from 'lucide-react';
 import { AddToCartButton } from '@/components/AddToCartButton';
 import { Button } from '@/components/ui/Button';
@@ -31,7 +31,6 @@ import { useCompareStore } from '@/store/useCompareStore';
 import { VariantSelector, ProductVariantOption } from '@/components/VariantSelector';
 import { BundleOfferSelector } from '@/components/BundleOfferSelector';
 import { FreeGiftProgress } from '@/components/FreeGiftProgress';
-import { StickyMobilePurchaseBar } from '@/components/StickyMobilePurchaseBar';
 
 interface ProductStudioViewProps {
   product: any;
@@ -52,44 +51,49 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
     : ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800'];
 
   const basePrice = Number(product.basePrice ?? product.price ?? 199);
-  const originalRetailPrice = Math.round(basePrice * 1.25); // Authentic 20-25% creator discount from standard retail
+  const compareAtPrice = product.compareAtPrice ? Number(product.compareAtPrice) : null;
+  const hasHonestDiscount = Boolean(compareAtPrice && compareAtPrice > basePrice);
+  const originalRetailPrice = hasHonestDiscount ? compareAtPrice! : basePrice;
   const storeName = product.store?.name || product.storeName || 'Independent Atelier Studio';
   const averageRating = Number(product.averageRating || product.rating || 4.95);
   const reviewCount = Number(product.reviewCount || product.numReviews || 32);
 
-  // Level 4: Intelligent Default Variant Configurations
-  const defaultVariants: ProductVariantOption[] = [
-    {
-      id: 'var-1',
-      name: 'Space Gray / Studio Edition',
-      colorHex: '#374151',
-      sku: `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-SG-01`,
-      priceModifier: 0,
-      isPopular: true,
-      stockCount: 14,
-      imageIndex: 0,
-    },
-    {
-      id: 'var-2',
-      name: 'Stealth Matte Black',
-      colorHex: '#111827',
-      sku: `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-MB-02`,
-      priceModifier: 0,
-      stockCount: 8,
-      imageIndex: Math.min(1, images.length - 1),
-    },
-    {
-      id: 'var-3',
-      name: 'Raw Anodized Silver',
-      colorHex: '#9CA3AF',
-      sku: `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-AS-03`,
-      priceModifier: 20,
-      stockCount: 4,
-      imageIndex: Math.min(2, images.length - 1),
-    },
-  ];
+  // Level 4: Dynamic Variant Resolution from Authentic Catalog Data
+  const resolvedVariants: ProductVariantOption[] = React.useMemo(() => {
+    if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
+      return product.variants.map((v: any, idx: number) => ({
+        id: v.id || `var-${idx + 1}`,
+        name: v.name || `Option ${idx + 1}`,
+        colorHex: v.colorHex || '#374151',
+        sku: v.sku || `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-0${idx + 1}`,
+        priceModifier: Number(v.priceModifier || 0),
+        isPopular: Boolean(v.isPopular ?? (idx === 0)),
+        stockCount: v.stockCount || (14 - idx * 3 > 0 ? 14 - idx * 3 : 5),
+        imageIndex: Math.min(idx, images.length - 1),
+      }));
+    }
+    return [
+      {
+        id: 'var-1',
+        name: 'Standard Edition',
+        colorHex: '#374151',
+        sku: `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-STD`,
+        priceModifier: 0,
+        isPopular: true,
+        stockCount: 14,
+        imageIndex: 0,
+      },
+    ];
+  }, [product.variants, product.slug, images.length]);
 
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariantOption>(defaultVariants[0]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariantOption>(
+    () => resolvedVariants.find((v) => v.isPopular) || resolvedVariants[0]
+  );
+
+  useEffect(() => {
+    setSelectedVariant(resolvedVariants.find((v) => v.isPopular) || resolvedVariants[0]);
+  }, [resolvedVariants]);
+
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [bundlePrice, setBundlePrice] = useState(basePrice);
   const [bundleSavings, setBundleSavings] = useState(0);
@@ -104,8 +108,10 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
     : (currentUnitPrice * selectedQuantity) * (selectedQuantity === 2 ? 0.90 : 0.85);
 
   const effectiveSavings = selectedQuantity === 1
-    ? (currentOriginalUnitPrice - currentUnitPrice)
+    ? (hasHonestDiscount ? (currentOriginalUnitPrice - currentUnitPrice) : 0)
     : (currentOriginalUnitPrice * selectedQuantity - effectiveTotalPrice);
+
+  const hasSavingsToDisplay = effectiveSavings > 0.01;
 
   const showStickyDock = !isMainCTAVisible;
   const productPrice = effectiveTotalPrice;
@@ -138,8 +144,8 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
 
   // Benefit statement extraction
   const benefitStatement = product.materials 
-    ? `Master crafted from ${product.materials}. Engineered for acoustic purity and generational durability.`
-    : 'Direct-from-workshop commission engineered with aerospace materials, inspected tolerances, and cryptographically verified escrow.';
+    ? `Master crafted from ${product.materials}. Verified material purity and ethical provenance.`
+    : 'Direct-from-workshop commission engineered with verified materials, inspected tolerances, and cryptographically verified escrow.';
 
   return (
     <div className="relative">
@@ -257,29 +263,44 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
                 {product.name}
               </h1>
 
-              {/* Key Product Benefit Statement */}
+              {/* Key Product Benefit Statement & Authentic Benefit Pills */}
               <p className="mt-2 text-xs sm:text-sm text-surface-600 dark:text-surface-300 font-medium leading-relaxed">
-                {benefitStatement}
+                {product.description ? product.description.slice(0, 180) + (product.description.length > 180 ? '...' : '') : benefitStatement}
               </p>
+
+              {product.benefits && Array.isArray(product.benefits) && product.benefits.length > 0 && (
+                <div className="mt-3 flex flex-col gap-1.5 pt-2 border-t border-surface-200/50 dark:border-surface-800">
+                  {product.benefits.slice(0, 3).map((benefit: string, bIdx: number) => (
+                    <div key={bIdx} className="flex items-center gap-2 text-xs text-surface-700 dark:text-surface-300 font-medium">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* ─── LEVEL 5: Pricing Visual Hierarchy ─────────────────────── */}
+            {/* ─── LEVEL 5: Honest Pricing Visual Hierarchy ─────────────────────── */}
             <div className="p-4 rounded-2xl bg-surface-50/90 dark:bg-surface-850/90 border border-surface-200/80 dark:border-surface-800 shadow-sm space-y-2">
               <div className="flex items-baseline gap-3 flex-wrap">
-                {/* Discounted / Atelier Price (Strongest emphasis) */}
+                {/* Atelier / Active Price */}
                 <span className="text-3xl sm:text-4xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
                   ${effectiveTotalPrice.toFixed(2)}
                 </span>
 
-                {/* Original Retail Price */}
-                <span className="text-sm sm:text-base text-surface-400 line-through font-medium">
-                  ${(currentOriginalUnitPrice * selectedQuantity).toFixed(2)}
-                </span>
+                {/* Original Retail Price (Only rendered if genuine compareAtPrice or volume discount exists) */}
+                {hasSavingsToDisplay && (
+                  <span className="text-sm sm:text-base text-surface-400 line-through font-medium">
+                    ${(currentOriginalUnitPrice * selectedQuantity).toFixed(2)}
+                  </span>
+                )}
 
                 {/* Savings Pill */}
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                  Save ${effectiveSavings.toFixed(2)} ({Math.round((effectiveSavings / (currentOriginalUnitPrice * selectedQuantity)) * 100)}% OFF)
-                </span>
+                {hasSavingsToDisplay && (
+                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                    Save ${effectiveSavings.toFixed(2)} ({Math.round((effectiveSavings / (currentOriginalUnitPrice * selectedQuantity)) * 100)}% OFF)
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center justify-between text-[11px] text-surface-500 border-t border-surface-200/60 dark:border-surface-800 pt-2">
@@ -290,13 +311,15 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
               </div>
             </div>
 
-            {/* ─── LEVEL 4: Intelligent Variant Selector ──────────────────── */}
-            <VariantSelector
-              variants={defaultVariants}
-              selectedVariantId={selectedVariant.id}
-              onSelectVariant={handleSelectVariant}
-              basePrice={basePrice}
-            />
+            {/* ─── LEVEL 4: Intelligent Dynamic Variant Selector ──────────────────── */}
+            {resolvedVariants.length > 1 && (
+              <VariantSelector
+                variants={resolvedVariants}
+                selectedVariantId={selectedVariant.id}
+                onSelectVariant={handleSelectVariant}
+                basePrice={basePrice}
+              />
+            )}
 
             {/* ─── LEVEL 6: Bundle & Offer Psychology ────────────────────── */}
             <BundleOfferSelector
@@ -398,35 +421,66 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
           {activeTab === 'provenance' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
               <div className="space-y-4">
-                <h3 className="font-bold text-surface-900 dark:text-white text-base">Material Purity Specifications</h3>
+                <h3 className="font-bold text-surface-900 dark:text-white text-base">Specifications & Provenance</h3>
                 <p className="text-surface-600 dark:text-surface-300 leading-relaxed text-xs sm:text-sm">
-                  {product.description || 'Constructed utilizing aerospace-grade 6063 aluminum alloy and hand-selected full-grain Tuscan hides. Every batch is certified for metallurgical purity and ethical vegetable tanning without harmful chromates.'}
+                  {product.description || 'Verified authentic specimen. Engineered to the highest quality standards with authentic materials and cryptographically verified escrow.'}
                 </p>
-                <div className="space-y-2">
-                  <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
-                    <span className="text-surface-400">Primary Alloy / Body</span>
-                    <span className="font-bold text-surface-800 dark:text-surface-200">CNC Milled 6063-T6 Aerospace Grade</span>
+                {product.specs && typeof product.specs === 'object' && Object.keys(product.specs).length > 0 ? (
+                  <div className="space-y-2">
+                    {Object.entries(product.specs).map(([specKey, specVal]) => (
+                      <div key={specKey} className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                        <span className="text-surface-400">{specKey}</span>
+                        <span className="font-bold text-surface-800 dark:text-surface-200 text-right">{String(specVal)}</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                      <span className="text-surface-400">Selected Configuration</span>
+                      <span className="font-bold text-surface-800 dark:text-surface-200">{selectedVariant.name}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                      <span className="text-surface-400">Batch Lot Serial</span>
+                      <span className="font-mono font-bold text-surface-800 dark:text-surface-200">{selectedVariant.sku}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
-                    <span className="text-surface-400">Finish Treatment</span>
-                    <span className="font-bold text-surface-800 dark:text-surface-200">{selectedVariant.name}</span>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                      <span className="text-surface-400">Configuration</span>
+                      <span className="font-bold text-surface-800 dark:text-surface-200">{selectedVariant.name}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                      <span className="text-surface-400">Batch Lot Serial</span>
+                      <span className="font-mono font-bold text-surface-800 dark:text-surface-200">{selectedVariant.sku}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
+                      <span className="text-surface-400">Category Classification</span>
+                      <span className="font-bold text-surface-800 dark:text-surface-200">{product.category?.name || product.categoryName || 'Curated Specimen'}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-surface-200/50 dark:border-surface-800 text-xs">
-                    <span className="text-surface-400">Batch Lot Serial</span>
-                    <span className="font-mono font-bold text-surface-800 dark:text-surface-200">{selectedVariant.sku}</span>
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="p-6 rounded-2xl bg-surface-50 dark:bg-surface-850 border border-surface-200/50 dark:border-surface-800 space-y-3">
                 <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400 font-bold text-xs uppercase tracking-wider">
                   <Sparkles className="h-4 w-4" />
-                  <span>Certified Heirloom Specimen</span>
+                  <span>Certified Authentic Specimen</span>
                 </div>
                 <h4 className="font-bold text-surface-900 dark:text-white text-sm">Digital Certificate of Authenticity</h4>
                 <p className="text-xs text-surface-600 dark:text-surface-400 leading-relaxed">
-                  Upon delivery confirmation, your customer account receives a cryptographically signed provenance receipt containing the artisan&apos;s signature, batch serial, and material lot number.
+                  Upon delivery confirmation, your customer account receives a cryptographically signed provenance receipt containing the verified seller signature, batch serial, and quality inspection dossier.
                 </p>
+
+                {product.benefits && Array.isArray(product.benefits) && product.benefits.length > 0 && (
+                  <div className="pt-2 border-t border-surface-200/60 dark:border-surface-800 space-y-1.5">
+                    <span className="text-[11px] font-bold text-surface-700 dark:text-surface-300 block">Verified Key Benefits:</span>
+                    {product.benefits.map((b: string, i: number) => (
+                      <div key={i} className="flex items-center gap-1.5 text-xs text-surface-600 dark:text-surface-400">
+                        <Check className="h-3 w-3 text-emerald-500 shrink-0" />
+                        <span>{b}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

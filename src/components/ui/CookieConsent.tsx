@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Cookie, Shield, Check, X, Sliders, ChevronRight } from 'lucide-react';
+import { Cookie, Shield, Check, X, Sliders } from 'lucide-react';
 import { Button } from './Button';
 
 export interface CookiePreferences {

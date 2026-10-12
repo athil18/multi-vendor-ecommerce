@@ -27,6 +27,7 @@ export interface ProductCardProps {
     name: string;
     description: string;
     basePrice: number;
+    compareAtPrice?: number;
     images?: string[];
     categoryName?: string;
     category?: { name: string } | string;
@@ -35,6 +36,8 @@ export interface ProductCardProps {
     storeId?: string;
     storeName?: string;
     materials?: string;
+    variants?: any[];
+    specs?: Record<string, any>;
   };
   priority?: boolean;
 }
@@ -162,22 +165,23 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Price & Primary Action */}
         <div className="pt-4 border-t border-surface-200/50 dark:border-surface-800/80 flex items-center justify-between gap-3">
           <div className="flex flex-col">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400 mb-0.5">
               Direct Price
             </span>
-            <span className="text-2xl font-extrabold text-surface-900 dark:text-white font-sans tracking-tight font-tabular">
-              ${(product.basePrice ?? 0).toFixed(2)}
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="text-xl sm:text-2xl font-black text-surface-900 dark:text-white font-sans tracking-tight font-tabular">
                 ${(product.basePrice ?? 0).toFixed(2)}
               </span>
-              <span className="text-xs text-surface-400 line-through font-medium">
-                ${((product.basePrice ?? 0) * 1.25).toFixed(2)}
-              </span>
-              <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                -20%
-              </span>
+              {product.compareAtPrice && product.compareAtPrice > (product.basePrice ?? 0) && (
+                <>
+                  <span className="text-xs text-surface-400 line-through font-medium">
+                    ${product.compareAtPrice.toFixed(2)}
+                  </span>
+                  <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+                    Save ${(product.compareAtPrice - (product.basePrice ?? 0)).toFixed(2)}
+                  </span>
+                </>
+              )}
             </div>
           </div>
 

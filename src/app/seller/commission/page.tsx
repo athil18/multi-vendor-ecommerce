@@ -8,9 +8,8 @@
 
 import React from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { DollarSign, Percent, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { DollarSign, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from '@/components/ui/Toast';

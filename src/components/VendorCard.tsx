@@ -11,7 +11,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Store, Star, CheckCircle, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
+import { Store, Star, CheckCircle, ArrowRight, MapPin } from 'lucide-react';
 import { Button } from './ui/Button';
 
 export interface VendorCardProps {

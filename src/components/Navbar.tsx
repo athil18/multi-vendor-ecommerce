@@ -25,15 +25,12 @@ import {
   SearchIcon, 
   ShoppingCartIcon, 
   ShoppingBagIcon, 
-  SunModeIcon, 
-  MoonModeIcon, 
   StoreIcon, 
   MenuDrawerIcon, 
   SecureLockIcon 
 } from './ui/icons';
 import { Button } from './ui/Button';
 import { NexusLogo } from './NexusLogo';
-import { PromotionalBanner } from './PromotionalBanner';
 import { SiteSearchModal } from './ui/SiteSearchModal';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { ConfirmationModal } from './ui/ConfirmationModal';

@@ -1,7 +1,6 @@
 import React from 'react';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Package, MapPin, CreditCard, Calendar, Truck, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Package, MapPin, CreditCard, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 
