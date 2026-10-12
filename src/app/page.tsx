@@ -11,6 +11,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Award, Leaf, HeartHandshake } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ProductCard';
 import { VendorCard } from '@/components/VendorCard';
 import { StorefrontUXShowcase } from '@/components/storefront/StorefrontUXShowcase';
