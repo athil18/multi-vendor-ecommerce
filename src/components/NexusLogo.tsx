@@ -13,6 +13,7 @@ interface NexusLogoProps {
   showText?: boolean;
   className?: string;
   href?: string;
+  accessibleLabel?: string;
 }
 
 export function NexusLogo({
@@ -33,7 +34,7 @@ export function NexusLogo({
     <div className={`flex items-center gap-2.5 group select-none ${className}`}>
       {/* Hexagonal Vector Icon */}
       <div className={`relative ${currentSize.icon} flex items-center justify-center`}>
-        <div className="absolute inset-0 bg-gradient-to-tr from-brand-600 to-indigo-500 rounded-xl blur-sm opacity-40 group-hover:opacity-70 transition-opacity" />
+        <div className="absolute inset-0 bg-brand-600/10 dark:bg-brand-500/15 rounded-xl border border-brand-500/20 group-hover:border-brand-500/40 transition-colors" />
         <svg
           viewBox="0 0 64 64"
           fill="none"
@@ -47,29 +48,22 @@ export function NexusLogo({
             width="62"
             height="62"
             rx="15"
-            stroke="url(#logoGradient)"
+            stroke="#4F46E5"
             strokeWidth="2"
-            strokeOpacity="0.5"
+            strokeOpacity="0.4"
           />
           <path
             d="M32 14L48 23.2376V41.7128L32 50.9504L16 41.7128V23.2376L32 14Z"
-            stroke="url(#logoGradient)"
+            stroke="#4F46E5"
             strokeWidth="3.5"
             strokeLinejoin="round"
           />
           <path
             d="M32 24L40 28.6188V37.8564L32 42.4752L24 37.8564V28.6188L32 24Z"
-            fill="url(#logoGradient)"
+            fill="#4F46E5"
             fillOpacity="0.9"
           />
           <circle cx="32" cy="33.24" r="3" fill="#FFFFFF" />
-          <defs>
-            <linearGradient id="logoGradient" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#8B5CF6" />
-              <stop offset="0.5" stopColor="#6366F1" />
-              <stop offset="1" stopColor="#3B82F6" />
-            </linearGradient>
-          </defs>
         </svg>
       </div>
 
@@ -89,9 +83,8 @@ export function NexusLogo({
   );
 
   if (href) {
-    const accessibleLabel = "Nexus Homepage"; // Nexus Enterprise Homepage
     return (
-      <Link href={href} aria-label="Nexus Homepage" data-accessible-label={accessibleLabel} className="inline-flex items-center">
+      <Link href={href} aria-label="Nexus Homepage" className="inline-flex items-center">
         {content}
       </Link>
     );

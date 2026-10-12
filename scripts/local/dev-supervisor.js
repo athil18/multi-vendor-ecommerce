@@ -13,7 +13,7 @@
  * @agent testing-qa-automation-engineer
  */
 
-const { spawn, execSync } = require('child_process');
+const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -143,10 +143,10 @@ function clearState() {
 }
 
 async function killProcessTree(pid) {
-  if (!pid) return;
+  if (!pid || !/^\d+$/.test(String(pid))) return;
   try {
     if (process.platform === 'win32') {
-      execSync(`taskkill /F /T /PID ${pid} 2>nul`);
+      execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], { stdio: 'ignore' });
     } else {
       process.kill(-pid, 'SIGKILL');
     }
@@ -158,16 +158,19 @@ async function killProcessTree(pid) {
 async function killPortProcesses(port) {
   try {
     if (process.platform === 'win32') {
-      const output = execSync(`netstat -ano | findstr :${port} | findstr LISTENING 2>nul`, { encoding: 'utf8' });
+      const output = execFileSync('netstat', ['-ano'], { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
       const lines = output.trim().split('\n');
+      const portPattern = `:${port}`;
       for (const line of lines) {
-        const parts = line.trim().split(/\s+/);
-        const pid = parts[parts.length - 1];
-        if (pid && /^\d+$/.test(pid) && parseInt(pid, 10) !== process.pid) {
-          logSupervisor(`Releasing port ${port} occupied by PID ${pid}...`);
-          try {
-            execSync(`taskkill /F /T /PID ${pid} 2>nul`);
-          } catch (e) {}
+        if (line.includes('LISTENING') && line.includes(portPattern)) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && /^\d+$/.test(pid) && parseInt(pid, 10) !== process.pid) {
+            logSupervisor(`Releasing port ${port} occupied by PID ${pid}...`);
+            try {
+              execFileSync('taskkill', ['/F', '/T', '/PID', String(pid)], { stdio: 'ignore' });
+            } catch (e) {}
+          }
         }
       }
     }
@@ -432,11 +435,11 @@ async function openBrowser() {
 
   try {
     if (process.platform === 'win32') {
-      execSync(`start ${url}`);
+      spawn('cmd.exe', ['/c', 'start', '""', url], { detached: true, stdio: 'ignore' }).unref();
     } else if (process.platform === 'darwin') {
-      execSync(`open ${url}`);
+      execFileSync('open', [url], { stdio: 'ignore' });
     } else {
-      execSync(`xdg-open ${url}`);
+      execFileSync('xdg-open', [url], { stdio: 'ignore' });
     }
   } catch (e) {
     console.log(`Unable to auto-launch browser. Please visit ${url} directly.`);

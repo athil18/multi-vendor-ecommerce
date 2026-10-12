@@ -22,20 +22,52 @@ const FALLBACK_CATEGORIES = [
   { id: 'cat-6', name: 'Home & Living', slug: 'home-and-living', description: 'Handcrafted stoneware ceramics and ambient lamps' },
 ];
 
-export const GET = withErrorHandler(async (req: NextRequest) => {
+let cachedCategories: { data: any; expiresAt: number } | null = null;
+const CATEGORIES_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+export const GET = withErrorHandler(async (_req: NextRequest) => {
+  if (cachedCategories && cachedCategories.expiresAt > Date.now()) {
+    return NextResponse.json(cachedCategories.data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+        'X-Cache-Lookup': 'HIT',
+      },
+    });
+  }
+
   try {
-    const categories = await prisma.category.findMany({
+    const queryPromise = prisma.category.findMany({
       where: { parentId: null, deletedAt: null },
       include: { children: true },
     });
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('DB_TIMEOUT')), 1500)
+    );
+
+    const categories = await Promise.race([queryPromise, timeoutPromise]);
+
     if (categories && categories.length > 0) {
-      return NextResponse.json(categories.map(c => ({ ...c, _id: c.id })));
+      const data = categories.map(c => ({ ...c, _id: c.id }));
+      cachedCategories = { data, expiresAt: Date.now() + CATEGORIES_CACHE_TTL_MS };
+      return NextResponse.json(data, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+          'X-Cache-Lookup': 'MISS',
+        },
+      });
     }
-  } catch (error) {
+  } catch {
     // Database fallback
   }
 
-  return NextResponse.json(FALLBACK_CATEGORIES.map(c => ({ ...c, _id: c.id })));
+  const fallbackData = FALLBACK_CATEGORIES.map(c => ({ ...c, _id: c.id }));
+  return NextResponse.json(fallbackData, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+      'X-Cache-Lookup': 'FALLBACK',
+    },
+  });
 });
 
 export const POST = withErrorHandler(async (req: NextRequest) => {
@@ -64,6 +96,9 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       image: image || null,
     },
   });
+
+  // Invalidate in-memory categories cache
+  cachedCategories = null;
 
   return NextResponse.json({ ...category, _id: category.id }, { status: 201 });
 });

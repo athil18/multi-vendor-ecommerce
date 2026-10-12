@@ -10,13 +10,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
-  Sparkles, ArrowRight, ShieldCheck, Award, Leaf, 
-  HeartHandshake, Compass, Layers, CheckCircle2 
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { ArrowRight, ShieldCheck, Award, Leaf, HeartHandshake } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { VendorCard } from '@/components/VendorCard';
+import { StorefrontUXShowcase } from '@/components/storefront/StorefrontUXShowcase';
 import prisma from '@/lib/prisma';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 import { unstable_cache } from 'next/cache';
@@ -35,7 +32,7 @@ const getCachedProducts = unstable_cache(
       });
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('DB_TIMEOUT')), 8000)
+        setTimeout(() => reject(new Error('DB_TIMEOUT')), 2500)
       );
 
       const dbProducts = await Promise.race([queryPromise, timeoutPromise]);
@@ -64,8 +61,8 @@ const getCachedProducts = unstable_cache(
       return FALLBACK_PRODUCTS_LIST;
     }
   },
-  ['featured-storefront-products-catalog'],
-  { revalidate: 60, tags: ['featured-products'] }
+  ['featured-storefront-products-luxury'],
+  { revalidate: 300, tags: ['featured-products'] }
 );
 
 export default async function Home() {
@@ -107,124 +104,81 @@ export default async function Home() {
     },
   ];
 
-  const categories = [
-    { name: 'Tech Gear & Audio', slug: 'Tech Gear', desc: 'Custom mechanical keyboards, precision audio, desk accessories', count: '14 Items', href: '/products?category=Tech+Gear' },
-    { name: 'Fine Leather & Goods', slug: 'Luxury', desc: 'Full-grain Tuscan leather, heirloom cardcases, handcrafted bags', count: '9 Items', href: '/products?category=Luxury' },
-    { name: 'Sports & Velocity', slug: 'Fitness', desc: 'Aerodynamic components, carbon fiber frames, performance gear', count: '12 Items', href: '/products?category=Fitness' },
-    { name: 'Sustainable Living', slug: 'Sustainable', desc: 'Consciously sourced home essentials and circular design objects', count: '8 Items', href: '/products?category=Sustainable' },
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen overflow-x-hidden">
-      {/* ─── 1. Intent-Driven Hero ───────────────────────────────────────────── */}
-      <section className="relative w-full pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden flex flex-col items-center justify-center bg-gradient-to-b from-surface-50 via-white to-surface-50 dark:from-surface-950 dark:via-surface-900 dark:to-surface-950">
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-          
-          {/* Authentic Trust Pill */}
-          <div className="specular-pill mb-6 text-brand-700 dark:text-brand-300 shadow-sm px-5 py-2">
-            <Sparkles className="h-3.5 w-3.5 text-brand-500" />
-            <span>Curated Marketplace &bull; Direct From Independent Workshops</span>
-          </div>
+    <div className="flex flex-col min-h-screen overflow-x-hidden ambient-gradient-mesh">
+      {/* ─── 1. Authentic Editorial Hero ────────────────────────────────────────── */}
+      <section className="relative w-full pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden flex flex-col items-center justify-center">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none opacity-60" />
 
-          {/* Value Prop Headline */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-surface-900 dark:text-white leading-[1.08] mb-6 font-sans">
-            Crafted with Intent. <br className="hidden md:block" />
-            <span className="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 dark:from-brand-400 dark:via-indigo-300 dark:to-purple-300 bg-clip-text text-transparent inline-block">
-              Engineered to Endure.
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+          {/* Authentic Editorial Kicker */}
+          <p className="text-xs uppercase font-bold tracking-widest text-surface-500 dark:text-surface-400 mb-4 select-none">
+            Independent Workshop Marketplace &bull; Stripe Connect Escrow
+          </p>
+
+          {/* Concrete Headline */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] mb-6 font-sans">
+            Direct from independent workshops. <br className="hidden md:block" />
+            <span className="text-brand-600 dark:text-brand-400">
+              Protected by escrow.
             </span>
           </h1>
 
-          {/* Clear Subtitle */}
-          <p className="text-base sm:text-lg md:text-xl text-surface-600 dark:text-surface-300 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
-            A high-trust marketplace connecting discerning buyers directly with verified artisan workshops, bespoke toolmakers, and independent creators worldwide.
+          {/* Concrete Subtitle */}
+          <p className="text-base sm:text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+            Nexus connects discerning buyers directly with verified specialized workshops. Every order is secured with Stripe Connect escrow and released only upon carrier-confirmed delivery.
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-            <Link href="/products" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto h-13 px-8 text-base shadow-xl bg-surface-900 dark:bg-white text-white dark:text-surface-900 border-none rounded-full font-bold hover:scale-105 transition-transform">
-                Explore The Collection <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
+          <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full justify-center">
+            <Link
+              href="/products"
+              aria-label="Browse product catalog"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-11 px-7 text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              Browse catalog <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
-            <Link href="/seller/register" prefetch={false} className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto h-13 px-8 text-base border border-surface-300 dark:border-surface-700 bg-white dark:bg-surface-900 rounded-full font-bold hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors">
-                Open a Creator Workshop
-              </Button>
+            <Link
+              href="/seller/register"
+              prefetch={false}
+              aria-label="Apply to open a seller account"
+              className="w-full sm:w-auto inline-flex items-center justify-center h-11 px-7 text-sm font-semibold border border-surface-300 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-900 dark:text-white rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              Apply to sell
             </Link>
           </div>
 
           {/* Authentic Trust Indicators */}
-          <div className="mt-12 flex items-center justify-center gap-6 sm:gap-10 flex-wrap text-surface-600 dark:text-surface-400 font-semibold text-xs sm:text-sm">
+          <div className="mt-12 flex items-center justify-center gap-6 sm:gap-10 flex-wrap text-surface-600 dark:text-surface-400 font-medium text-xs sm:text-sm">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>100% Escrow Protected</span>
+              <span>Stripe Connect Escrow Holds</span>
             </div>
             <div className="flex items-center gap-2">
               <Award className="h-4 w-4 text-brand-500" />
-              <span>Verified Artisan Workshops</span>
+              <span>Verified Independent Workshops</span>
             </div>
             <div className="flex items-center gap-2">
               <Leaf className="h-4 w-4 text-emerald-600" />
-              <span>Carbon-Neutral Logistics</span>
+              <span>Carrier-Inspected 30-Day Returns</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── 2. Curated Categories Navigation ─────────────────────────────────── */}
-      <section className="py-16 border-y border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400">
-                Explore by Craft
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-surface-900 dark:text-white tracking-tight">
-                Featured Categories
-              </h2>
-            </div>
-            <Link href="/products" className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1">
-              View All <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((cat, idx) => (
-              <Link 
-                key={idx} 
-                href={cat.href}
-                className="group p-6 rounded-2xl border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-850 hover:border-brand-500 transition-all duration-200 flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="font-bold text-lg text-surface-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors mb-1.5 flex items-center justify-between">
-                    {cat.name}
-                    <ArrowRight className="w-4 h-4 text-surface-400 group-hover:translate-x-1 transition-transform" />
-                  </h3>
-                  <p className="text-xs text-surface-500 dark:text-surface-400 leading-relaxed font-normal">
-                    {cat.desc}
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-surface-200/60 dark:border-surface-700/60 text-[11px] font-bold text-brand-600 dark:text-brand-400">
-                  {cat.count}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 3. Provenance & Escrow Principles ───────────────────────────────── */}
-      <section className="py-20 bg-surface-50/50 dark:bg-surface-950/50">
+      {/* ─── 2. Platform Commitments & Workshop Standards ─────────────────── */}
+      <section className="py-20 border-y border-surface-200 dark:border-surface-800 relative section-contained bg-surface-50/50 dark:bg-surface-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <span className="text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest text-xs mb-2 block">
-              Buyer Protection & Integrity
+            <span className="text-brand-600 dark:text-brand-400 font-bold uppercase tracking-wider text-xs mb-2 block">
+              Platform Standards
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-surface-900 dark:text-white tracking-tight font-sans mb-3">
-              Why Discerning Shoppers Choose Nexus
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-surface-900 dark:text-white tracking-tight font-sans mb-3">
+              How Nexus Protects Buyers and Makers
             </h2>
             <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto text-sm sm:text-base">
-              Every transaction is architected around transparent buyer protection, direct artisan remuneration, and physical inspection guarantees.
+              Every transaction follows transparent double-entry accounting and verified logistics.
             </p>
           </div>
 
@@ -237,25 +191,30 @@ export default async function Home() {
               },
               { 
                 icon: Award, 
-                title: 'Hand-Vetted Creators', 
-                desc: 'Every workshop and brand is vetted for genuine craftsmanship, materials origin, and fulfillment track record.' 
+                title: 'Vetted Workshops', 
+                desc: 'Independent makers undergo business verification and product inspection before catalog publishing.' 
               },
               { 
                 icon: HeartHandshake, 
-                title: '90% Direct Creator Payout', 
-                desc: 'Proceeds flow directly to the creator with an automated, transparent split that sustains independent artisan studios.' 
+                title: '90% Direct Disbursal', 
+                desc: 'Checkout proceeds remit directly to makers upon confirmed fulfillment with 10% platform maintenance fee.' 
+              },
+              { 
+                icon: ShieldCheck, 
+                title: 'Stripe Connect Escrow', 
+                desc: 'Buyer funds remain locked in escrow until verified delivery confirmation by national carriers.' 
               },
               { 
                 icon: Leaf, 
-                title: 'Inspected Delivery & Returns', 
-                desc: '14-day examination window on all items with carbon-neutral transit and guaranteed dispute resolution.' 
+                title: 'Standardized Tracking', 
+                desc: 'Every parcel is dispatched with verifiable carrier tracking numbers and full shipping insurance.' 
               },
             ].map((pillar, idx) => (
               <div
                 key={idx}
-                className="p-7 rounded-2xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 shadow-sm"
+                className="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-6 shadow-sm transition-all duration-200 hover:border-surface-300 dark:hover:border-surface-700"
               >
-                <div className="h-11 w-11 rounded-xl bg-brand-50 dark:bg-brand-950/80 flex items-center justify-center mb-5 text-brand-600 dark:text-brand-400">
+                <div className="h-10 w-10 rounded-lg bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-5 text-brand-600 dark:text-brand-400">
                   <pillar.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-base font-bold text-surface-900 dark:text-white mb-2">{pillar.title}</h3>
@@ -266,51 +225,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── 4. Handcrafted Bestsellers ─────────────────────────────────────── */}
-      <section className="py-20 bg-white dark:bg-surface-900 border-y border-surface-200 dark:border-surface-800">
+      {/* ─── 3. Storefront UX Showcase (20 Laws of UX + Editorial Curation) ── */}
+      <section className="py-24 relative section-contained border-t border-surface-200/60 dark:border-surface-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-            <div>
-              <span className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest">
-                Curated Selection
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black text-surface-900 dark:text-white tracking-tight font-sans mt-1">
-                Featured Creations
-              </h2>
-            </div>
-            
-            <Link href="/products">
-              <Button variant="outline" className="rounded-full px-6 text-xs font-bold border-surface-300 dark:border-surface-700">
-                View All Products ({products.length}) <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-          </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.slice(0, 6).map((product, idx) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-                priority={idx === 0}
-              />
-            ))}
-          </div>
+          <StorefrontUXShowcase products={products} />
         </div>
       </section>
 
-      {/* ─── 5. Verified Creator Workshops ─────────────────────────────────── */}
-      <section className="py-20 bg-surface-50 dark:bg-surface-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-brand-600 dark:text-brand-400 font-bold tracking-widest uppercase text-xs mb-2 block">
-              Independent Guilds
+      {/* ─── 4. Verified Atelier Showcase ───────────────────────────────────── */}
+      <section className="py-28 relative overflow-hidden border-t border-surface-200/60 dark:border-surface-800/80 section-contained">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-brand-600 dark:text-brand-400 font-bold tracking-wider uppercase text-xs mb-3 block">
+              Verified Sellers
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight font-sans text-surface-900 dark:text-white">
-              Featured Creator Studios
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 tracking-tight font-sans text-surface-900 dark:text-white">
+              Featured Independent Workshops
             </h2>
             <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto text-sm sm:text-base">
-              Explore independent studios in Kyoto, Geneva, and Florence. Every commission sustains master craft.
+              Specialized creators with established fulfillment track records and verified business credentials.
             </p>
           </div>
 

@@ -20,9 +20,9 @@ export const createProductSchema = z.object({
   categoryId: objectIdField,
   brandId: objectIdField,
   basePrice: z.number().min(0, 'Price must be greater than or equal to 0'),
-  images: z.array(z.string().url('Invalid image URL')).optional(),
-  tags: z.array(z.string().trim()).optional(),
-  options: z.array(z.any()).optional(), // Can be tightened if options schema is strict
+  images: z.array(z.string().url('Invalid image URL')).max(10, 'Cannot exceed 10 images').optional(),
+  tags: z.array(z.string().trim().max(50, 'Tag cannot exceed 50 characters')).max(20, 'Cannot exceed 20 tags').optional(),
+  options: z.array(z.any()).max(20, 'Cannot exceed 20 options').optional(), // Can be tightened if options schema is strict
 });
 
 export const updateProductSchema = createProductSchema.partial();
@@ -42,7 +42,7 @@ const orderItemSchema = z.object({
 });
 
 export const createOrderSchema = z.object({
-  orderItems: z.array(orderItemSchema).min(1, 'Order must contain at least one item'),
+  orderItems: z.array(orderItemSchema).min(1, 'Order must contain at least one item').max(50, 'Order cannot exceed 50 items'),
   shippingAddressId: requiredObjectIdField,
   paymentMethod: z.enum(['card', 'cod']),
   couponCode: z.string().trim().optional(),
@@ -78,11 +78,11 @@ export const createCategorySchema = z.object({
 
 export const createAddressSchema = z.object({
   type: z.enum(['billing', 'shipping']),
-  street: z.string().trim().min(2, 'Street is required'),
-  city: z.string().trim().min(2, 'City is required'),
-  state: z.string().trim().min(2, 'State is required'),
-  zip: z.string().trim().min(2, 'Zip code is required'),
-  country: z.string().trim().min(2, 'Country is required'),
+  street: z.string().trim().min(2, 'Street is required').max(200, 'Street cannot exceed 200 characters'),
+  city: z.string().trim().min(2, 'City is required').max(100, 'City cannot exceed 100 characters'),
+  state: z.string().trim().min(2, 'State is required').max(100, 'State cannot exceed 100 characters'),
+  zip: z.string().trim().min(2, 'Zip code is required').max(20, 'Zip code cannot exceed 20 characters'),
+  country: z.string().trim().min(2, 'Country is required').max(100, 'Country cannot exceed 100 characters'),
   isDefault: z.boolean().optional(),
 });
 

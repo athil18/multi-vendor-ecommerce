@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, Lock, RefreshCw, CheckCircle2, DollarSign, Scale } from 'lucide-react';
+import { ArrowLeft, Lock, RefreshCw, CheckCircle2, Scale } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Metadata } from 'next';
 
@@ -27,9 +27,9 @@ export default function BuyerProtectionPage() {
         </div>
 
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-widest mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-4">
             <Lock className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-            100% Escrow Secured
+            <span>Escrow Protected</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
             Nexus Buyer Protection Guarantee
@@ -40,7 +40,7 @@ export default function BuyerProtectionPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800">
+          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 rounded-xl">
             <CardContent className="p-6">
               <RefreshCw className="h-6 w-6 text-brand-600 dark:text-brand-400 mb-3" />
               <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">Carrier-Verified Delivery</h3>
@@ -50,7 +50,7 @@ export default function BuyerProtectionPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800">
+          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800 rounded-xl">
             <CardContent className="p-6">
               <Scale className="h-6 w-6 text-emerald-600 dark:text-emerald-400 mb-3" />
               <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">14-Day Return Arbitration</h3>
@@ -61,7 +61,7 @@ export default function BuyerProtectionPage() {
           </Card>
         </div>
 
-        <div className="bg-white dark:bg-surface-900 rounded-3xl p-8 border border-surface-200 dark:border-surface-800 space-y-4">
+        <div className="bg-white dark:bg-surface-900 rounded-xl p-8 border border-surface-200 dark:border-surface-800 space-y-4">
           <h3 className="text-lg font-bold text-surface-900 dark:text-white">
             What is Covered Under Nexus Guarantee?
           </h3>

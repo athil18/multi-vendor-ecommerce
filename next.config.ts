@@ -12,6 +12,9 @@ import path from 'path';
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -71,10 +74,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'via.placeholder.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
     ],
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', '@tanstack/react-query'],
+    optimizePackageImports: ['lucide-react', '@tanstack/react-query', 'clsx', 'tailwind-merge'],
   },
   async rewrites() {
     return [

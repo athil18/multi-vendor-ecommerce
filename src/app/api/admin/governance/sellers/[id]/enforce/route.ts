@@ -17,7 +17,7 @@ export const POST = withErrorHandler(async (req: NextRequest, { params }: { para
   }
 
   const body = await req.json();
-  const { action, reason } = enforceSchema.parse(body);
+  const { action } = enforceSchema.parse(body);
 
   const sellerId = (await params).id;
   const store = await prisma.store.findUnique({ where: { sellerId } });

@@ -63,6 +63,16 @@ describe('Stripe Idempotency & Duplicate Event Stress Tests', () => {
       status: 'active',
     });
 
+    await Product.create({
+      _id: productId,
+      sellerId,
+      name: 'Stress Test Product',
+      slug: 'stress-product',
+      description: 'Stress Test',
+      basePrice: 50,
+      status: 'published',
+    });
+
     await Variant.create({
       _id: variantId,
       productId,

@@ -6,10 +6,25 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma, ReviewStatus } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface ReviewCreateDTO {
+  id?: string;
+  _id?: string;
+  productId?: string;
+  customerId?: string;
+  userId?: string;
+  rating?: number;
+  title?: string | null;
+  comment?: string;
+  images?: string[];
+  status?: string;
+  [key: string]: unknown;
+}
 
 export const Review = {
-  create: async (data: any) => {
+  create: async (data: ReviewCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let pId = toIdString(data.productId);
@@ -24,7 +39,7 @@ export const Review = {
               id: cId,
               name: 'Reviewer User',
               email: `reviewer-${cId.substring(0, 10)}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              password: getSecureDummyPasswordHash(),
               role: 'customer'
             }
           });
@@ -62,14 +77,14 @@ export const Review = {
       }
     }
 
-    let rStatus: any = 'pending';
+    let rStatus: ReviewStatus = 'pending';
     if (data.status === 'approved' || data.status === 'published') rStatus = 'approved';
     else if (data.status === 'rejected') rStatus = 'rejected';
 
-    const formatted: any = {
+    const formatted: Prisma.ReviewUncheckedCreateInput = {
       ...(id ? { id } : {}),
-      productId: pId,
-      customerId: cId,
+      productId: pId!,
+      customerId: cId!,
       rating: Number(data.rating ?? 5),
       title: data.title || null,
       comment: data.comment || '',
@@ -78,11 +93,11 @@ export const Review = {
     };
     return wrapRecord(await prisma.review.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.review.deleteMany({ where: normalizeWhere(where) || {} }),
-  find: async (where: any = {}) => wrapRecords(await prisma.review.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.review.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.review.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.ReviewWhereInput = {}) => prisma.review.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.ReviewWhereInput = {}) => wrapRecords(await prisma.review.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.ReviewWhereInput = {}) => wrapRecord(await prisma.review.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.review.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.ReviewUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

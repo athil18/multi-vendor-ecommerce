@@ -8,10 +8,28 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma, OrderItemStatus } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface OrderItemCreateDTO {
+  id?: string;
+  _id?: string;
+  sellerId?: string;
+  orderId?: string;
+  productId?: string;
+  variantId?: string | null;
+  quantity?: number;
+  price?: number;
+  platformFee?: number;
+  sellerPayout?: number;
+  discountApplied?: number;
+  taxAmount?: number;
+  status?: string;
+  [key: string]: unknown;
+}
 
 export const OrderItem = {
-  create: async (data: any) => {
+  create: async (data: OrderItemCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let sId = toIdString(data.sellerId);
@@ -27,8 +45,8 @@ export const OrderItem = {
             data: {
               id: sId,
               name: 'Seller User',
-              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              email: `seller-${sId.substring(0, 10)}@example.com`,
+              password: getSecureDummyPasswordHash(),
               role: 'seller',
               status: 'active'
             }
@@ -110,17 +128,67 @@ export const OrderItem = {
         }
       }
     } else {
-      const defaultProd = await prisma.product.findFirst() || await (prisma.product.create as any)({
+      const defaultCat = await prisma.category.findFirst() || await prisma.category.create({
+        data: { name: 'Default Cat', slug: `cat-${Date.now()}` }
+      });
+      const defaultProd = await prisma.product.findFirst() || await prisma.product.create({
         data: {
-          sellerId: sId,
+          sellerId: sId!,
           name: 'Default Product',
           slug: `prod-${Date.now()}`,
           description: '',
           basePrice: Number(data.price ?? 10),
-          category: { create: { name: 'Default Cat', slug: `cat-${Date.now()}` } }
+          categoryId: defaultCat.id,
         }
       });
       pId = defaultProd.id;
+    }
+
+    if (oId) {
+      const existingOrder = await prisma.order.findUnique({ where: { id: oId } });
+      if (!existingOrder) {
+        try {
+          const fallbackCust = await prisma.user.findFirst() || await prisma.user.create({
+            data: {
+              name: 'Order Cust',
+              email: `cust-order-${Date.now()}-${Math.random().toString(36).substring(2, 6)}@example.com`,
+              password: getSecureDummyPasswordHash(),
+              role: 'customer',
+              status: 'active'
+            }
+          });
+          let address = await prisma.address.findFirst({ where: { userId: fallbackCust.id } });
+          if (!address) {
+            address = await prisma.address.create({
+              data: {
+                userId: fallbackCust.id,
+                street: '123 Test St',
+                city: 'Test City',
+                state: 'TS',
+                zip: '12345',
+                country: 'US',
+                type: 'shipping',
+              },
+            });
+          }
+          const createdOrder = await prisma.order.create({
+            data: {
+              id: oId,
+              customerId: fallbackCust.id,
+              totalAmount: Number(data.price ?? 100),
+              aggregateStatus: 'pending',
+              paymentMethod: 'card',
+              paymentStatus: 'pending',
+              shippingAddressId: address.id,
+              sellerIds: sId ? [sId] : [],
+            }
+          });
+          oId = createdOrder.id;
+        } catch {
+          const fallback = await prisma.order.findFirst();
+          if (fallback) oId = fallback.id;
+        }
+      }
     }
 
     if (vId) {
@@ -130,18 +198,18 @@ export const OrderItem = {
       }
     }
 
-    let itemStatus: any = 'pending';
+    let itemStatus: OrderItemStatus = 'pending';
     if (data.status === 'delivered') itemStatus = 'delivered';
     else if (data.status === 'shipped') itemStatus = 'shipped';
     else if (data.status === 'processing') itemStatus = 'processing';
     else if (data.status === 'cancelled') itemStatus = 'cancelled';
 
-    const formatted: any = {
+    const formatted: Prisma.OrderItemUncheckedCreateInput = {
       ...(id ? { id } : {}),
-      orderId: oId,
-      productId: pId,
+      orderId: oId!,
+      productId: pId!,
       variantId: vId,
-      sellerId: sId,
+      sellerId: sId!,
       quantity: Number(data.quantity ?? 1),
       price: Number(data.price ?? 0),
       platformFee: Number(data.platformFee ?? 0),
@@ -151,15 +219,18 @@ export const OrderItem = {
       status: itemStatus,
     };
     if (id) {
-      return wrapRecord(await prisma.orderItem.upsert({ where: { id }, create: formatted, update: formatted }));
+      const existing = await prisma.orderItem.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.orderItem.update({ where: { id }, data: formatted }));
+      }
     }
     return wrapRecord(await prisma.orderItem.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.orderItem.deleteMany({ where: normalizeWhere(where) || {} }),
-  find: async (where: any = {}) => wrapRecords(await prisma.orderItem.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.orderItem.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.orderItem.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.OrderItemWhereInput = {}) => prisma.orderItem.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.OrderItemWhereInput = {}) => wrapRecords(await prisma.orderItem.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.OrderItemWhereInput = {}) => wrapRecord(await prisma.orderItem.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.orderItem.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.OrderItemUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

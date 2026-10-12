@@ -34,7 +34,7 @@ export function VendorCard({ store }: VendorCardProps) {
   
   return (
     <div
-      className="glass-luxury-card specular-border rounded-3xl overflow-hidden flex flex-col group relative h-full will-change-transform"
+      className="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 overflow-hidden flex flex-col group relative h-full transition-all duration-200 hover:border-surface-300 dark:hover:border-surface-700 shadow-sm"
     >
       {/* Cover Image with Ambient Vignette */}
       <div className="h-40 w-full relative bg-surface-100 dark:bg-surface-800 flex-shrink-0 overflow-hidden">
@@ -47,17 +47,17 @@ export function VendorCard({ store }: VendorCardProps) {
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-brand-950 to-indigo-950 flex items-center justify-center">
-            <span className="text-white/20 font-black tracking-widest uppercase text-xs">Master Atelier Studio</span>
+          <div className="absolute inset-0 bg-surface-200 dark:bg-surface-800 flex items-center justify-center">
+            <span className="text-surface-400 font-bold tracking-wider uppercase text-xs">Workshop Studio</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
       </div>
 
       <div className="px-6 pb-6 pt-0 flex flex-col flex-grow relative z-10">
         {/* Avatar Overlay */}
         <div className="flex justify-between items-end -mt-8 mb-3.5 min-h-[48px]">
-          <div className="relative h-16 w-16 rounded-2xl bg-white dark:bg-surface-800 border-2 border-white dark:border-surface-700 shadow-xl overflow-hidden flex items-center justify-center flex-shrink-0">
+          <div className="relative h-16 w-16 rounded-xl bg-white dark:bg-surface-800 border-2 border-white dark:border-surface-700 shadow-md overflow-hidden flex items-center justify-center flex-shrink-0">
             {store.logoUrl ? (
               <Image src={store.logoUrl} alt={store.name} fill sizes="64px" className="object-cover" />
             ) : (
@@ -67,8 +67,8 @@ export function VendorCard({ store }: VendorCardProps) {
             )}
           </div>
           {store.isVerified && (
-            <div className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-500/20 shadow-sm mb-1 backdrop-blur-md">
-              <CheckCircle className="h-3 w-3 text-emerald-500" /> VERIFIED ATELIER
+            <div className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-emerald-500/20 shadow-sm mb-1">
+              <CheckCircle className="h-3 w-3 text-emerald-600 dark:text-emerald-400" /> VERIFIED SELLER
             </div>
           )}
         </div>
@@ -100,7 +100,7 @@ export function VendorCard({ store }: VendorCardProps) {
               <span className="text-surface-300 dark:text-surface-700">&bull;</span>
               <div className="flex items-center gap-1 text-surface-500 dark:text-surface-400">
                 <Store className="h-3.5 w-3.5" />
-                <span>{store.productCount || 18} Masterpieces</span>
+                <span>{store.productCount || 18} Products</span>
               </div>
             </div>
             
@@ -108,8 +108,8 @@ export function VendorCard({ store }: VendorCardProps) {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                aria-label={`Visit atelier ${store.name}`}
-                className="h-9 w-9 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-200 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 transition-all shadow-sm"
+                aria-label={`Visit store ${store.name}`}
+                className="h-9 w-9 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-200 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 transition-all shadow-sm"
               >
                 <ArrowRight className="h-4 w-4" />
               </Button>

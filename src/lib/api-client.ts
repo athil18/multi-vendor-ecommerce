@@ -46,7 +46,7 @@ async function fetchApi<T>(endpoint: string, config: FetchConfig = {}): Promise<
   let json;
   try {
     json = await res.json();
-  } catch (err) {
+  } catch {
     throw new ApiError('Failed to parse API response', res.status);
   }
 

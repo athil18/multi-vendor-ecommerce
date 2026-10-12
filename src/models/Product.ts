@@ -7,10 +7,26 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma, ProductStatus } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface ProductCreateDTO {
+  id?: string;
+  _id?: string;
+  sellerId?: string;
+  name?: string;
+  slug?: string;
+  description?: string;
+  categoryId?: string;
+  basePrice?: number | string;
+  price?: number | string;
+  status?: string;
+  images?: string[];
+  [key: string]: unknown;
+}
 
 export const Product = {
-  create: async (data: any) => {
+  create: async (data: ProductCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let sId = data.sellerId ? toIdString(data.sellerId) : undefined;
@@ -23,7 +39,7 @@ export const Product = {
               id: sId,
               name: 'Seller User',
               email: `seller-${sId.substring(0, 10)}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              password: getSecureDummyPasswordHash(),
               role: 'seller',
               status: 'active'
             }
@@ -42,7 +58,7 @@ export const Product = {
           data: {
             name: 'Seller User',
             email: `seller-default-${Date.now()}@example.com`,
-            password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+            password: getSecureDummyPasswordHash(),
             role: 'seller',
             status: 'active'
           }
@@ -60,24 +76,24 @@ export const Product = {
             data: {
               id: catId,
               name: 'Test Category',
-              slug: `cat-${catId.substring(0, 10)}-${Date.now()}`
+              slug: `cat-${catId.substring(0, 8)}-${Math.random().toString(36).substring(2, 8)}`
             }
           });
         } catch {
           const fallback = await prisma.category.findFirst() || await prisma.category.create({
-            data: { name: 'Default Category', slug: `default-${Date.now()}` }
+            data: { name: 'Default Category', slug: `default-${Math.random().toString(36).substring(2, 8)}` }
           });
           catId = fallback.id;
         }
       }
     } else {
       const defaultCat = await prisma.category.findFirst() || await prisma.category.create({
-        data: { name: 'Default Category', slug: `default-${Date.now()}` }
+        data: { name: 'Default Category', slug: `default-${Math.random().toString(36).substring(2, 8)}` }
       });
       catId = defaultCat.id;
     }
 
-    let pStatus: any = 'draft';
+    let pStatus: ProductStatus = 'draft';
     if (data.status === 'active' || data.status === 'published' || data.status === 'approved') {
       pStatus = 'published';
     } else if (data.status === 'pending_review') {
@@ -88,36 +104,30 @@ export const Product = {
       pStatus = 'archived';
     }
 
-    const formatted: any = {
+    const formatted: Prisma.ProductUncheckedCreateInput = {
       ...(id ? { id } : {}),
-      sellerId: sId,
+      sellerId: sId!,
       name: data.name || 'Product',
       slug: data.slug || `prod-${Math.random().toString(36).substring(2, 9)}`,
       description: data.description || '',
-      categoryId: catId,
+      categoryId: catId!,
       basePrice: Number(data.basePrice ?? data.price ?? 0),
       status: pStatus,
       images: Array.isArray(data.images) ? data.images : [],
     };
     if (id) {
-      return wrapRecord(await prisma.product.upsert({ where: { id }, create: formatted, update: formatted }));
+      const existing = await prisma.product.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.product.update({ where: { id }, data: formatted }));
+      }
     }
     return wrapRecord(await prisma.product.create({ data: formatted }));
   },
-  deleteMany: async (where: any = {}) => {
-    const norm = normalizeWhere(where) || {};
-    if (Object.keys(norm).length === 0) {
-      await prisma.orderItem.deleteMany().catch(() => {});
-      await prisma.variant.deleteMany().catch(() => {});
-      await prisma.review.deleteMany().catch(() => {});
-      await prisma.wishlist.deleteMany().catch(() => {});
-    }
-    return prisma.product.deleteMany({ where: norm });
-  },
-  find: async (where: any = {}) => wrapRecords(await prisma.product.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.product.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.product.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.ProductWhereInput = {}) => prisma.product.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.ProductWhereInput = {}) => wrapRecords(await prisma.product.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.ProductWhereInput = {}) => wrapRecord(await prisma.product.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.product.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.ProductUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

@@ -8,7 +8,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles, Globe, ShieldCheck, HeartHandshake, Award, Users, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, HeartHandshake, Award } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Metadata } from 'next';
@@ -29,34 +29,33 @@ export default function AboutPage() {
         </div>
 
         {/* Hero Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-widest mb-4">
-            <Sparkles className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
-            Our Mission & Manifesto
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 text-xs font-semibold uppercase tracking-wider mb-4">
+            About the Platform
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
-            Democratizing Prestige Commerce for Master Artisans
+          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight mb-4">
+            Direct Commerce Between Independent Workshops and Buyers
           </h1>
-          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
-            Nexus was established to bridge the divide between discerning collectors and world-class independent creators, free from exploitative marketplace algorithms.
+          <p className="text-base text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
+            Nexus connects buyers directly with vetted independent workshops and verified sellers, backed by Stripe-powered escrow protection on every order.
           </p>
         </div>
 
         {/* Core Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <Card className="bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-surface-200 dark:border-surface-800">
+          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800">
             <CardContent className="p-6">
-              <Award className="h-7 w-7 text-brand-600 dark:text-brand-400 mb-4" />
-              <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">Artisanal Integrity</h3>
+              <Award className="h-6 w-6 text-surface-700 dark:text-surface-300 mb-4" />
+              <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">Vetted Sellers</h3>
               <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-                Zero mass-manufactured drop-shipped inventory. Every seller must pass human curation and provenance audits.
+                Zero unauthorized drop-shipping. Every seller must pass identity verification and catalog review.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-surface-200 dark:border-surface-800">
+          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800">
             <CardContent className="p-6">
-              <ShieldCheck className="h-7 w-7 text-emerald-600 dark:text-emerald-400 mb-4" />
+              <ShieldCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400 mb-4" />
               <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">Escrow Protection</h3>
               <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
                 Stripe Connect escrow secures buyer funds until verified carrier delivery, protecting both buyer and creator.
@@ -64,7 +63,7 @@ export default function AboutPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-surface-200 dark:border-surface-800">
+          <Card className="bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800">
             <CardContent className="p-6">
               <HeartHandshake className="h-7 w-7 text-indigo-600 dark:text-indigo-400 mb-4" />
               <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-2">Fair 90% Direct Payouts</h3>

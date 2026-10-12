@@ -5,44 +5,23 @@ import { logger, logError } from '../logger';
 import * as Sentry from '@sentry/node';
 import { AlertDispatcher } from '../alerting';
 
-import nodemailer from 'nodemailer';
-
-// Real SMTP Transport (Fallback to ethereal in dev if no SMTP_URL provided)
-const createTransporter = () => {
-  if (process.env.SMTP_URL) {
-    return nodemailer.createTransport(process.env.SMTP_URL);
-  }
-  // Default to Ethereal mock SMTP for local dev if not configured
-  return nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-      user: 'mock_ethereal_user@ethereal.email',
-      pass: 'mock_password'
-    }
-  });
-};
+import { sendOrderConfirmation } from '../email';
 
 const sendOrderConfirmationEmail = async (payload: OrderConfirmationPayload) => {
-  const transporter = createTransporter();
-  
   logger.info(`Attempting to send email to ${payload.email} for order ${payload.orderId}...`);
   
-  try {
-    const info = await transporter.sendMail({
-      from: '"Nexus Enterprise" <noreply@nexus.local>',
-      to: payload.email,
-      subject: `Order Confirmation - ${payload.orderId}`,
-      text: `Thank you for your order! Your order ID is ${payload.orderId}. Total: $${payload.totalAmount}`,
-      html: `<h1>Thank you for your order!</h1><p>Your order ID is <strong>${payload.orderId}</strong>.</p><p>Total: $${payload.totalAmount}</p>`
-    });
-    
-    logger.info(`Email successfully delivered to ${payload.email}. MessageId: ${info.messageId}`);
-    return true;
-  } catch (error: any) {
-    logger.error(`SMTP Delivery failed for ${payload.email}:`, { error: error.message || 'Unknown error' });
-    throw error; // Let BullMQ handle the retry mechanism
+  const result = await sendOrderConfirmation(payload.email, {
+    orderId: payload.orderId,
+    totalAmount: payload.totalAmount,
+  });
+
+  if (!result.success) {
+    logger.error(`Order confirmation email delivery failed for ${payload.email}:`, { error: result.error });
+    throw new Error(result.error || 'Email dispatch failed');
   }
+
+  logger.info(`Email successfully delivered via [${result.provider}] to ${payload.email}. MessageId: ${result.messageId}`);
+  return true;
 };
 
 export const startWorker = () => {

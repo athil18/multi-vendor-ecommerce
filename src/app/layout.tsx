@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Nexus - Multi-Vendor Marketplace',
-    description: 'Empowering independent creators and smart shoppers with enterprise multi-vendor commerce infrastructure.',
+    description: 'Direct-maker marketplace connecting independent workshops and buyers with Stripe Connect split escrow settlements.',
     url: 'https://nexus-ecommerce.com',
     siteName: 'Nexus',
     locale: 'en_US',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Nexus Multi-Vendor Marketplace',
-    description: 'Empowering independent creators with bank-grade multi-vendor commerce.',
+    description: 'Direct-maker marketplace connecting independent workshops with Stripe Connect escrow protection.',
   },
   robots: {
     index: true,

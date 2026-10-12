@@ -1,0 +1,39 @@
+# CodeRabbit AI Code Reviewer Configuration — Nexus Multi-Vendor E-Commerce
+# Extension ID: coderabbit.coderabbit-vscode
+
+version: "2"
+language: "en-US"
+tone_instructions: "Act as a Senior Frontend Architect and Security Engineer. Enforce Apple-grade sleek minimalism, 0 ms Total Blocking Time, PCI-DSS compliance, and WCAG 2.1 AA accessibility."
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "wip"
+      - "draft"
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+      - "develop"
+
+path_filters:
+  - "!node_modules/**"
+  - "!.next/**"
+  - "!dist/**"
+  - "!coverage/**"
+  - "!package-lock.json"
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  learnings:
+    enabled: true

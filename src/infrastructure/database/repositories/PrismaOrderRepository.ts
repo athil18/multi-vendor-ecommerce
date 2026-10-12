@@ -6,20 +6,20 @@
  * @agent 04-sql-query-agent
  */
 
-import { IOrderRepository, OrderData } from '@/core/ports/IOrderRepository';
+import { IOrderRepository, OrderData, OrderRepoContext } from '@/core/ports/IOrderRepository';
 import prisma from '@/lib/prisma';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PaymentMethod, OrderAggregateStatus, PaymentStatus } from '@prisma/client';
 
-type TxOrPrisma = Parameters<Parameters<PrismaClient['$transaction']>[0]>[0] | typeof prisma;
+type TxOrPrisma = Prisma.TransactionClient | typeof prisma;
 
 export class PrismaOrderRepository implements IOrderRepository {
-  private getClient(ctx?: any): TxOrPrisma {
-    return ctx?.tx || prisma;
+  private getClient(ctx?: OrderRepoContext): TxOrPrisma {
+    return (ctx as { tx?: Prisma.TransactionClient })?.tx || prisma;
   }
 
-  async findById(id: string, ctx?: any) {
+  async findById(id: string, ctx?: OrderRepoContext) {
     const client = this.getClient(ctx);
-    const order = await (client as any).order.findUnique({
+    const order = await client.order.findUnique({
       where: { id },
       include: {
         shippingAddress: true,
@@ -35,9 +35,9 @@ export class PrismaOrderRepository implements IOrderRepository {
     return { ...order, _id: order.id };
   }
 
-  async findByPaymentIntentId(intentId: string, ctx?: any) {
+  async findByPaymentIntentId(intentId: string, ctx?: OrderRepoContext) {
     const client = this.getClient(ctx);
-    const order = await (client as any).order.findFirst({
+    const order = await client.order.findFirst({
       where: { stripePaymentIntentId: intentId },
       include: {
         shippingAddress: true,
@@ -48,55 +48,32 @@ export class PrismaOrderRepository implements IOrderRepository {
     return { ...order, _id: order.id };
   }
 
-  async saveOrder(data: OrderData, ctx?: any) {
+  async saveOrder(data: OrderData, ctx?: OrderRepoContext) {
     const client = this.getClient(ctx);
-    const shipAddrId = data.shippingAddress ? data.shippingAddress.toString() : null;
-    if (shipAddrId) {
-      const exists = await (client as any).address.findUnique({ where: { id: shipAddrId } });
-      if (!exists && data.customerId) {
-        try {
-          await (client as any).address.create({
-            data: {
-              id: shipAddrId,
-              userId: data.customerId,
-              type: 'shipping',
-              street: 'Default Shipping Street',
-              city: 'Default City',
-              state: 'CA',
-              zip: '90210',
-              country: 'US',
-            },
-          });
-        } catch {
-          // Ignore if concurrently created or failed
-        }
-      }
-    }
-
-    const order = await (client as any).order.create({
+    const order = await client.order.create({
       data: {
         customerId: data.customerId,
         sellerIds: data.sellerIds,
-        shippingAddressId: shipAddrId,
-        paymentMethod: data.paymentMethod as any,
+        shippingAddressId: data.shippingAddress,
+        paymentMethod: (data.paymentMethod as PaymentMethod) || 'card',
         totalAmount: data.totalAmount,
-        aggregateStatus: (data.aggregateStatus || 'pending') as any,
-        couponId: data.couponId ? data.couponId.toString() : null,
+        aggregateStatus: (data.aggregateStatus as OrderAggregateStatus) || 'pending',
+        couponId: data.couponId ? String(data.couponId) : null,
       },
     });
     return { ...order, _id: order.id };
   }
 
-  async updateOrder(orderId: string, data: Partial<OrderData>, ctx?: any) {
+  async updateOrder(orderId: string, data: Partial<OrderData>, ctx?: OrderRepoContext) {
     const client = this.getClient(ctx);
-    const updateData: any = {};
-    if (data.paymentStatus) updateData.paymentStatus = data.paymentStatus;
-    if (data.aggregateStatus) updateData.aggregateStatus = data.aggregateStatus;
+    const updateData: Prisma.OrderUpdateInput = {};
+    if (data.paymentStatus) updateData.paymentStatus = data.paymentStatus as PaymentStatus;
+    if (data.aggregateStatus) updateData.aggregateStatus = data.aggregateStatus as OrderAggregateStatus;
     if (data.paidAt) updateData.paidAt = data.paidAt;
     if (data.stripePaymentIntentId) updateData.stripePaymentIntentId = data.stripePaymentIntentId;
     if (data.totalAmount !== undefined) updateData.totalAmount = data.totalAmount;
 
-    const order = await (client as any).order.update({
+    const order = await client.order.update({
       where: { id: orderId },
       data: updateData,
     });
@@ -104,9 +81,9 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   async countByCustomer(customerId: string, filters: { status?: string; search?: string }) {
-    const where: any = { customerId, deletedAt: null };
+    const where: Prisma.OrderWhereInput = { customerId, deletedAt: null };
     if (filters.status && filters.status !== 'all') {
-      where.aggregateStatus = filters.status;
+      where.aggregateStatus = filters.status as OrderAggregateStatus;
     }
     if (filters.search && filters.search.trim()) {
       where.id = { contains: filters.search.trim() };
@@ -115,24 +92,39 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   async findByCustomer(customerId: string, filters: { status?: string; search?: string }, pagination: { skip: number; limit: number }) {
-    const where: any = { customerId, deletedAt: null };
+    const where: Prisma.OrderWhereInput = { customerId, deletedAt: null };
     if (filters.status && filters.status !== 'all') {
-      where.aggregateStatus = filters.status;
+      where.aggregateStatus = filters.status as OrderAggregateStatus;
     }
     if (filters.search && filters.search.trim()) {
       where.id = { contains: filters.search.trim() };
     }
-
     const orders = await prisma.order.findMany({
       where,
-      include: {
-        shippingAddress: true,
-      },
       skip: pagination.skip,
       take: pagination.limit,
       orderBy: { createdAt: 'desc' },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                images: true,
+              },
+            },
+            variant: {
+              select: {
+                id: true,
+                sku: true,
+                attributes: true,
+              },
+            },
+          },
+        },
+      },
     });
-
-    return orders.map((o: any) => ({ ...o, _id: o.id }));
+    return orders.map(o => ({ ...o, _id: o.id }));
   }
 }

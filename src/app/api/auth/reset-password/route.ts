@@ -9,7 +9,7 @@ import { ValidationError } from '@/lib/errors';
 import { withErrorHandler } from '@/lib/api-handler';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '@/lib/password';
 import prisma from '@/lib/prisma';
 import { resetPasswordSchema } from '@/lib/schemas/auth';
 
@@ -30,8 +30,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw new ValidationError('Invalid or expired password reset token');
   }
 
-  const salt = await bcrypt.genSalt(12);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  const hashedPassword = await hashPassword(password);
 
   // Update password and clear reset fields and all refresh tokens
   await prisma.user.update({

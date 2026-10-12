@@ -31,7 +31,7 @@ export default async function ProductSlugPage({ params }: Props) {
     notFound();
   }
 
-  const imageUrl = product.images?.[0] || 'https://via.placeholder.com/600?text=No+Image';
+  const imageUrl = product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=600';
   const averageRating = product.averageRating || 5.0;
   const reviewCount = product.reviewCount || 0;
 
@@ -45,15 +45,15 @@ export default async function ProductSlugPage({ params }: Props) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-surface-container-lowest rounded-3xl p-6 lg:p-10 border border-outline-variant/30 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-surface-container-lowest rounded-xl p-6 lg:p-10 border border-outline-variant/30 shadow-sm">
         {/* Product Image Gallery */}
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-center bg-white rounded-2xl p-6 border border-outline-variant/20 shadow-inner overflow-hidden min-h-[380px]">
+          <div className="flex items-center justify-center bg-white rounded-lg p-6 border border-outline-variant/20 overflow-hidden min-h-[380px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageUrl}
               alt={product.name}
-              className="w-full h-auto max-h-[420px] object-contain hover:scale-105 transition-transform duration-300"
+              className="w-full h-auto max-h-[420px] object-contain"
             />
           </div>
         </div>
@@ -111,7 +111,7 @@ export default async function ProductSlugPage({ params }: Props) {
 
             {/* Seller Info Card */}
             {product.sellerId && (
-              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-center justify-between">
                 <div>
                   <p className="text-body-xs font-semibold uppercase tracking-wider text-on-surface-variant">Sold & Fulfilled By</p>
                   <p className="text-body-md font-bold text-on-surface">{product.sellerId.name || 'Verified Vendor'}</p>

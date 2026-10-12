@@ -15,7 +15,7 @@ import { verifyRefreshToken, generateAccessToken, generateRefreshToken } from '@
 
 const hashToken = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
 
-export const POST = withErrorHandler(async (req: NextRequest) => {
+export const POST = withErrorHandler(async (_req: NextRequest) => {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
@@ -26,7 +26,7 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   let decoded;
   try {
     decoded = verifyRefreshToken(refreshToken);
-  } catch (err) {
+  } catch {
     throw new AuthenticationError('Invalid or expired refresh token');
   }
 

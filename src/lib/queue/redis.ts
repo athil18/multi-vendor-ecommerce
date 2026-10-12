@@ -11,6 +11,9 @@ const getRedisUrl = () => {
 const redisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
+  connectTimeout: 10000,
+  commandTimeout: 8000,
+  keepAlive: 10000,
 };
 
 // Singleton Redis instance for queues
@@ -20,10 +23,8 @@ export const getRedisConnection = () => {
   if (!redisConnection) {
     redisConnection = new Redis(getRedisUrl(), redisOptions);
     redisConnection.on('error', (err) => {
-      // Prevent unhandled error event crash on initial cold connect or transient blip
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('[Redis] Transient connection notice:', err.message);
-      }
+      // Prevent unhandled error event crash; log warning
+      console.warn('[Redis Resilient Warning]:', err.message);
     });
   }
   return redisConnection;

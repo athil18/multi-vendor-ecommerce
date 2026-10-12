@@ -7,6 +7,7 @@
  * @agent design-brand-guardian
  * @agent design-whimsy-injector
  * @agent testing-accessibility-auditor
+ * @agent engineering-ponytail-lean-architect
  */
 
 'use client';
@@ -14,7 +15,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, PackageOpen, Scale, Check, ShieldCheck, Sparkles } from 'lucide-react';
+import { Scale, Check, ShieldCheck } from 'lucide-react';
+import { StarRatingIcon } from './ui/icons';
 import { AddToCartButton } from './AddToCartButton';
 import { useCompareStore } from '@/store/useCompareStore';
 
@@ -62,7 +64,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <article
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex flex-col h-full min-h-[550px] glass-luxury-card specular-border rounded-3xl overflow-hidden will-change-transform transition-all duration-300"
+      className="group relative flex flex-col h-full min-h-[550px] tactile-card rounded-xl border border-surface-200 dark:border-surface-800 overflow-hidden transition-all duration-200 hover:border-surface-300 dark:hover:border-surface-700"
     >
       {/* Visual Image Container with Dual-Angle Scrub */}
       <div className="block relative h-[280px] w-full overflow-hidden bg-surface-100 dark:bg-surface-950">
@@ -73,14 +75,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             fill
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-all duration-500 ease-out group-hover:scale-105"
-            onError={() => setImgError(true)}
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           />
         </Link>
 
         {/* Top Badges: Category & Compare Action */}
         <div className="absolute top-3.5 left-3.5 right-3.5 z-10 flex items-center justify-between pointer-events-none">
-          <span className="specular-pill shadow-sm pointer-events-auto text-[10px] font-bold text-surface-900 dark:text-white">
+          <span className="rounded-md px-2.5 py-1 text-[11px] font-semibold bg-white/95 dark:bg-surface-900/95 text-surface-900 dark:text-white border border-surface-200 dark:border-surface-700 shadow-sm pointer-events-auto">
             {categoryTitle}
           </span>
 
@@ -102,10 +103,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               });
             }}
             aria-label={isCompared ? "Remove from comparison" : "Add to side-by-side comparison"}
-            className={`pointer-events-auto p-2 rounded-full backdrop-blur-xl transition-all duration-200 ${
+            className={`pointer-events-auto p-2 rounded-md transition-all duration-200 ${
               isCompared
-                ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/30'
-                : 'bg-black/40 hover:bg-black/70 text-white/80 hover:text-white border border-white/20'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'bg-surface-900/90 hover:bg-surface-900 text-white border border-surface-700'
             }`}
           >
             {isCompared ? <Check className="h-3.5 w-3.5" /> : <Scale className="h-3.5 w-3.5" />}
@@ -121,8 +122,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <div>
           {/* Metadata Row: Rating & Verified Maker */}
           <div className="flex items-center justify-between mb-2.5 min-h-[24px]">
-            <div className="flex items-center gap-1.5 bg-amber-500/10 dark:bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-              <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+            <div className="flex items-center gap-1.5 bg-amber-500/10 dark:bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+              <StarRatingIcon size={12} className="text-amber-500" />
               <span className="text-amber-700 dark:text-amber-300 font-bold text-[11px]">
                 {(product.rating || 4.9).toFixed(1)}
               </span>
@@ -147,13 +148,25 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <p className="text-xs text-surface-600 dark:text-surface-300 line-clamp-2 leading-relaxed mb-4 font-normal">
             {product.description}
           </p>
+
+          {/* Provenance & Escrow Assurance Row */}
+          <div className="flex items-center gap-2 mb-3 text-[10px] text-surface-500 font-medium">
+            <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-md">
+              <ShieldCheck className="h-3 w-3" /> Escrow Protected
+            </span>
+            <span>&bull;</span>
+            <span className="text-surface-500">Direct Maker Payout</span>
+          </div>
         </div>
 
-        {/* Level 5: Pricing Visual Hierarchy & Primary Action */}
-        <div className="pt-4 border-t border-surface-200/50 dark:border-surface-800/80 flex items-center justify-between">
+        {/* Price & Primary Action */}
+        <div className="pt-4 border-t border-surface-200/50 dark:border-surface-800/80 flex items-center justify-between gap-3">
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400">
-              Direct Atelier Pricing
+              Direct Price
+            </span>
+            <span className="text-2xl font-extrabold text-surface-900 dark:text-white font-sans tracking-tight font-tabular">
+              ${(product.basePrice ?? 0).toFixed(2)}
             </span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
@@ -173,9 +186,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             name={product.name}
             price={product.basePrice ?? 0}
             image={primaryImage}
-            size="icon"
-            showLabel={false}
-            className="rounded-full shadow-lg h-11 w-11 bg-brand-600 hover:bg-brand-500 text-white border-0 transition-all flex items-center justify-center hover:scale-105"
+            size="md"
+            showLabel={true}
+            className="rounded-lg shadow-sm h-10 px-4 bg-surface-900 dark:bg-white text-white dark:text-surface-900 hover:bg-brand-600 dark:hover:bg-brand-500 hover:text-white transition-all text-xs font-semibold flex items-center gap-2"
           />
         </div>
       </div>

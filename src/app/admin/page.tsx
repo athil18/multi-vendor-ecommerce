@@ -98,37 +98,34 @@ export default function AdminPage() {
         </Button>
       </div>
 
-      {/* Summary Bento — Glass Panels */}
+      {/* Summary Bento */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary-container/10 rounded-full blur-xl group-hover:bg-tertiary-container/20 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
-            <p className="text-label-md text-on-surface-variant mb-1">Platform Catalog Size</p>
+            <p className="text-label-md text-on-surface-variant mb-1">Catalog Size</p>
             <p className="text-headline-lg text-on-surface">{stats.totalProducts} items</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+          <div className="w-10 h-10 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-tertiary">
             <Package className="h-5 w-5" />
           </div>
         </div>
         
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-error/5 rounded-full blur-xl group-hover:bg-error/10 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-label-md text-on-surface-variant mb-1">Needs Review</p>
             <p className="text-headline-lg text-on-surface">{stats.pendingProducts}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-error-container/30 flex items-center justify-center text-error">
+          <div className="w-10 h-10 rounded-lg bg-error-container/30 flex items-center justify-center text-error">
             <AlertCircle className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="glass-panel p-4 rounded-xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all" />
+        <div className="border border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
           <div>
-            <p className="text-label-md text-on-surface-variant mb-1">Active Creators</p>
+            <p className="text-label-md text-on-surface-variant mb-1">Active Sellers</p>
             <p className="text-headline-lg text-on-surface">Verified</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+          <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
             <Users className="h-5 w-5" />
           </div>
         </div>
@@ -175,10 +172,10 @@ export default function AdminPage() {
           description={`There are currently no products with the status of ${statusFilter}.`}
         />
       ) : (
-        <div className="glass-panel rounded-xl border border-white/5 flex flex-col overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.4)]">
+        <div className="bg-surface-container rounded-xl border border-white/10 flex flex-col overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-surface-container-high/90 backdrop-blur-md z-10 text-label-md text-on-surface-variant border-b border-white/10">
+              <thead className="sticky top-0 bg-surface-container-high z-10 text-label-md text-on-surface-variant border-b border-white/10">
                 <tr>
                   <th className="py-3 px-4 font-medium">Product</th>
                   <th className="py-3 px-4 font-medium">Brand</th>
@@ -210,7 +207,7 @@ export default function AdminPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="py-2.5 px-4 text-on-surface-variant">{p.brandName || '—'}</td>
+                    <td className="py-2.5 px-4 text-on-surface-variant">{p.brandName || 'N/A'}</td>
                     <td className="py-2.5 px-4 text-right font-mono text-on-surface">${p.basePrice}</td>
                     <td className="py-2.5 px-4 text-right font-mono text-on-surface-variant">{p.inventoryCount}</td>
                     <td className="py-2.5 px-4">

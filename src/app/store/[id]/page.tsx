@@ -164,7 +164,7 @@ export default async function StoreDetailPage({ params }: Props) {
         <div className="absolute top-6 left-4 sm:left-8 z-10">
           <Link
             href="/stores"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-900/80 backdrop-blur-md border border-surface-700/60 text-surface-200 text-xs font-semibold hover:bg-surface-800 transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-900 border border-surface-700 text-surface-200 text-xs font-semibold hover:bg-surface-800 transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Stores
           </Link>
@@ -173,7 +173,7 @@ export default async function StoreDetailPage({ params }: Props) {
 
       {/* Store Header Identity Card */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-16">
-        <div className="bg-white/90 dark:bg-surface-900/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-surface-200/80 dark:border-surface-800/80 shadow-2xl shadow-surface-950/20 mb-12">
+        <div className="bg-white dark:bg-surface-900 rounded-2xl p-6 sm:p-8 border border-surface-200 dark:border-surface-800 shadow-xl mb-12 tactile-card">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start sm:items-center gap-5">
               <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden border-2 border-brand-500/30 shadow-lg flex-shrink-0 bg-surface-100 dark:bg-surface-800">
@@ -187,13 +187,13 @@ export default async function StoreDetailPage({ params }: Props) {
 
               <div>
                 <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                  <h1 className="text-2xl sm:text-3xl font-black text-surface-900 dark:text-white tracking-tight font-geist">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-surface-900 dark:text-white tracking-tight font-sans">
                     {store.name}
                   </h1>
                   {store.isVerified && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                      Verified Atelier
+                      Verified Seller
                     </span>
                   )}
                   <Badge variant="outline" className="text-xs">
@@ -206,7 +206,7 @@ export default async function StoreDetailPage({ params }: Props) {
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-surface-500 dark:text-surface-400 font-medium">
-                  <span className="flex items-center gap-1 text-amber-500 font-bold">
+                  <span className="flex items-center gap-1 text-amber-500 font-bold font-tabular">
                     <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
                     {store.rating} ({store.numReviews} verified reviews)
                   </span>
@@ -216,18 +216,18 @@ export default async function StoreDetailPage({ params }: Props) {
                     {store.location}
                   </span>
                   <span>&bull;</span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-tabular">
                     <PackageOpen className="h-3.5 w-3.5 text-surface-400" />
-                    {store.productCount} Handcrafted Items
+                    {store.productCount} Products Listed
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <Link href="/products">
-                <Button variant="primary" className="w-full sm:w-auto">
-                  Explore Catalog
+              <Link href="/products" aria-label={`Browse complete catalog from ${store.name}`}>
+                <Button variant="primary" className="w-full sm:w-auto text-xs font-semibold">
+                  Browse Catalog
                 </Button>
               </Link>
             </div>
@@ -236,7 +236,7 @@ export default async function StoreDetailPage({ params }: Props) {
           {/* About Creator Bio */}
           <div className="mt-8 pt-6 border-t border-surface-200/60 dark:border-surface-800/60">
             <h3 className="text-xs font-bold uppercase tracking-wider text-surface-900 dark:text-surface-100 mb-2">
-              Atelier Philosophy & Standards
+              Seller Profile & Policy
             </h3>
             <p className="text-sm text-surface-600 dark:text-surface-300 leading-relaxed max-w-4xl">
               {store.bio}
@@ -244,15 +244,15 @@ export default async function StoreDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Featured Atelier Products Section */}
+        {/* Featured Products Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-surface-900 dark:text-white tracking-tight font-geist">
-                Crafted by {store.name}
+              <h2 className="text-2xl font-bold text-surface-900 dark:text-white tracking-tight">
+                Products from {store.name}
               </h2>
               <p className="text-xs text-surface-500 dark:text-surface-400">
-                Direct artisan order with 100% money-back escrow protection
+                Direct seller order with escrow protection on delivery
               </p>
             </div>
             <Link href="/products" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline">

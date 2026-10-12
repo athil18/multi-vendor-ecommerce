@@ -141,7 +141,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
   return (
     <div className="relative">
       {/* ─── Main Two-Column Studio Layout ──────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-2xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-2xl p-6 sm:p-10 shadow-sm">
         
         {/* Left Column: Interactive Multi-Angle Gallery (7 cols) */}
         <div className="lg:col-span-7 flex flex-col gap-5">
@@ -182,7 +182,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
                     numReviews: reviewCount,
                   });
                 }}
-                className={`p-2.5 rounded-full backdrop-blur-xl transition-all shadow-lg ${
+                className={`p-2.5 rounded-lg transition-all shadow-sm ${
                   isCompared
                     ? 'bg-brand-600 text-white'
                     : 'bg-black/50 hover:bg-black/80 text-white border border-white/20'
@@ -193,10 +193,13 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
               </button>
             </div>
 
-            {/* Escrow Guarantee Pill */}
-            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] text-white/95 border border-white/10 shadow-lg">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
-              <span>Direct-Workshop Escrow &bull; 14-Day Delivery Inspection</span>
+            {/* Bottom Live Viewer Urgency Pill */}
+            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-surface-950/90 px-3 py-1.5 rounded-lg text-[11px] text-white/90 border border-surface-800">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>4 collectors currently inspecting this creation</span>
             </div>
           </div>
 
@@ -308,7 +311,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
             />
 
             {/* Atelier Maker Card */}
-            <div className="p-3.5 rounded-2xl glass-luxury-card specular-border flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-surface-50 dark:bg-surface-800/60 border border-surface-200 dark:border-surface-700/60 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-base">
                   <Store className="h-5 w-5" />
@@ -324,8 +327,8 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
                 </div>
               </div>
               <Link href={`/store/${product.sellerId || 'store-1'}`}>
-                <Button variant="outline" size="sm" className="rounded-full text-[11px] font-bold px-3 h-8">
-                  Visit Workshop
+                <Button variant="outline" size="sm" className="rounded-lg text-xs font-bold px-4">
+                  Visit Studio
                 </Button>
               </Link>
             </div>
@@ -343,32 +346,32 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
               className="w-full h-14 text-sm font-bold shadow-xl shadow-brand-500/20 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white transition-all flex items-center justify-center gap-2 hover:scale-[1.01]"
             />
             
-            <div className="grid grid-cols-3 gap-2.5 text-center pt-1">
-              <div className="p-2.5 rounded-xl bg-surface-50/50 dark:bg-surface-850/50 border border-surface-200/50 dark:border-surface-800/50">
-                <ShieldCheck className="h-4 w-4 text-brand-500 mx-auto mb-1" />
-                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">Stripe Escrow</span>
-                <span className="text-[9px] text-surface-400">Funds Vaulted</span>
+            <div className="grid grid-cols-3 gap-3 text-center pt-2">
+              <div className="p-3 rounded-lg bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
+                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">Escrow Protected</span>
+                <span className="text-[9px] text-surface-400">Buyer Protection</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-surface-50/50 dark:bg-surface-850/50 border border-surface-200/50 dark:border-surface-800/50">
-                <Truck className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
-                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">Inspected Route</span>
-                <span className="text-[9px] text-surface-400">Carbon Offset</span>
+              <div className="p-3 rounded-lg bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800">
+                <Truck className="h-4 w-4 text-surface-700 dark:text-surface-300 mx-auto mb-1" />
+                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">Tracked Delivery</span>
+                <span className="text-[9px] text-surface-400">Direct Shipping</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-surface-50/50 dark:bg-surface-850/50 border border-surface-200/50 dark:border-surface-800/50">
-                <RotateCcw className="h-4 w-4 text-purple-500 mx-auto mb-1" />
-                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">14-Day Review</span>
-                <span className="text-[9px] text-surface-400">Full Return</span>
+              <div className="p-3 rounded-lg bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800">
+                <RotateCcw className="h-4 w-4 text-surface-700 dark:text-surface-300 mx-auto mb-1" />
+                <span className="text-[10px] font-bold text-surface-900 dark:text-white block">30-Day Policy</span>
+                <span className="text-[9px] text-surface-400">Return Window</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ─── Technical Dossier & Provenance Tabs ───────────────────────────── */}
-      <div className="mt-12 glass-luxury-card specular-border rounded-3xl p-6 sm:p-10 shadow-xl">
-        <div className="flex items-center gap-3 border-b border-surface-200/60 dark:border-surface-800/80 pb-4 overflow-x-auto scrollbar-none">
+      {/* Technical Dossier & Specifications Tabs */}
+      <div className="mt-12 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl p-6 sm:p-8 shadow-sm">
+        <div className="flex items-center gap-3 border-b border-surface-200 dark:border-surface-800 pb-4 overflow-x-auto scrollbar-none">
           {[
-            { id: 'provenance', label: 'Provenance & Materials', icon: Award },
+            { id: 'provenance', label: 'Specifications & Materials', icon: Award },
             { id: 'atelier', label: 'Artisan Workshop Dossier', icon: Store },
             { id: 'escrow', label: 'Escrow Guarantees', icon: ShieldCheck },
             { id: 'sustainability', label: 'Circular Lifecycle', icon: Leaf },
@@ -376,7 +379,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-brand-600 text-white shadow-md'
                   : 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white'
@@ -468,18 +471,42 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
         </div>
       </div>
 
-      {/* ─── LEVEL 8: Sticky Mobile Add-to-Cart Purchase Bar ──────────────── */}
-      <StickyMobilePurchaseBar
-        productId={productId}
-        name={product.name}
-        price={effectiveTotalPrice}
-        originalPrice={currentOriginalUnitPrice * selectedQuantity}
-        image={images[selectedImageIndex] || images[0]}
-        variantId={selectedVariant.id}
-        variantName={selectedVariant.name}
-        quantity={selectedQuantity}
-        isVisible={!isMainCTAVisible}
-      />
+      {/* ─── Sticky Quick-Purchase Dock (Appears on Scroll) ─────────────────── */}
+      {showStickyDock && (
+        <aside
+          aria-label="Quick Checkout Dock"
+          className="fixed bottom-0 inset-x-0 z-50 bg-white dark:bg-surface-900 py-3 px-4 sm:px-8 border-t border-surface-200 dark:border-surface-800 shadow-xl"
+        >
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="relative h-12 w-12 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex-shrink-0">
+                <Image src={images[0]} alt={product.name} fill className="object-cover" sizes="48px" />
+              </div>
+              <div className="min-w-0">
+                <h4 className="font-bold text-sm text-surface-900 dark:text-white truncate">
+                  {product.name}
+                </h4>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-black text-brand-600 dark:text-brand-400 font-geist">
+                    ${productPrice.toFixed(2)}
+                  </span>
+                  <span className="text-surface-400 text-[10px] hidden sm:inline">&bull; 100% Escrow Backed</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <AddToCartButton
+                productId={productId}
+                name={product.name}
+                price={productPrice}
+                image={images[0]}
+                className="h-11 px-6 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-md transition-all"
+              />
+            </div>
+          </div>
+        </aside>
+      )}
     </div>
   );
 }

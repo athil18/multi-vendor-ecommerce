@@ -12,14 +12,51 @@ import { withErrorHandler } from '@/lib/api-handler';
 import { NextRequest, NextResponse } from 'next/server';
 import slugify from 'slugify';
 import prisma from '@/lib/prisma';
-import { logger } from '@/lib/logger';
 import { getAuthUser, authorizeRole } from '@/lib/auth';
 import { parsePagination } from '@/lib/pagination';
 import { createProductSchema } from '@/lib/schemas/commerce';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 
+import { getRedisConnection } from '@/lib/queue/redis';
+
+// High-performance tiered L1 (In-Memory) & L2 (Redis) cache for catalog queries
+const catalogCache = new Map<string, { data: any; expiresAt: number }>();
+const CATALOG_CACHE_TTL_MS = 60 * 1000; // 60s L1 memory TTL
+const REDIS_CATALOG_TTL_SEC = 600; // 10 minutes L2 Redis TTL
+
 export const GET = withErrorHandler(async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
+  const cacheKey = req.url;
+  const redisKey = `nexus:catalog:${Buffer.from(req.url).toString('base64url')}`;
+
+  // 1. Check L1 in-memory cache (0ms lookup)
+  const cached = catalogCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return NextResponse.json(cached.data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        'X-Cache-Lookup': 'HIT-L1',
+      },
+    });
+  }
+
+  // 2. Check L2 Redis cache (~10ms distributed lookup)
+  try {
+    const redis = getRedisConnection();
+    const redisCached = await redis.get(redisKey);
+    if (redisCached) {
+      const parsed = JSON.parse(redisCached);
+      catalogCache.set(cacheKey, { data: parsed, expiresAt: Date.now() + CATALOG_CACHE_TTL_MS });
+      return NextResponse.json(parsed, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'X-Cache-Lookup': 'HIT-REDIS',
+        },
+      });
+    }
+  } catch {
+    // Graceful Redis fallback; proceed directly to PostgreSQL
+  }
 
   const keyword = searchParams.get('keyword');
   const category = searchParams.get('category');
@@ -79,73 +116,24 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     }
   }
 
-  let products: any[] = [];
-  let count = 0;
-
-  try {
-    count = cursor ? 0 : await prisma.product.count({ where });
-    if (count > 0) {
-      products = await prisma.product.findMany({
-        where,
-        include: {
-          category: { select: { id: true, name: true, slug: true } },
-          seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
-        },
-        orderBy,
-        take: limit,
-        skip: cursor ? undefined : skip,
-      });
-    }
-  } catch (dbErr) {
-    logger.warn('Database query skipped or offline, serving fallback catalog', { error: dbErr });
-  }
-
-  if (products.length === 0) {
-    let filtered = [...FALLBACK_PRODUCTS_LIST];
-    if (keyword) {
-      const kw = keyword.toLowerCase();
-      filtered = filtered.filter(p => p.name.toLowerCase().includes(kw) || p.description.toLowerCase().includes(kw));
-    }
-    if (category && category !== 'all') {
-      const catKey = category.toLowerCase();
-      filtered = filtered.filter(p => 
-        (p.category?.slug && p.category.slug.toLowerCase().includes(catKey)) ||
-        (p.category?.name && p.category.name.toLowerCase().includes(catKey)) ||
-        (p.categoryName && p.categoryName.toLowerCase().includes(catKey))
-      );
-    }
-    if (minPrice) filtered = filtered.filter(p => p.basePrice >= Number(minPrice));
-    if (maxPrice) filtered = filtered.filter(p => p.basePrice <= Number(maxPrice));
-    if (inStock === 'true') filtered = filtered.filter(p => p.stock > 0);
-
-    if (sort === 'price_asc') filtered.sort((a, b) => a.basePrice - b.basePrice);
-    else if (sort === 'price_desc') filtered.sort((a, b) => b.basePrice - a.basePrice);
-    else if (sort === 'top_rated') filtered.sort((a, b) => b.rating - a.rating);
-    else if (sort === 'popular') filtered.sort((a, b) => b.numReviews - a.numReviews);
-
-    count = filtered.length;
-    const paginated = filtered.slice(skip, skip + limit);
-
-    return NextResponse.json({
-      data: paginated.map(p => ({
-        ...p,
-        _id: p.id,
-        storeName: p.storeName || p.seller?.name || 'Nexus Atelier',
-        categoryId: p.category,
-      })),
-      meta: {
-        page,
-        limit,
-        total: count,
-        totalPages: Math.ceil(count / limit),
-        nextCursor: null,
+  // Execute count and product query in parallel to eliminate sequential transatlantic round-trips
+  const [count, products] = await Promise.all([
+    cursor ? Promise.resolve(0) : prisma.product.count({ where }),
+    prisma.product.findMany({
+      where,
+      include: {
+        category: { select: { id: true, name: true, slug: true } },
+        seller: { select: { name: true, store: { select: { id: true, name: true, slug: true } } } },
       },
-    });
-  }
+      orderBy,
+      take: limit,
+      skip: cursor ? undefined : skip,
+    }),
+  ]);
 
   const nextCursor = products.length === limit ? products[products.length - 1].id : null;
 
-  return NextResponse.json({
+  const responseBody = {
     data: products.map(p => ({
       ...p,
       _id: p.id,
@@ -158,6 +146,30 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
       total: cursor ? undefined : count,
       totalPages: cursor ? undefined : Math.ceil(count / limit),
       nextCursor,
+    },
+  };
+
+  // 1. Cache in L1 memory
+  catalogCache.set(cacheKey, { data: responseBody, expiresAt: Date.now() + CATALOG_CACHE_TTL_MS });
+
+  // Bound L1 cache size to prevent memory leaks
+  if (catalogCache.size > 100) {
+    const oldestKey = catalogCache.keys().next().value;
+    if (oldestKey) catalogCache.delete(oldestKey);
+  }
+
+  // 2. Cache in L2 Redis (Distributed across edge instances)
+  try {
+    const redis = getRedisConnection();
+    await redis.setex(redisKey, REDIS_CATALOG_TTL_SEC, JSON.stringify(responseBody));
+  } catch {
+    // Non-blocking fallback
+  }
+
+  return NextResponse.json(responseBody, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      'X-Cache-Lookup': 'MISS',
     },
   });
 });
@@ -189,6 +201,9 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       status: 'draft',
     },
   });
+
+  // Invalidate in-memory catalog cache on modification
+  catalogCache.clear();
 
   return NextResponse.json({ ...product, _id: product.id }, { status: 201 });
 });

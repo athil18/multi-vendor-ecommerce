@@ -11,7 +11,8 @@ interface Props {
 
 async function getOrderDetails(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/orders/${id}`, {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://nexus-marketplace.com' : 'http://localhost:3000');
+    const res = await fetch(`${baseUrl}/api/orders/${id}`, {
       cache: 'no-store',
     });
     if (!res.ok) return null;

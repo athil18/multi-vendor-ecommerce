@@ -7,9 +7,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, HelpCircle, Mail, MessageSquare, ShieldCheck, Truck, RefreshCw, FileText } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Mail, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -46,16 +45,16 @@ export default function HelpPage() {
           </Link>
         </div>
 
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase tracking-widest mb-4">
-            <HelpCircle className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
-            24/7 Concierge Support
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 text-xs font-semibold uppercase tracking-wider mb-4">
+            <HelpCircle className="h-3.5 w-3.5 text-surface-600 dark:text-surface-400" />
+            Support Center
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 dark:text-white tracking-tight font-geist mb-4">
-            How can we assist you?
+          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight mb-3">
+            Customer Support and Help Center
           </h1>
-          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
-            Find immediate answers regarding orders, escrow protection, creator communications, and platform policies.
+          <p className="text-base text-surface-600 dark:text-surface-300 max-w-xl mx-auto leading-relaxed">
+            Find answers regarding orders, escrow protection, seller inquiries, and shipping status.
           </p>
         </div>
 

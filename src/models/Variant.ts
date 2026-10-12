@@ -6,10 +6,23 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface VariantCreateDTO {
+  id?: string;
+  _id?: string;
+  productId?: string;
+  sellerId?: string | null;
+  sku?: string;
+  price?: number;
+  stock?: number;
+  attributes?: Record<string, unknown>;
+  [key: string]: unknown;
+}
 
 export const Variant = {
-  create: async (data: any) => {
+  create: async (data: VariantCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let pId = toIdString(data.productId);
@@ -22,8 +35,8 @@ export const Variant = {
             data: {
               id: sId,
               name: 'Fallback Seller',
-              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              email: `seller-${sId.substring(0, 10)}@example.com`,
+              password: getSecureDummyPasswordHash(),
               role: 'seller',
               status: 'active'
             }
@@ -67,7 +80,7 @@ export const Variant = {
           data: {
             name: 'Fallback Seller',
             email: `fallback-seller-${Date.now()}@example.com`,
-            password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+            password: getSecureDummyPasswordHash(),
             role: 'seller',
             status: 'active'
           }
@@ -118,25 +131,28 @@ export const Variant = {
       pId = defaultProd.id;
     }
 
-    const formatted: any = {
+    const formatted: Prisma.VariantUncheckedCreateInput = {
       ...(id ? { id } : {}),
-      productId: pId,
-      sellerId: sId,
+      productId: pId!,
+      sellerId: sId!,
       sku: data.sku || `SKU-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
       price: Number(data.price ?? 0),
       stock: Number(data.stock ?? 0),
-      attributes: data.attributes || {},
+      attributes: (data.attributes as Prisma.InputJsonValue) || {},
     };
     if (id) {
-      return wrapRecord(await prisma.variant.upsert({ where: { id }, create: formatted, update: formatted }));
+      const existing = await prisma.variant.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.variant.update({ where: { id }, data: formatted }));
+      }
     }
     return wrapRecord(await prisma.variant.create({ data: formatted }));
   },
-  deleteMany: (where: any = {}) => prisma.variant.deleteMany({ where: normalizeWhere(where) || {} }),
-  find: async (where: any = {}) => wrapRecords(await prisma.variant.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.variant.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.variant.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.VariantWhereInput = {}) => prisma.variant.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.VariantWhereInput = {}) => wrapRecords(await prisma.variant.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.VariantWhereInput = {}) => wrapRecord(await prisma.variant.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.variant.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.VariantUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

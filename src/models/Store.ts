@@ -7,10 +7,32 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma, GovernanceStatus } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface StoreCreateDTO {
+  id?: string;
+  _id?: string;
+  sellerId?: string;
+  name?: string;
+  storeName?: string;
+  slug?: string;
+  status?: string;
+  governanceStatus?: string;
+  description?: string | null;
+  logo?: string | null;
+  logoUrl?: string | null;
+  banner?: string | null;
+  bannerUrl?: string | null;
+  trustScore?: number;
+  payoutsEnabled?: boolean;
+  stripeOnboardingComplete?: boolean;
+  stripeConnectedAccountId?: string | null;
+  [key: string]: unknown;
+}
 
 export const Store = {
-  create: async (data: any) => {
+  create: async (data: StoreCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let sId = data.sellerId ? toIdString(data.sellerId) : undefined;
@@ -23,8 +45,8 @@ export const Store = {
             data: {
               id: sId,
               name: 'Seller User',
-              email: `seller-${sId.substring(0, 10)}-${Date.now()}@example.com`,
-              password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+              email: `seller-${sId.substring(0, 10)}@example.com`,
+              password: getSecureDummyPasswordHash(),
               role: 'seller',
               status: 'active'
             }
@@ -43,7 +65,7 @@ export const Store = {
           data: {
             name: 'Seller User',
             email: `seller-default-${Date.now()}@example.com`,
-            password: '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S',
+            password: getSecureDummyPasswordHash(),
             role: 'seller',
             status: 'active'
           }
@@ -52,7 +74,7 @@ export const Store = {
       }
     }
 
-    let govStatus: any = 'good_standing';
+    let govStatus: GovernanceStatus = 'good_standing';
     if (data.status === 'suspended' || data.governanceStatus === 'suspended') {
       govStatus = 'suspended';
     } else if (data.status === 'probation' || data.governanceStatus === 'probation') {
@@ -61,11 +83,11 @@ export const Store = {
       govStatus = 'banned';
     }
 
-    const formatted: any = {
+    const formatted: Prisma.StoreUncheckedCreateInput = {
       ...(id ? { id } : {}),
       name: data.name || data.storeName || 'Store',
       slug: data.slug || `store-${Math.random().toString(36).substring(2, 9)}`,
-      sellerId: sId,
+      sellerId: sId!,
       governanceStatus: govStatus,
       description: data.description || null,
       logo: data.logo || data.logoUrl || null,
@@ -82,19 +104,11 @@ export const Store = {
     }
     return wrapRecord(await prisma.store.create({ data: formatted }));
   },
-  deleteMany: async (where: any = {}) => {
-    const norm = normalizeWhere(where) || {};
-    if (Object.keys(norm).length === 0) {
-      await prisma.orderItem.deleteMany().catch(() => {});
-      await prisma.variant.deleteMany().catch(() => {});
-      await prisma.product.deleteMany().catch(() => {});
-    }
-    return prisma.store.deleteMany({ where: norm });
-  },
-  find: async (where: any = {}) => wrapRecords(await prisma.store.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.store.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.store.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.StoreWhereInput = {}) => prisma.store.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.StoreWhereInput = {}) => wrapRecords(await prisma.store.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.StoreWhereInput = {}) => wrapRecord(await prisma.store.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.store.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.StoreUncheckedUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

@@ -30,8 +30,8 @@ export function getSecurityHeaders(config?: Partial<SecurityHeadersConfig>): Rec
 
   const cspDirectives = [
     "default-src 'self'",
-    scriptDirectives,
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com", // Next.js requires unsafe-eval in dev; unpkg for OpenAPI docs
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
     "font-src 'self' https://fonts.gstatic.com data: blob:",
     "img-src 'self' https://images.unsplash.com https://images.pexels.com https://cdn.dummyjson.com https://dummyjson.com https://placehold.co https://raw.githubusercontent.com https://upload.wikimedia.org https://via.placeholder.com https://cdn-demo.algolia.com https://i.imgur.com https://*.amazonaws.com data: blob:",
     "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.stripe.network https://m.stripe.network",

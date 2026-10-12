@@ -44,30 +44,29 @@ export const POST = async (req: NextRequest) => {
     }
 
     const secret = process.env.JWT_SECRET;
-    if (!secret && process.env.NODE_ENV === 'production') {
+    if (!secret) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
-    const signingSecret = secret || 'local-dev-secret';
-
     const expectedSig = crypto
       .createHmac('sha256', signingSecret)
       .update(`${key}:${expires}`)
       .digest('hex');
 
-    // Constant-time signature verification to prevent timing attacks
-    const sigBuffer = Buffer.from(sig, 'hex');
-    const expectedBuffer = Buffer.from(expectedSig, 'hex');
+    const sigBuf = Buffer.from(sig, 'utf8');
+    const expectedBuf = Buffer.from(expectedSig, 'utf8');
 
-    if (
-      sigBuffer.length !== expectedBuffer.length ||
-      !crypto.timingSafeEqual(sigBuffer, expectedBuffer)
-    ) {
+    if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
     }
 
+    // ── Early Payload Size Guard (5MB Max Asset Upload) ─────────────────
+    const MAX_LOCAL_UPLOAD_BYTES = 5 * 1024 * 1024; // 5MB
     const contentLength = req.headers.get('content-length');
-    if (contentLength && parseInt(contentLength, 10) > MAX_UPLOAD_SIZE) {
-      return NextResponse.json({ error: 'Payload exceeds 5MB size limit' }, { status: 413 });
+    if (contentLength && parseInt(contentLength, 10) > MAX_LOCAL_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Payload Too Large', message: 'File size exceeds maximum permitted limit of 5MB' },
+        { status: 413 }
+      );
     }
 
     if (!req.body) {
@@ -88,12 +87,24 @@ export const POST = async (req: NextRequest) => {
       fs.mkdirSync(dir, { recursive: true });
     }
 
+    const buffer = req.body ? await req.arrayBuffer() : null;
+    if (!buffer || buffer.byteLength === 0) {
+      return NextResponse.json({ error: 'Empty body' }, { status: 400 });
+    }
+
+    if (buffer.byteLength > MAX_LOCAL_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Payload Too Large', message: 'File size exceeds maximum permitted limit of 5MB' },
+        { status: 413 }
+      );
+    }
+
     fs.writeFileSync(filepath, Buffer.from(buffer));
 
     return NextResponse.json({ success: true, message: 'File uploaded locally' });
   } catch (error: any) {
     logger.error('Local upload error', { error: String(error.message || error) });
-    return NextResponse.json({ error: 'An unexpected error occurred during upload' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error', message: 'Failed to process asset upload' }, { status: 500 });
   }
 };
 

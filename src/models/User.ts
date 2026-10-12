@@ -7,52 +7,57 @@
  */
 
 import prisma from '@/lib/prisma';
-import { wrapRecord, wrapRecords, toIdString, normalizeWhere } from './prisma-wrap';
+import { Prisma, Role, UserStatus } from '@prisma/client';
+import { wrapRecord, wrapRecords, toIdString, normalizeWhere, getSecureDummyPasswordHash } from './prisma-wrap';
+
+export interface UserCreateDTO {
+  id?: string;
+  _id?: string;
+  name?: string;
+  email: string;
+  password?: string;
+  role?: Role;
+  status?: UserStatus;
+  avatar?: string | null;
+  [key: string]: unknown;
+}
 
 export const User = {
-  create: async (data: any) => {
+  create: async (data: UserCreateDTO) => {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
-    const formatted: any = {
+    const formatted: Prisma.UserCreateInput = {
       ...(id ? { id } : {}),
       name: data.name || 'User',
       email: data.email,
-      password: data.password || '$2a$10$wT8v0o9q2j1X7Y6Z5A4B3C2D1E0F9G8H7I6J5K4L3M2N1O0P9Q8R7S', // Bcrypt dummy for test mocks
+      password: data.password || getSecureDummyPasswordHash(),
       role: data.role || 'customer',
       status: data.status || 'active',
     };
     if (data.avatar !== undefined) formatted.avatar = data.avatar;
-    if (data.stripeCustomerId !== undefined) formatted.stripeCustomerId = data.stripeCustomerId;
+    if (id) {
+      const existing = await prisma.user.findUnique({ where: { id } });
+      if (existing) {
+        return wrapRecord(await prisma.user.update({ where: { id }, data: formatted }));
+      }
+      if (formatted.email) {
+        await prisma.user.deleteMany({ where: { email: formatted.email } });
+      }
+      return wrapRecord(await prisma.user.create({ data: formatted }));
+    }
     if (formatted.email) {
-      return wrapRecord(await prisma.user.upsert({ where: { email: formatted.email }, create: formatted, update: formatted }));
-    } else if (id) {
-      return wrapRecord(await prisma.user.upsert({ where: { id }, create: formatted, update: formatted }));
+      const existingByEmail = await prisma.user.findUnique({ where: { email: formatted.email } });
+      if (existingByEmail) {
+        return wrapRecord(await prisma.user.update({ where: { email: formatted.email }, data: formatted }));
+      }
     }
     return wrapRecord(await prisma.user.create({ data: formatted }));
   },
-  deleteMany: async (where: any = {}) => {
-    const norm = normalizeWhere(where) || {};
-    if (Object.keys(norm).length === 0) {
-      await prisma.transferLog.deleteMany().catch(() => {});
-      await prisma.transactionLine.deleteMany().catch(() => {});
-      await prisma.journalEntry.deleteMany().catch(() => {});
-      await prisma.financialLedger.deleteMany().catch(() => {});
-      await prisma.dispute.deleteMany().catch(() => {});
-      await prisma.orderItem.deleteMany().catch(() => {});
-      await prisma.order.deleteMany().catch(() => {});
-      await prisma.variant.deleteMany().catch(() => {});
-      await prisma.product.deleteMany().catch(() => {});
-      await prisma.store.deleteMany().catch(() => {});
-      await prisma.address.deleteMany().catch(() => {});
-      await prisma.review.deleteMany().catch(() => {});
-      await prisma.wishlist.deleteMany().catch(() => {});
-    }
-    return prisma.user.deleteMany({ where: norm });
-  },
-  find: async (where: any = {}) => wrapRecords(await prisma.user.findMany({ where: normalizeWhere(where) || {} })),
-  findOne: async (where: any = {}) => wrapRecord(await prisma.user.findFirst({ where: normalizeWhere(where) || {} })),
-  findById: async (id: any) => wrapRecord(await prisma.user.findUnique({ where: { id: toIdString(id) } })),
-  findByIdAndUpdate: async (id: any, data: any) => {
+  deleteMany: (where: Prisma.UserWhereInput = {}) => prisma.user.deleteMany({ where: normalizeWhere(where) || {} }),
+  find: async (where: Prisma.UserWhereInput = {}) => wrapRecords(await prisma.user.findMany({ where: normalizeWhere(where) || {} })),
+  findOne: async (where: Prisma.UserWhereInput = {}) => wrapRecord(await prisma.user.findFirst({ where: normalizeWhere(where) || {} })),
+  findById: async (id: unknown) => wrapRecord(await prisma.user.findUnique({ where: { id: toIdString(id) } })),
+  findByIdAndUpdate: async (id: unknown, data: Prisma.UserUpdateInput & Record<string, unknown>) => {
     const cleanData = { ...data };
     delete cleanData._id;
     delete cleanData.id;

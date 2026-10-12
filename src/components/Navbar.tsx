@@ -19,9 +19,18 @@ import Image from 'next/image';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useCartStore } from '@/store/useCartStore';
 import { useThemeStore } from '@/store/useThemeStore';
-import { ShoppingCart, Sun, Moon, LogOut, Store, Shield, X, Trash2, Plus, Minus, ChevronDown, Flame, ArrowRight, Menu, Search, PackageOpen, Lock } from 'lucide-react';
+import { LogOut, Shield, X, Trash2, Plus, Minus, ChevronDown, Flame, ArrowRight, PackageOpen } from 'lucide-react';
+import { 
+  SearchIcon, 
+  ShoppingCartIcon, 
+  ShoppingBagIcon, 
+  SunModeIcon, 
+  MoonModeIcon, 
+  StoreIcon, 
+  MenuDrawerIcon, 
+  SecureLockIcon 
+} from './ui/icons';
 import { Button } from './ui/Button';
-import { AgentComplianceBadge } from './ui/AgentComplianceBadge';
 import { NexusLogo } from './NexusLogo';
 import { PromotionalBanner } from './PromotionalBanner';
 
@@ -46,10 +55,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Level 1: Core Promotional Announcement Banner */}
-      <PromotionalBanner />
-
-      <header className="sticky top-0 z-40 w-full border-b border-surface-200/50 dark:border-surface-800/50 bg-white/70 dark:bg-surface-950/70 backdrop-blur-xl shadow-sm">
+      <header className="sticky top-0 z-40 w-full border-b border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950 shadow-sm">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           
           {/* Logo */}
@@ -95,7 +101,7 @@ export default function Navbar() {
                 
                 {/* Mega Menu with Zero-JS CSS Transition */}
                 <div 
-                  className={`absolute top-full left-[-200px] w-[800px] glass-panel-dribbble p-8 grid grid-cols-3 gap-8 rounded-3xl transition-all duration-200 ease-out transform will-change-transform ${
+                  className={`absolute top-full left-[-200px] w-[800px] bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 shadow-2xl p-8 grid grid-cols-3 gap-8 rounded-2xl transition-all duration-200 ease-out transform will-change-transform ${
                     isMegaMenuOpen 
                       ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' 
                       : 'opacity-0 translate-y-2 scale-95 pointer-events-none'
@@ -131,12 +137,12 @@ export default function Navbar() {
 
               {role === 'seller' && (
                 <Link href="/seller" prefetch={false} className="flex items-center gap-1.5 hover:text-brand-600 dark:hover:text-brand-400 transition-colors uppercase tracking-widest text-[11px]">
-                  <Store className="h-3 w-3" />
+                  <StoreIcon size={12} />
                   Seller Panel
                 </Link>
               )}
               {role === 'admin' && (
-                <Link href="/admin" prefetch={false} className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400 uppercase tracking-widest text-[11px]">
+                <Link href="/admin" prefetch={false} className="flex items-center gap-1.5 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white uppercase tracking-wider text-[11px] font-medium">
                   <Shield className="h-3 w-3" />
                   Admin Panel
                 </Link>
@@ -150,11 +156,11 @@ export default function Navbar() {
               <input
                 type="text"
                 name="search"
-                placeholder="Search products or makers..."
-                aria-label="Search products"
-                className="w-full bg-surface-100 dark:bg-surface-900 text-surface-900 dark:text-surface-100 text-xs rounded-full pl-9 pr-4 py-2 border border-surface-200 dark:border-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all placeholder:text-surface-400"
+                placeholder="Search catalog or makers..."
+                aria-label="Search catalog"
+                className="w-full bg-surface-100 dark:bg-surface-900 text-surface-900 dark:text-surface-100 text-xs rounded-lg pl-9 pr-4 py-2 border border-surface-200 dark:border-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all placeholder:text-surface-400"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-surface-400" />
+              <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
             </form>
           </div>
 
@@ -163,18 +169,18 @@ export default function Navbar() {
             <button
               onClick={toggleTheme}
               aria-label="Toggle color theme"
-              className="h-10 w-10 flex items-center justify-center rounded-full text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
+              className="h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
             >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {theme === 'dark' ? <SunModeIcon size={20} /> : <MoonModeIcon size={20} />}
             </button>
 
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label={`Shopping cart with ${cartCount} items`}
               aria-expanded={isCartOpen}
-              className="relative h-10 w-10 flex items-center justify-center rounded-full text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
+              className="relative h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
             >
-              <ShoppingCart className="h-5 w-5" />
+              <ShoppingCartIcon size={20} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[11px] font-black text-white shadow-md ring-2 ring-white dark:ring-surface-950">
                   {cartCount}
@@ -185,13 +191,13 @@ export default function Navbar() {
             <div className="flex items-center justify-end">
               {user ? (
                 <div className="flex items-center gap-2 pl-2 sm:pl-4 border-l border-surface-200 dark:border-surface-800">
-                  <Link href="/customer" prefetch={false} className="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center font-bold text-sm">
+                  <Link href="/customer" prefetch={false} className="h-9 w-9 rounded-lg bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center font-bold text-sm">
                     {user.name.charAt(0)}
                   </Link>
                   <button
                     onClick={logoutUser}
                     aria-label="Sign out"
-                    className="h-10 w-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
+                    className="h-10 w-10 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
                   >
                     <LogOut className="h-5 w-5" />
                   </button>
@@ -202,7 +208,7 @@ export default function Navbar() {
                   prefetch={false}
                   className="ml-1 sm:ml-2"
                 >
-                  <Button variant="primary" size="sm" className="rounded-full px-3 sm:px-6 text-xs sm:text-sm">Sign In</Button>
+                  <Button variant="primary" size="sm" className="px-4 text-xs font-semibold">Sign in</Button>
                 </Link>
               )}
             </div>
@@ -212,9 +218,9 @@ export default function Navbar() {
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}
-              className="md:hidden h-10 w-10 flex items-center justify-center rounded-full text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all ml-1"
+              className="md:hidden h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all ml-1"
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <MenuDrawerIcon size={20} />}
             </button>
           </div>
         </div>
@@ -226,7 +232,7 @@ export default function Navbar() {
           className="fixed inset-0 z-50 overflow-hidden transition-opacity duration-300 ease-out opacity-100 pointer-events-auto"
         >
         <div 
-          className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" 
+          className="absolute inset-0 bg-black/50 transition-opacity" 
           onClick={() => setIsCartOpen(false)} 
         />
         <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
@@ -242,13 +248,13 @@ export default function Navbar() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-surface-200 dark:border-surface-800">
               <h2 className="text-lg font-bold text-surface-900 dark:text-surface-100 flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-brand-600" />
+                <ShoppingBagIcon size={20} className="text-brand-600 dark:text-brand-400" />
                 Shopping Bag ({cartCount})
               </h2>
               <button
                 onClick={() => setIsCartOpen(false)}
                 aria-label="Close shopping cart"
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors"
+                className="h-8 w-8 flex items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -289,13 +295,13 @@ export default function Navbar() {
               {cart.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-12">
                   <div className="rounded-full bg-surface-100 dark:bg-surface-800 p-8">
-                    <ShoppingCart className="h-12 w-12 text-surface-300 dark:text-surface-600" />
+                    <ShoppingBagIcon size={48} className="text-surface-300 dark:text-surface-600" />
                   </div>
                   <h3 className="text-lg font-bold text-surface-900 dark:text-white">Your bag is empty</h3>
                   <p className="text-xs text-surface-500 max-w-xs leading-relaxed">Discover handcrafted items and artisan creations across our catalog.</p>
                   <Button
                     onClick={() => setIsCartOpen(false)}
-                    className="mt-4 rounded-full px-8 text-xs font-bold"
+                    className="mt-4 rounded-lg px-8 text-xs font-bold"
                   >
                     Start Shopping
                   </Button>
@@ -324,7 +330,7 @@ export default function Navbar() {
                         )}
                       </div>
                       <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center border border-surface-200 dark:border-surface-700 rounded-full bg-surface-50 dark:bg-surface-800 shadow-sm">
+                        <div className="flex items-center border border-surface-200 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-800 shadow-sm">
                           <button
                             onClick={() => item.quantity > 1 ? updateCartQuantity(item.productId, item.quantity - 1, item.variantId) : removeFromCart(item.productId, item.variantId)}
                             aria-label={`Decrease quantity of ${item.name}`}
@@ -345,7 +351,7 @@ export default function Navbar() {
                           type="button"
                           onClick={() => removeFromCart(item.productId, item.variantId)}
                           aria-label={`Remove ${item.name} from cart`}
-                          className="font-medium text-red-500 hover:text-red-600 flex items-center justify-center h-7 w-7 bg-red-50 dark:bg-red-950/20 rounded-full transition-colors"
+                          className="font-medium text-red-500 hover:text-red-600 flex items-center justify-center h-7 w-7 bg-red-50 dark:bg-red-950/20 rounded-md transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -358,13 +364,13 @@ export default function Navbar() {
 
             {/* Footer Checkout Info */}
             {cart.length > 0 && (
-              <div className="border-t border-surface-200 dark:border-surface-800 px-6 py-6 bg-surface-50/80 dark:bg-surface-900/80 backdrop-blur-md">
+              <div className="border-t border-surface-200 dark:border-surface-800 px-6 py-6 bg-surface-50 dark:bg-surface-900">
                 <div className="flex justify-between text-base font-bold text-surface-900 dark:text-white mb-1">
                   <p>Subtotal</p>
                   <p className="text-brand-600 dark:text-brand-400 text-xl font-black font-geist">${cartTotal.toFixed(2)}</p>
                 </div>
-                <p className="text-xs text-surface-500 mb-5 font-medium flex items-center gap-1">
-                  <Lock className="w-3 h-3 text-emerald-500 inline" /> Escrow protected &bull; Calculated at checkout
+                <p className="text-xs text-surface-500 mb-5 font-medium flex items-center gap-1.5">
+                  <SecureLockIcon size={14} className="text-emerald-500 inline" /> Escrow protected &bull; Calculated at checkout
                 </p>
                 
                 <Link
@@ -374,7 +380,7 @@ export default function Navbar() {
                   className="flex w-full"
                 >
                   <Button size="lg" className="w-full text-sm font-bold h-13 shadow-lg shadow-brand-500/20 rounded-xl bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center gap-2">
-                    <Lock className="w-4 h-4" /> Proceed to Checkout
+                    <SecureLockIcon size={16} /> Proceed to Checkout
                   </Button>
                 </Link>
               </div>
@@ -389,7 +395,7 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-black/60 transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div 
@@ -403,7 +409,7 @@ export default function Navbar() {
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label="Close navigation menu"
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 hover:text-surface-900 dark:hover:text-white"
+                className="h-8 w-8 flex items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-500 hover:text-surface-900 dark:hover:text-white"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -464,7 +470,7 @@ export default function Navbar() {
                   prefetch={false}
                   className="flex items-center gap-2 py-2 mt-2 text-brand-600 dark:text-brand-400 font-bold"
                 >
-                  <Store className="h-4 w-4" /> Seller Dashboard
+                  <StoreIcon size={16} /> Seller Dashboard
                 </Link>
               )}
               {role === 'admin' && (
@@ -472,7 +478,7 @@ export default function Navbar() {
                   href="/admin" 
                   onClick={() => setIsMobileMenuOpen(false)}
                   prefetch={false}
-                  className="flex items-center gap-2 py-2 mt-2 text-purple-600 dark:text-purple-400 font-bold"
+                  className="flex items-center gap-2 py-2 mt-2 text-surface-900 dark:text-white font-medium"
                 >
                   <Shield className="h-4 w-4" /> Admin Console
                 </Link>
@@ -485,9 +491,9 @@ export default function Navbar() {
                 <button
                   onClick={toggleTheme}
                   aria-label="Toggle color theme"
-                  className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full bg-surface-100 dark:bg-surface-800"
+                  className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md bg-surface-100 dark:bg-surface-800"
                 >
-                  {theme === 'dark' ? <Sun className="h-3.5 w-3.5 text-amber-500" /> : <Moon className="h-3.5 w-3.5 text-indigo-500" />}
+                  {theme === 'dark' ? <SunModeIcon size={14} className="text-amber-500" /> : <MoonModeIcon size={14} className="text-indigo-500" />}
                   <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
               </div>

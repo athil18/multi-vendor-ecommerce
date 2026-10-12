@@ -83,13 +83,13 @@ describe('Order Lifecycle Status Hardening Suite', () => {
     await Store.create({ sellerId: seller1Id, storeName: 'Store 1', status: 'active', stripeConnectedAccountId: 'acct_1', stripeOnboardingComplete: true, payoutsEnabled: true });
     await Store.create({ sellerId: seller2Id, storeName: 'Store 2', status: 'active', stripeConnectedAccountId: 'acct_2', stripeOnboardingComplete: true, payoutsEnabled: true });
 
-    // Create variants with stock 5
-    await Variant.create({ _id: variant1Id, productId: product1Id, sellerId: seller1Id, sku: 'SKU-1', price: 100, stock: 5 });
-    await Variant.create({ _id: variant2Id, productId: product2Id, sellerId: seller2Id, sku: 'SKU-2', price: 200, stock: 5 });
-
     // Create products
     await Product.create({ _id: product1Id, sellerId: seller1Id, name: 'P1', slug: 'p1', description: 'Test Description 1', categoryId: new mongoose.Types.ObjectId(), basePrice: 100, status: 'published', inStock: true });
     await Product.create({ _id: product2Id, sellerId: seller2Id, name: 'P2', slug: 'p2', description: 'Test Description 2', categoryId: new mongoose.Types.ObjectId(), basePrice: 200, status: 'published', inStock: true });
+
+    // Create variants with stock 5
+    await Variant.create({ _id: variant1Id, productId: product1Id, sellerId: seller1Id, sku: 'SKU-1', price: 100, stock: 5 });
+    await Variant.create({ _id: variant2Id, productId: product2Id, sellerId: seller2Id, sku: 'SKU-2', price: 200, stock: 5 });
 
     token = generateAccessToken(customerId, 'customer');
     seller1Token = generateAccessToken(seller1Id, 'seller');
