@@ -93,9 +93,15 @@ function CatalogContent() {
     const set = new Set<string>();
     products.forEach((p: any) => {
       const cat = p.category?.name || (typeof p.category === 'string' ? p.category : p.categoryName);
-      if (cat) set.add(cat);
+      if (cat && !cat.toLowerCase().includes('beauty')) set.add(cat);
     });
-    return ['all', ...Array.from(set)];
+    // Strict Mode: Place Tech & Electronics immediately after 'all'
+    const sorted = Array.from(set).sort((a, b) => {
+      if (a.toLowerCase().includes('tech')) return -1;
+      if (b.toLowerCase().includes('tech')) return 1;
+      return a.localeCompare(b);
+    });
+    return ['all', ...sorted];
   }, [products]);
 
   // Toggle material filter
@@ -107,8 +113,25 @@ function CatalogContent() {
 
   // Filter & Sort Pipeline
   const filteredProducts = useMemo(() => {
+    const isBeauty = (p: any) => {
+      const cat = (p.category?.name || (typeof p.category === 'string' ? p.category : p.categoryName) || '').toLowerCase();
+      const n = (p.name || '').toLowerCase();
+      return cat.includes('beauty') || cat.includes('cosmetic') || n.includes('mascara') || n.includes('lipstick') || n.includes('eyeshadow') || n.includes('nail polish');
+    };
+
+    const isTech = (p: any) => {
+      const cat = (p.category?.name || (typeof p.category === 'string' ? p.category : p.categoryName) || '').toLowerCase();
+      const n = (p.name || '').toLowerCase();
+      return cat.includes('tech') || cat.includes('electronic') || n.includes('macbook') || n.includes('laptop') || n.includes('keyboard') || n.includes('headphone') || n.includes('audio');
+    };
+
     return products
       .filter((p: any) => {
+        // Strict Mode: When browsing the catalog starting list ('all'), strictly exclude beauty items
+        if (selectedCategory === 'all' && isBeauty(p)) {
+          return false;
+        }
+
         const nameDesc = `${p.name || ''} ${p.description || ''} ${p.storeName || ''}`.toLowerCase();
         const matchesSearch = !searchTerm || nameDesc.includes(searchTerm.toLowerCase());
         
@@ -128,6 +151,13 @@ function CatalogContent() {
         if (sortBy === 'price-low') return (a.basePrice || 0) - (b.basePrice || 0);
         if (sortBy === 'price-high') return (b.basePrice || 0) - (a.basePrice || 0);
         if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5);
+        
+        // Strict Mode: Default featured sort starts with Tech products
+        const aTech = isTech(a);
+        const bTech = isTech(b);
+        if (aTech && !bTech) return -1;
+        if (!aTech && bTech) return 1;
+
         return 0;
       });
   }, [products, searchTerm, selectedCategory, maxPriceFilter, inStockOnly, selectedMaterials, sortBy]);

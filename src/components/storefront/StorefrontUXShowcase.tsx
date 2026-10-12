@@ -31,56 +31,74 @@ interface StorefrontUXShowcaseProps {
 }
 
 export function StorefrontUXShowcase({ products }: StorefrontUXShowcaseProps) {
+  // Strict Mode: Filter out any beauty products completely from the front showcase
+  const isBeauty = (p: any) => {
+    const cat = (p.categoryName || p.category?.name || '').toLowerCase();
+    const n = (p.name || '').toLowerCase();
+    return cat.includes('beauty') || cat.includes('cosmetic') || n.includes('mascara') || n.includes('lipstick') || n.includes('eyeshadow') || n.includes('nail polish');
+  };
+
+  const isTech = (p: any) => {
+    const cat = (p.categoryName || p.category?.name || '').toLowerCase();
+    const n = (p.name || '').toLowerCase();
+    return cat.includes('tech') || cat.includes('electronic') || n.includes('macbook') || n.includes('laptop') || n.includes('keyboard') || n.includes('headphone') || n.includes('audio');
+  };
+
+  const cleanProducts = useMemo(() => {
+    const nonBeauty = (products || []).filter(p => !isBeauty(p));
+    // Prioritize Tech products at the starting list
+    return [
+      ...nonBeauty.filter(isTech),
+      ...nonBeauty.filter(p => !isTech(p)),
+    ];
+  }, [products]);
+
   // Hick's Law (#1) & Miller's Law (#5): 4 Curated Categories
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const categories = [
-    { id: 'all', label: 'All Masterworks', count: products.length },
-    { id: 'tech', label: 'Mechanical & Tech', count: products.filter(p => (p.categoryName || '').toLowerCase().includes('tech') || (p.name || '').toLowerCase().includes('keyboard')).length || 2 },
-    { id: 'leather', label: 'Atelier Leather', count: products.filter(p => (p.categoryName || '').toLowerCase().includes('leather') || (p.name || '').toLowerCase().includes('leather')).length || 2 },
-    { id: 'velocity', label: 'Precision Velocity', count: products.filter(p => (p.categoryName || '').toLowerCase().includes('velo') || (p.name || '').toLowerCase().includes('road') || (p.name || '').toLowerCase().includes('monolith')).length || 2 },
+    { id: 'all', label: 'All Tech & Masterworks', count: cleanProducts.length },
+    { id: 'tech', label: 'Mechanical & Tech', count: cleanProducts.filter(isTech).length || 4 },
+    { id: 'leather', label: 'Atelier Leather', count: cleanProducts.filter(p => (p.categoryName || '').toLowerCase().includes('leather')).length || 2 },
+    { id: 'velocity', label: 'Precision Velocity', count: cleanProducts.filter(p => (p.categoryName || '').toLowerCase().includes('velo') || (p.name || '').toLowerCase().includes('road') || (p.name || '').toLowerCase().includes('monolith')).length || 2 },
   ];
 
   // Filter products instantly (<400ms Doherty Threshold)
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'all') return products;
-    if (selectedCategory === 'tech') {
-      return products.filter(p => 
-        (p.categoryName || '').toLowerCase().includes('tech') || 
-        (p.name || '').toLowerCase().includes('keyboard') ||
-        (p.name || '').toLowerCase().includes('monitor')
-      );
-    }
+    if (selectedCategory === 'all') return cleanProducts;
+    if (selectedCategory === 'tech') return cleanProducts.filter(isTech);
     if (selectedCategory === 'leather') {
-      return products.filter(p => 
+      return cleanProducts.filter(p => 
         (p.categoryName || '').toLowerCase().includes('leather') || 
-        (p.name || '').toLowerCase().includes('leather') ||
         (p.name || '').toLowerCase().includes('wallet')
       );
     }
     if (selectedCategory === 'velocity') {
-      return products.filter(p => 
+      return cleanProducts.filter(p => 
         (p.categoryName || '').toLowerCase().includes('velo') || 
         (p.name || '').toLowerCase().includes('road') ||
         (p.name || '').toLowerCase().includes('precision') ||
         (p.name || '').toLowerCase().includes('monolith')
       );
     }
-    return products;
-  }, [products, selectedCategory]);
+    return cleanProducts;
+  }, [cleanProducts, selectedCategory]);
 
-  // Von Restorff Effect (#7): Choose the primary Spotlight specimen
-  const spotlightProduct = products[0] || {
-    _id: 'spotlight-1',
-    name: 'Masterwork Monolith CNC Mechanical Keyboard',
-    description: 'Milled from a solid billet of aerospace-grade 6063 aluminum with bespoke brass weight dampeners and hot-swappable lubricated mechanical switches.',
-    basePrice: 385.00,
-    images: ['https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=1200'],
-    storeName: 'TechGear Pro Laboratories',
-    categoryName: 'Precision Engineering',
-    rating: 4.98,
-    numReviews: 48,
-  };
+  // Von Restorff Effect (#7): In strict mode, choose a premier Tech product as the primary Spotlight
+  const spotlightProduct = useMemo(() => {
+    const techCandidate = cleanProducts.find(isTech);
+    return techCandidate || cleanProducts[0] || {
+      _id: 'spotlight-1',
+      name: 'Masterwork Monolith CNC Mechanical Keyboard',
+      description: 'Milled from a solid billet of aerospace-grade 6063 aluminum with bespoke brass weight dampeners and hot-swappable lubricated mechanical switches.',
+      basePrice: 385.00,
+      images: ['https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=1200'],
+      storeName: 'TechGear Pro Laboratories',
+      categoryName: 'Tech & Electronics',
+      rating: 4.98,
+      numReviews: 48,
+    };
+  }, [cleanProducts]);
 
   const remainingProducts = filteredProducts.filter(p => p._id !== spotlightProduct._id);
 

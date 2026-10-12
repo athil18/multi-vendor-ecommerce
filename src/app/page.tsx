@@ -16,15 +16,28 @@ import { ProductCard } from '@/components/ProductCard';
 import { VendorCard } from '@/components/VendorCard';
 import { StorefrontUXShowcase } from '@/components/storefront/StorefrontUXShowcase';
 import prisma from '@/lib/prisma';
-import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
+import { FALLBACK_PRODUCTS_LIST, isTechProduct, isBeautyProduct } from '@/lib/catalog-fallbacks';
 import { unstable_cache } from 'next/cache';
 
 const getCachedProducts = unstable_cache(
   async () => {
+    // Strict Mode: Filter out any beauty products completely from the front list, prioritizing Tech
+    const strictlyFilteredFallbacks = FALLBACK_PRODUCTS_LIST.filter(p => !isBeautyProduct(p));
+    const sortedFallbacks = [
+      ...strictlyFilteredFallbacks.filter(isTechProduct),
+      ...strictlyFilteredFallbacks.filter(p => !isTechProduct(p)),
+    ];
+
     try {
       const queryPromise = prisma.product.findMany({
-        where: { status: 'published', deletedAt: null },
-        take: 9,
+        where: {
+          status: 'published',
+          deletedAt: null,
+          category: {
+            name: { not: { contains: 'Beauty' } }
+          }
+        },
+        take: 12,
         orderBy: { createdAt: 'desc' },
         include: {
           category: { select: { name: true } },
@@ -39,30 +52,40 @@ const getCachedProducts = unstable_cache(
       const dbProducts = await Promise.race([queryPromise, timeoutPromise]);
 
       if (!dbProducts || dbProducts.length === 0) {
-        return FALLBACK_PRODUCTS_LIST;
+        return sortedFallbacks.slice(0, 12);
       }
 
-      const mapped = dbProducts.map((p: any, idx: number) => ({
+      const nonBeautyDb = dbProducts.filter((p: any) => !isBeautyProduct({
+        name: p.name,
+        categoryName: p.category?.name,
+      }));
+
+      const mapped = nonBeautyDb.map((p: any, idx: number) => ({
         _id: p.id,
         name: p.name,
         description: p.description,
         basePrice: p.basePrice,
-        images: (p.images && p.images.length > 0) ? p.images : [FALLBACK_PRODUCTS_LIST[idx % FALLBACK_PRODUCTS_LIST.length]?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800'],
-        categoryName: p.category?.name || 'Curated Goods',
-        storeName: p.seller?.store?.name || p.seller?.name || 'Independent Creator',
+        images: (p.images && p.images.length > 0) ? p.images : [sortedFallbacks[idx % sortedFallbacks.length]?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800'],
+        categoryName: p.category?.name || 'Tech & Electronics',
+        storeName: p.seller?.store?.name || p.seller?.name || 'TechGear Pro Laboratories',
         rating: p.rating || 4.9,
         numReviews: p.numReviews || 28,
       }));
 
-      if (mapped.length < 6) {
-        return [...mapped, ...FALLBACK_PRODUCTS_LIST.slice(0, 6 - mapped.length)];
+      const sortedMapped = [
+        ...mapped.filter((p: any) => isTechProduct({ name: p.name, categoryName: p.categoryName })),
+        ...mapped.filter((p: any) => !isTechProduct({ name: p.name, categoryName: p.categoryName })),
+      ];
+
+      if (sortedMapped.length < 6) {
+        return [...sortedMapped, ...sortedFallbacks.slice(0, 6 - sortedMapped.length)];
       }
-      return mapped;
+      return sortedMapped.slice(0, 12);
     } catch {
-      return FALLBACK_PRODUCTS_LIST;
+      return sortedFallbacks.slice(0, 12);
     }
   },
-  ['featured-storefront-products-luxury'],
+  ['featured-storefront-products-tech-strict-v3'],
   { revalidate: 300, tags: ['featured-products'] }
 );
 

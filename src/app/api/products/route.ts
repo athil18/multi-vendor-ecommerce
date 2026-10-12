@@ -139,19 +139,24 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     // Graceful offline fallback to verified mock catalog
     const lowerKeyword = keyword ? keyword.toLowerCase() : '';
     const filtered = (FALLBACK_PRODUCTS_LIST || []).filter((p: any) => {
+      const cat = (typeof p.category === 'string' ? p.category : p.category?.name || p.categoryName || '').toLowerCase();
+      // Strict Mode: Do not show beauty items in front starting list
+      if (!lowerKeyword && !category && cat.includes('beauty')) {
+        return false;
+      }
       if (!lowerKeyword) return true;
       return (
         p.name?.toLowerCase().includes(lowerKeyword) ||
         p.description?.toLowerCase().includes(lowerKeyword) ||
-        (typeof p.category === 'string' && p.category.toLowerCase().includes(lowerKeyword))
+        cat.includes(lowerKeyword)
       );
     });
     count = filtered.length;
     products = filtered.slice(skip, skip + limit).map((p: any) => ({
       ...p,
       id: p._id || p.id || 'prod-mock',
-      category: { id: 'cat-mock', name: typeof p.category === 'string' ? p.category : 'Luxury', slug: 'luxury' },
-      seller: { name: p.storeName || 'Nexus Artisan', store: { id: 'store-mock', name: p.storeName || 'Nexus Atelier', slug: 'atelier' } },
+      category: { id: 'cat-mock', name: typeof p.category === 'string' ? p.category : p.category?.name || 'Tech & Electronics', slug: 'tech' },
+      seller: { name: p.storeName || 'TechGear Pro', store: { id: 'store-mock', name: p.storeName || 'TechGear Pro Laboratories', slug: 'techgear-pro' } },
     }));
   }
 
