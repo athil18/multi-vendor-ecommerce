@@ -18,7 +18,7 @@
 import React, { useState } from 'react';
 import { 
   X, Sparkles, DollarSign, Image as ImageIcon, 
-  Layers, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft, ShieldCheck 
+  Layers, ArrowRight, ArrowLeft, ShieldCheck 
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ValidatedInput } from '@/components/ui/ValidatedInput';

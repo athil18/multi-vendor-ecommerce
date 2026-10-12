@@ -108,3 +108,65 @@ This document records the foundational architectural, security, database, API, a
   - Solid card styling in `src/components/ui/Card.tsx`, `Button.tsx`, and `Badge.tsx`.
   - Deactivated status of `LiveBuyerActivityTicker.tsx`.
 
+---
+
+## 8. Ponytail Lean Senior Engineering Standard
+
+- **Decision:** Permanently enforce Dietrich Gebert's Ponytail Lean Senior Engineering standards across all pull requests, code edits, and refactoring efforts. Take the shortest working diff that fully solves the problem; delete dead code, unused parameters, and speculative abstractions; prefer native Web APIs and house UI components over foreign packages; and never cut Zod validation, PCI-DSS compliance, Argon2id/bcrypt hashing, Stripe HMAC signatures, or WCAG 2.1 AA accessibility.
+- **Reason:** Reduces maintenance overhead, prevents dependency supply-chain vulnerabilities, minimizes JavaScript bundle bloat, and preserves high readability for human and AI collaborators.
+- **Date/Context:** October 9, 2026 (Ponytail Lean Senior Dev Ingestion & Codebase Refactoring).
+- **Constraints:**
+  - Shortest working diff: Do not introduce unnecessary code changes.
+  - Native over heavy: Prefer standard library (`URLSearchParams`, native `FormData`, React Server Components) and house UI components (`@/components/ui`) over adding new external npm packages.
+  - Track pragmatic deferrals via standard ledger comments: `// shortcut: <ceiling>, <upgrade path>`.
+  - Zero dead code: Remove orphaned imports, unused icons, and dead component files.
+- **What Must Not Be Changed Without Review:**
+  - Ponytail governance rules in `GEMINI.md` and `.agents/AGENTS.md`.
+  - Pruned state of zombie files (`ThemeInit.tsx`, `LiveBuyerActivityTicker.tsx`, `JevAssistantWidget.tsx`).
+
+---
+
+## 9. Andrej Karpathy First-Principles AI Engineering Standard
+
+- **Decision:** Permanently enforce Andrej Karpathy's First-Principles AI Engineering methodology across all autonomous coding tasks: 1) Think Before Coding (state assumptions explicitly, present trade-offs, halt when confused), 2) Simplicity First (write the minimum code that solves the problem, ban speculative abstractions for single-use code), 3) Surgical Changes (touch only what you must, zero drive-by refactoring), and 4) Goal-Driven Execution (transform tasks into verifiable goals, reproduce bugs in tests before fixing, verify invariants with automated test loops).
+- **Reason:** Prevents common LLM coding pitfalls such as hallucinated solutions, sprawling unstructured diffs, unverified claims, and premature complexity.
+- **Date/Context:** October 9, 2026 (Karpathy First-Principles Ingestion & Rule Codification).
+- **Constraints:**
+  - All tasks must be grounded in explicit assumptions and goal-driven verification.
+  - Zero drive-by formatting, comment editing, or whitespace changes on untouched lines.
+  - Every bug fix or security patch must have automated test validation.
+- **What Must Not Be Changed Without Review:**
+  - Karpathy rule definitions in `.cursor/rules/karpathy-guidelines.mdc`, `CLAUDE.md`, and `.agents/rules/karpathy_first_principles.md`.
+
+---
+
+## 10. Zero Skill Neglect, Repository Governance & Dual-Sync Protocol
+
+- **Decision:** Mandate that for every injected repository, skill, and engineering workflow, there shall be zero silent omissions. Every single session must maintain dual synchronization: updating both canonical executive documentation (`.ai/*.md`, `.ai/*.pdf`) AND persistent engineering tracking registers (`handoff.md`, `decisions.md`, `skill-inventory.md`).
+- **Reason:** Prevents prompt-context displacement where agents focus exclusively on reporting deliverables while allowing core repository registers (`handoff.md`, `decisions.md`) to freeze and drift out of sync.
+- **Date/Context:** October 9, 2026 (Zero Skill Neglect Directive & Master Forensic Audit).
+- **Constraints:**
+  - Every session must conclude with verified updates to `handoff.md`, `decisions.md`, and `skill-inventory.md`.
+  - Every introduced skill must be classified as `ACTIVE`, `PARTIALLY INTEGRATED`, `BLOCKED (MAPPED)`, or `NOT APPLICABLE` with explicit technical justification.
+  - All claims of verification must be backed by exit code 0 test executions.
+- **What Must Not Be Changed Without Review:**
+  - Persistent tracking invariant in `CONSTRAINTS.md`, `GEMINI.md`, and `handoff.md`.
+
+---
+
+## 11. Reverse Engineering Anything (REA) & Anti-Vibe-Coding Frontend Re-Engineering
+
+- **Decision:** Mandate the formal integration and execution of the Reverse Engineering Anything (REA) framework (`E:\500+_AI_Agent\rea`, `scripts/rea-ecommerce-inspector.ts`) prior to any frontend modifications, and enforce strict Anti-Vibe-Coding principles (zero ad-hoc classes, centralized Swiss grid tokens, WCAG 2.2 AA touch targets, tabular numerics) with an absolute read-only boundary around backend and API layers.
+- **Reason:** Guarantees empirical evidence-based discovery of active API endpoints, client security boundaries, and ARIA tokens before changing code. Prevents visual fragmentation and accidental regressions in protected layers.
+- **Date/Context:** October 10, 2026 (Master Prompt V2 REA & Anti-Vibe-Coding Re-Engineering).
+- **Constraints:**
+  - Absolute frontend-only change boundary: Zero modifications to backend controllers, API contracts, Prisma schemas, database migrations, authentication implementations, Stripe Connect escrow split logic, or infrastructure.
+  - REA repository (`E:\500+_AI_Agent\rea`) is treated as a protected development tool; no source code or package dependencies in REA are altered.
+  - All new/modified UI components must satisfy the 7-dimension acceptance criteria (Visual quality, Functional correctness, Architectural quality, Accessibility, Responsive behavior, Performance, Maintainability).
+  - Every run must be verified by `tsc --noEmit`, component tests, unit tests, and `npm run rea:audit`.
+- **What Must Not Be Changed Without Review:**
+  - Protected status of REA repository and `scripts/rea-ecommerce-inspector.ts`.
+  - Frontend-only change boundary policy in `CONSTRAINTS.md` and `GEMINI.md`.
+
+
+

@@ -33,7 +33,7 @@ export async function getAuthUser(req: NextRequest): Promise<AuthenticatedUser |
     }
     
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

@@ -7,9 +7,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, HelpCircle, Mail, MessageSquare, ShieldCheck, Truck, RefreshCw, FileText } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Mail, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

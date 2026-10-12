@@ -40,7 +40,6 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
   const items = await prisma.orderItem.findMany({
     where: { orderId: order.id },
   });
-  const totalPlatformFee = items.reduce((sum, item) => sum + item.platformFee, 0);
 
   let paymentIntent;
   const amountInCents = Math.round(order.totalAmount * 100);

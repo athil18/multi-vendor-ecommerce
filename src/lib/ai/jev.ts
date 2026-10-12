@@ -86,6 +86,7 @@ export class JevClient {
         const recommendedPrice = Math.round((currentPrice * (1 + (demandIndex - 1) * 0.15)) * 100) / 100;
         decision = {
           recommendedPrice,
+          targetMargin: margin,
           priceDelta: Math.round((recommendedPrice - currentPrice) * 100) / 100,
           action: recommendedPrice > currentPrice ? 'INCREASE' : 'HOLD',
         };

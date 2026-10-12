@@ -7,11 +7,10 @@
  */
 
 import { hashPassword, verifyPassword, needsRehash } from '@/lib/password';
-import { IUserRepository, UserEntity } from '@/core/ports/IUserRepository';
+import { IUserRepository } from '@/core/ports/IUserRepository';
 import { prismaUserRepository } from '@/infrastructure/database/repositories/PrismaUserRepository';
 import { generateToken, generateRefreshToken, verifyRefreshToken } from '@/lib/jwt';
 import { AppError } from '@/lib/errors';
-import { sanitizeObject } from '@/lib/pii';
 
 export interface RegisterDTO {
   name: string;

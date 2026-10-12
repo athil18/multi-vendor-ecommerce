@@ -8,7 +8,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, ShieldCheck, Award, Zap, Layers, Sparkles } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { IconDesignSystemGallery } from '@/components/ui/IconDesignSystemGallery';
 import { Metadata } from 'next';

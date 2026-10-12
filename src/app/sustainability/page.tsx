@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Leaf, Globe, Recycle, Wind, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Leaf, Globe, Recycle, Wind } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Metadata } from 'next';
 

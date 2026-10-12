@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Tag, Sparkles, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Tag } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 import { Metadata } from 'next';
@@ -22,24 +22,31 @@ export default function DealsPage() {
   const deals = FALLBACK_PRODUCTS_LIST.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-200 ambient-gradient-mesh relative">
+      {/* Background Grid Pattern */}
+      <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_20%,#000_70%,transparent_100%)] pointer-events-none opacity-40" />
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-surface-600 dark:text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Back to Store
+          <Link 
+            href="/" 
+            aria-label="Back to store homepage"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-surface-600 dark:text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors focus-visible:ring-2 focus-visible:ring-brand-500 rounded px-1"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Store
           </Link>
         </div>
 
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4">
-            <Tag className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-            Special Offers
+        <div className="text-center mb-16">
+          <div className="specular-pill mb-4 text-surface-700 dark:text-surface-300">
+            <Tag className="h-3.5 w-3.5 text-amber-500" />
+            <span>Special Drops &bull; Verified Creator Promotions</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight mb-3">
-            Deals and Promotions
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-surface-900 dark:text-white tracking-tight mb-4 font-sans">
+            Special Drops & Artisan Deals
           </h1>
-          <p className="text-base text-surface-600 dark:text-surface-300 max-w-xl mx-auto leading-relaxed">
-            Discounted prices offered directly by sellers across active catalog categories.
+          <p className="text-sm sm:text-base text-surface-600 dark:text-surface-300 max-w-2xl mx-auto leading-relaxed">
+            Limited-run discounts and seasonal drops offered directly by verified independent workshops. Protected by Stripe Connect escrow.
           </p>
         </div>
 

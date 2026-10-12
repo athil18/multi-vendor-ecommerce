@@ -130,18 +130,6 @@ const conflictErrorResponse = {
   },
 };
 
-const rateLimitErrorResponse = {
-  description: 'Rate limit exceeded',
-  content: {
-    'application/json': {
-      schema: z.object({
-        message: z.string().openapi({ example: 'Too many requests' }),
-        code: z.string().openapi({ example: 'RATE_LIMIT_ERROR' }),
-      }),
-    },
-  },
-};
-
 const internalErrorResponse = {
   description: 'Internal Server Error',
   content: {

@@ -5,6 +5,8 @@
  * @agent 04-sql-query-agent
  */
 
+import crypto from 'crypto';
+
 /**
  * Safe string conversion for IDs (handling strings, numbers, cuid/uuid, MockObjectId, nested objects)
  */
@@ -88,12 +90,10 @@ export function wrapRecords<T extends Record<string, unknown>>(records: T[]): Wi
  * for automated relational fallbacks, preventing hardcoded credential reuse.
  */
 export function getSecureDummyPasswordHash(): string {
-  const rand = Math.random().toString(36).substring(2) + Date.now().toString(36);
-  // Uses Node crypto if available in runtime
   try {
-    const crypto = require('crypto');
     return `$locked$argon2id$${crypto.randomBytes(24).toString('hex')}`;
   } catch {
+    const rand = Math.random().toString(36).substring(2) + Date.now().toString(36);
     return `$locked$argon2id$${rand}`;
   }
 }

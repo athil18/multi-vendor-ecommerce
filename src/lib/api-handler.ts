@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-import { AppError, ValidationError, BadRequestError, PayloadTooLargeError } from '@/lib/errors';
+import { AppError, ValidationError, BadRequestError } from '@/lib/errors';
 import { apiError } from '@/lib/api-response';
 import { logger } from '@/lib/logger';
 import jwt from 'jsonwebtoken';

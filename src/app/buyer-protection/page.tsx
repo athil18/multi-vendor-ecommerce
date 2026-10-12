@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, Lock, RefreshCw, CheckCircle2, DollarSign, Scale } from 'lucide-react';
+import { ArrowLeft, Lock, RefreshCw, CheckCircle2, Scale } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Metadata } from 'next';
 

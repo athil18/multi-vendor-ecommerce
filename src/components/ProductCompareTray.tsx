@@ -4,6 +4,7 @@
  * @agent design-ui-designer
  * @agent design-ux-architect
  * @agent design-ui-finish-gate-reviewer
+ * @agent engineering-ponytail-lean-architect
  */
 
 'use client';
@@ -13,7 +14,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useCartStore } from '@/store/useCartStore';
-import { X, ArrowRight, Scale, Check, Trash2, ChevronUp, ChevronDown, Star, ShieldCheck } from 'lucide-react';
+import { X, Scale, Trash2, ChevronUp, ChevronDown, Star, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export function ProductCompareTray() {

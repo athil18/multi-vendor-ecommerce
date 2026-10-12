@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Eye, Keyboard, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Eye, Keyboard } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Metadata } from 'next';
 

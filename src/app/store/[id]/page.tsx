@@ -173,7 +173,7 @@ export default async function StoreDetailPage({ params }: Props) {
 
       {/* Store Header Identity Card */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-16">
-        <div className="bg-white dark:bg-surface-900 rounded-2xl p-6 sm:p-8 border border-surface-200 dark:border-surface-800 shadow-xl mb-12">
+        <div className="bg-white dark:bg-surface-900 rounded-2xl p-6 sm:p-8 border border-surface-200 dark:border-surface-800 shadow-xl mb-12 tactile-card">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start sm:items-center gap-5">
               <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden border-2 border-brand-500/30 shadow-lg flex-shrink-0 bg-surface-100 dark:bg-surface-800">
@@ -187,7 +187,7 @@ export default async function StoreDetailPage({ params }: Props) {
 
               <div>
                 <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                  <h1 className="text-2xl sm:text-3xl font-black text-surface-900 dark:text-white tracking-tight font-geist">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-surface-900 dark:text-white tracking-tight font-sans">
                     {store.name}
                   </h1>
                   {store.isVerified && (
@@ -206,7 +206,7 @@ export default async function StoreDetailPage({ params }: Props) {
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-surface-500 dark:text-surface-400 font-medium">
-                  <span className="flex items-center gap-1 text-amber-500 font-bold">
+                  <span className="flex items-center gap-1 text-amber-500 font-bold font-tabular">
                     <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
                     {store.rating} ({store.numReviews} verified reviews)
                   </span>
@@ -216,7 +216,7 @@ export default async function StoreDetailPage({ params }: Props) {
                     {store.location}
                   </span>
                   <span>&bull;</span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-tabular">
                     <PackageOpen className="h-3.5 w-3.5 text-surface-400" />
                     {store.productCount} Products Listed
                   </span>
@@ -225,8 +225,8 @@ export default async function StoreDetailPage({ params }: Props) {
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <Link href="/products">
-                <Button variant="primary" className="w-full sm:w-auto">
+              <Link href="/products" aria-label={`Browse complete catalog from ${store.name}`}>
+                <Button variant="primary" className="w-full sm:w-auto text-xs font-semibold">
                   Browse Catalog
                 </Button>
               </Link>

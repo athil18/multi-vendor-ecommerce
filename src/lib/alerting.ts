@@ -1,4 +1,4 @@
-import { logger, logError } from './logger';
+import { logger } from './logger';
 
 export type AlertSeverity = 'critical' | 'high' | 'medium';
 

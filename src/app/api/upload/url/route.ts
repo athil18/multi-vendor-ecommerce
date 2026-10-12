@@ -5,7 +5,7 @@
  * @agent security-appsec-engineer
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import { apiSuccess } from '@/lib/api-response';
 import { withErrorHandler } from '@/lib/api-handler';

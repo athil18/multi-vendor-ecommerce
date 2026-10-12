@@ -12,7 +12,6 @@ import { withErrorHandler } from '@/lib/api-handler';
 import { NextRequest, NextResponse } from 'next/server';
 import slugify from 'slugify';
 import prisma from '@/lib/prisma';
-import { logger } from '@/lib/logger';
 import { getAuthUser, authorizeRole } from '@/lib/auth';
 import { parsePagination } from '@/lib/pagination';
 import { createProductSchema } from '@/lib/schemas/commerce';

@@ -14,9 +14,8 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCartStore } from '@/store/useCartStore';
-import { ShoppingBag, ArrowRight, Trash2, Plus, Minus, ShieldCheck, Sparkles, ArrowLeft, Truck } from 'lucide-react';
+import { ArrowRight, Trash2, Plus, Minus, ShieldCheck, Sparkles, ArrowLeft, Truck } from 'lucide-react';
 import { ShoppingBagIcon } from '@/components/ui/icons';
-import { Button } from '@/components/ui/Button';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 
@@ -33,23 +32,29 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
-        <div className="h-16 w-16 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-6 text-surface-700 dark:text-surface-300 border border-surface-200 dark:border-surface-700">
-          <ShoppingBagIcon size={32} className="stroke-[1.75]" />
+      <main className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col items-center justify-center text-center ambient-gradient-mesh relative">
+        <div className="absolute inset-0 swiss-grid-pattern [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,#000_70%,transparent_100%)] pointer-events-none opacity-40" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="h-16 w-16 rounded-2xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-6 text-surface-700 dark:text-surface-300 border border-surface-200 dark:border-surface-700 shadow-sm">
+            <ShoppingBagIcon size={32} className="stroke-[1.75]" />
+          </div>
+          <div className="specular-pill mb-3 text-surface-700 dark:text-surface-300">
+            <span>Marketplace Bag &bull; 0 Units</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-surface-900 dark:text-white tracking-tight font-sans mb-3">
+            Your Cart is Empty
+          </h1>
+          <p className="text-surface-600 dark:text-surface-300 max-w-md mb-8 text-sm sm:text-base leading-relaxed">
+            Browse products from verified sellers and independent workshops across our catalog.
+          </p>
+          <Link
+            href="/products"
+            aria-label="Browse products catalog"
+            className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold transition-colors shadow-sm text-sm focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            Browse Products <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white tracking-tight font-sans mb-3">
-          Your Cart is Empty
-        </h1>
-        <p className="text-surface-600 dark:text-surface-300 max-w-md mb-8 text-sm sm:text-base">
-          Browse products from verified sellers and independent workshops across our catalog.
-        </p>
-        <Link
-          href="/products"
-          aria-label="Browse products catalog"
-          className="inline-flex items-center justify-center h-11 px-6 rounded-lg bg-surface-900 dark:bg-white text-white dark:text-surface-900 font-medium hover:bg-surface-800 dark:hover:bg-surface-100 transition-colors shadow-sm text-sm"
-        >
-          Browse Products <ArrowRight className="ml-2 h-4 w-4" />
-        </Link>
       </main>
     );
   }
@@ -165,31 +170,31 @@ export default function CartPage() {
                 </div>
 
                 {/* Quantity Controls & Remove */}
-                <div className="flex items-center justify-between w-full sm:w-auto gap-6 sm:self-center">
-                  <div className="flex items-center border border-surface-300 dark:border-surface-700 rounded-md px-2 py-1 bg-surface-50 dark:bg-surface-900">
+                <div className="flex items-center justify-between w-full sm:w-auto gap-5 sm:self-center">
+                  <div className="flex items-center border border-surface-300 dark:border-surface-700 rounded-lg p-0.5 bg-surface-50 dark:bg-surface-900 shadow-inner">
                     <button
                       type="button"
                       onClick={() => updateCartQuantity(item.productId, Math.max(1, item.quantity - 1), item.variantId)}
                       aria-label={`Decrease quantity of ${item.name}`}
-                      className="p-1 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors"
+                      className="h-8 w-8 flex items-center justify-center rounded-md text-surface-500 hover:text-surface-900 dark:hover:text-white hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors focus-visible:ring-2 focus-visible:ring-brand-500"
                     >
                       <Minus className="h-3.5 w-3.5" />
                     </button>
-                    <span className="w-8 text-center text-xs font-bold text-surface-900 dark:text-white font-mono">
+                    <span className="w-9 text-center text-xs font-bold text-surface-900 dark:text-white font-mono font-tabular select-none">
                       {item.quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => updateCartQuantity(item.productId, item.quantity + 1, item.variantId)}
                       aria-label={`Increase quantity of ${item.name}`}
-                      className="p-1 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors"
+                      className="h-8 w-8 flex items-center justify-center rounded-md text-surface-500 hover:text-surface-900 dark:hover:text-white hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors focus-visible:ring-2 focus-visible:ring-brand-500"
                     >
                       <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-base font-bold text-surface-900 dark:text-white font-mono">
+                  <div className="text-right min-w-[70px]">
+                    <span className="text-base font-bold text-surface-900 dark:text-white font-mono font-tabular">
                       ${(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
@@ -198,7 +203,7 @@ export default function CartPage() {
                     type="button"
                     onClick={() => removeFromCart(item.productId, item.variantId)}
                     aria-label={`Remove ${item.name} from cart`}
-                    className="p-2 text-surface-400 hover:text-rose-500 transition-colors rounded hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                    className="h-8 w-8 flex items-center justify-center text-surface-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/30 focus-visible:ring-2 focus-visible:ring-rose-500"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

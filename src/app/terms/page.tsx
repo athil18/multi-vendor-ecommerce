@@ -10,7 +10,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FileText, DollarSign, RefreshCw, Scale, ShieldAlert, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { DollarSign, RefreshCw, Scale, ShieldAlert, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function TermsOfServicePage() {

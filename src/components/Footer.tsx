@@ -9,6 +9,7 @@
  * @agent engineering-frontend-developer
  * @agent engineering-section-508-specialist
  * @agent design-whimsy-injector
+ * @agent engineering-ponytail-lean-architect
  */
 
 import React from 'react';
@@ -16,13 +17,10 @@ import Link from 'next/link';
 import { NexusLogo } from './NexusLogo';
 import { NewsletterForm } from './NewsletterForm';
 import { 
-  ShieldCheck, 
   Lock, 
-  ExternalLink,
-  Bot,
-  Globe,
-  Share2,
-  Mail
+  Globe, 
+  Share2, 
+  Mail 
 } from 'lucide-react';
 import {
   VisaCardIcon,

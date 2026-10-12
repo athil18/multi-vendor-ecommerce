@@ -7,6 +7,7 @@
  * @agent design-brand-guardian
  * @agent design-whimsy-injector
  * @agent testing-accessibility-auditor
+ * @agent engineering-ponytail-lean-architect
  */
 
 'use client';
@@ -14,8 +15,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PackageOpen, Scale, Check, ShieldCheck, Sparkles } from 'lucide-react';
-import { StarRatingIcon, BuyerProtectionIcon } from './ui/icons';
+import { Scale, Check, ShieldCheck } from 'lucide-react';
+import { StarRatingIcon } from './ui/icons';
 import { AddToCartButton } from './AddToCartButton';
 import { useCompareStore } from '@/store/useCompareStore';
 
@@ -159,7 +160,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400">
               Direct Price
             </span>
-            <span className="text-2xl font-black text-surface-900 dark:text-white font-geist tracking-tight">
+            <span className="text-2xl font-extrabold text-surface-900 dark:text-white font-sans tracking-tight font-tabular">
               ${(product.basePrice ?? 0).toFixed(2)}
             </span>
           </div>

@@ -8,7 +8,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles, Globe, ShieldCheck, HeartHandshake, Award, Users, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, HeartHandshake, Award } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Metadata } from 'next';

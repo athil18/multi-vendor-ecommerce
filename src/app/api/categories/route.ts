@@ -25,7 +25,7 @@ const FALLBACK_CATEGORIES = [
 let cachedCategories: { data: any; expiresAt: number } | null = null;
 const CATEGORIES_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
-export const GET = withErrorHandler(async (req: NextRequest) => {
+export const GET = withErrorHandler(async (_req: NextRequest) => {
   if (cachedCategories && cachedCategories.expiresAt > Date.now()) {
     return NextResponse.json(cachedCategories.data, {
       headers: {
@@ -57,7 +57,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         },
       });
     }
-  } catch (error) {
+  } catch {
     // Database fallback
   }
 
