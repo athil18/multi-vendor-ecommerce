@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
     const expectedSig = crypto
-      .createHmac('sha256', signingSecret)
+      .createHmac('sha256', secret)
       .update(`${key}:${expires}`)
       .digest('hex');
 
@@ -78,25 +78,16 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: 'Empty body' }, { status: 400 });
     }
 
-    if (buffer.byteLength > MAX_UPLOAD_SIZE) {
-      return NextResponse.json({ error: 'Payload exceeds 5MB size limit' }, { status: 413 });
-    }
-
-    const dir = path.dirname(filepath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    const buffer = req.body ? await req.arrayBuffer() : null;
-    if (!buffer || buffer.byteLength === 0) {
-      return NextResponse.json({ error: 'Empty body' }, { status: 400 });
-    }
-
     if (buffer.byteLength > MAX_LOCAL_UPLOAD_BYTES) {
       return NextResponse.json(
         { error: 'Payload Too Large', message: 'File size exceeds maximum permitted limit of 5MB' },
         { status: 413 }
       );
+    }
+
+    const dir = path.dirname(filepath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
 
     fs.writeFileSync(filepath, Buffer.from(buffer));

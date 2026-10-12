@@ -9,7 +9,7 @@
 import { hashPassword, verifyPassword, needsRehash } from '@/lib/password';
 import { IUserRepository } from '@/core/ports/IUserRepository';
 import { prismaUserRepository } from '@/infrastructure/database/repositories/PrismaUserRepository';
-import { generateToken, generateRefreshToken, verifyRefreshToken } from '@/lib/jwt';
+import { generateToken, generateRefreshToken, verifyRefreshToken, hashToken } from '@/lib/jwt';
 import { AppError } from '@/lib/errors';
 
 export interface RegisterDTO {

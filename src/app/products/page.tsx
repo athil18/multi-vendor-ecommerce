@@ -41,6 +41,13 @@ function CatalogContent() {
 
   const [searchTerm, setSearchTerm] = useState(urlSearch);
   const [selectedCategory, setSelectedCategory] = useState(urlCategory);
+
+  const updateUrlParams = (search: string, category: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (search) params.set('search', search); else params.delete('search');
+    if (category && category !== 'all') params.set('category', category); else params.delete('category');
+    router.replace(`/products?${params.toString()}`, { scroll: false });
+  };
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);

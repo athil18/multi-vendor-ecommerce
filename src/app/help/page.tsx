@@ -9,6 +9,9 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, HelpCircle, Mail, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
+import { Accordion } from '@/components/ui/Accordion';
+import { LastUpdatedBadge } from '@/components/ui/LastUpdatedBadge';
+import { CopyButton } from '@/components/ui/CopyButton';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -65,9 +68,12 @@ export default function HelpPage() {
               <Mail className="h-6 w-6 text-brand-600 dark:text-brand-400 mb-3" />
               <h3 className="font-bold text-lg text-surface-900 dark:text-white mb-1">Email Concierge</h3>
               <p className="text-xs text-surface-600 dark:text-surface-400 mb-4">Priority support response within 2 business hours.</p>
-              <a href="mailto:support@nexus.market" className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
-                support@nexus.market &rarr;
-              </a>
+              <div className="flex items-center gap-3">
+                <a href="mailto:support@nexus.market" className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
+                  support@nexus.market
+                </a>
+                <CopyButton text="support@nexus.market" label="Copy support email address" size="sm" />
+              </div>
             </CardContent>
           </Card>
 
@@ -85,19 +91,21 @@ export default function HelpPage() {
 
         {/* FAQs */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-surface-900 dark:text-white tracking-tight mb-4">
-            Frequently Asked Questions
-          </h2>
-          {faqs.map((f, idx) => (
-            <div key={idx} className="bg-white dark:bg-surface-900 rounded-2xl p-6 border border-surface-200 dark:border-surface-800">
-              <h3 className="font-bold text-base text-surface-900 dark:text-white mb-2">
-                {f.q}
-              </h3>
-              <p className="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
-                {f.a}
-              </p>
-            </div>
-          ))}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
+            <h2 className="text-2xl font-bold text-surface-900 dark:text-white tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <LastUpdatedBadge date="2026-10-09" label="Policy updated:" />
+          </div>
+
+          <Accordion
+            items={faqs.map((f, idx) => ({
+              id: `faq-${idx}`,
+              title: f.q,
+              content: f.a,
+            }))}
+            defaultOpenIndex={0}
+          />
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@ import { logError } from '@/lib/logger';
 
 import { Card, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { Label } from '@/components/ui/Label';
 import { Button } from '@/components/ui/Button';
 
@@ -132,11 +133,10 @@ function RegisterForm() {
               {/* Password Field */}
               <div className="flex flex-col gap-1.5">
                 <Label>Password</Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="••••••••"
-                  icon={Lock}
                   error={!!errors.password}
+                  disabled={loading}
                   {...register('password')}
                 />
                 {errors.password && (

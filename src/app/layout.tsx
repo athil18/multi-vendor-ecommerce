@@ -67,7 +67,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme-storage');if(t&&JSON.parse(t).state&&JSON.parse(t).state.theme==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`,
+            __html: `(function(){try{var stored=localStorage.getItem('nexus-theme-storage')||localStorage.getItem('theme-storage');var theme='system';if(stored){var parsed=JSON.parse(stored);if(parsed&&parsed.state&&parsed.state.theme){theme=parsed.state.theme;}}var isDark=theme==='dark'||(theme==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(isDark){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
       </head>

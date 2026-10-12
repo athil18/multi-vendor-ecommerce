@@ -14,7 +14,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Bot, Send, X, Shield, RefreshCw, ChevronRight, Zap, ShoppingCart, Check, Store, ShieldCheck } from 'lucide-react';
+import { Bot, Send, X, Shield, RefreshCw, ChevronRight, Zap, ShoppingCart, Check, Store, ShieldCheck, Trash2, Star } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
 interface CartItemPayload {
@@ -74,6 +74,20 @@ function createMessageRecord(
   };
 }
 
+const INITIAL_WELCOME_MESSAGE: ChatMessage = {
+  id: 'welcome-msg',
+  sender: 'agent',
+  text: 'Hello. I can assist with product search, order tracking, and escrow protections.',
+  dispatchedAgents: ['support-agent', 'payments-engineer'],
+  suggestedActions: [
+    { label: 'Push Top Tech Item to Cart' },
+    { label: 'Push ANC Headphones to Cart' },
+    { label: 'Track My Orders' },
+    { label: 'Buyer Protection Policy' },
+  ],
+  timestamp: new Date(),
+};
+
 export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
   const [inputPrompt, setInputPrompt] = useState('');
   const [loading, setLoading] = useState(false);
@@ -103,26 +117,9 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
     setPushedItems((prev) => ({ ...prev, [item.productId]: true }));
   };
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome-msg',
-      sender: 'agent',
-      text: 'Hello. I can assist with product search, order tracking, and escrow protections.',
-      dispatchedAgents: ['support-agent', 'payments-engineer'],
-      suggestedActions: [
-        { label: 'Push Top Tech Item to Cart' },
-        { label: 'Push ANC Headphones to Cart' },
-        { label: 'Track My Orders' },
-        { label: 'Buyer Protection Policy' },
-      ],
-      timestamp: new Date(),
-    },
-  ]);
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const handleClearChat = () => {
+    setMessages([INITIAL_WELCOME_MESSAGE]);
+    setPushedItems({});
   };
 
   const handleSendMessage = async (customPrompt?: string) => {

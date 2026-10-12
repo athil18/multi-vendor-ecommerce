@@ -95,3 +95,8 @@ export const verifyRefreshToken = (token: string) => {
   }
   return payload as { id: string };
 };
+
+export const hashToken = (token: string): string => {
+  return crypto.createHash('sha256').update(token).digest('hex');
+};
+

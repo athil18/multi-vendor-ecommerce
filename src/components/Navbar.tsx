@@ -13,9 +13,10 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useCartStore } from '@/store/useCartStore';
 import { useThemeStore } from '@/store/useThemeStore';
@@ -33,8 +34,12 @@ import {
 import { Button } from './ui/Button';
 import { NexusLogo } from './NexusLogo';
 import { PromotionalBanner } from './PromotionalBanner';
+import { SiteSearchModal } from './ui/SiteSearchModal';
+import { ThemeToggle } from './ui/ThemeToggle';
+import { ConfirmationModal } from './ui/ConfirmationModal';
 
 export default function Navbar() {
+  const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const role = useAuthStore((state) => state.role);
   const setRole = useAuthStore((state) => state.setRole);
@@ -45,10 +50,28 @@ export default function Navbar() {
   const updateCartQuantity = useCartStore((state) => state.updateCartQuantity);
 
   const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  // Global search hotkey (Cmd+K / Ctrl+K) and Escape handler
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+      if (e.key === 'Escape') {
+        if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+        if (isCartOpen) setIsCartOpen(false);
+        if (isMegaMenuOpen) setIsMegaMenuOpen(false);
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen, isCartOpen, isMegaMenuOpen]);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -152,27 +175,33 @@ export default function Navbar() {
 
           {/* Quick Search */}
           <div className="hidden lg:flex items-center flex-1 max-w-xs mx-6">
-            <form action="/products" method="GET" className="relative w-full">
-              <input
-                type="text"
-                name="search"
-                placeholder="Search catalog or makers..."
-                aria-label="Search catalog"
-                className="w-full bg-surface-100 dark:bg-surface-900 text-surface-900 dark:text-surface-100 text-xs rounded-lg pl-9 pr-4 py-2 border border-surface-200 dark:border-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all placeholder:text-surface-400"
-              />
-              <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
-            </form>
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Search creations, materials, or stores (Press Cmd+K to open)"
+              className="w-full flex items-center justify-between bg-surface-100 dark:bg-surface-900 text-surface-500 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-surface-200 dark:border-surface-800 hover:border-brand-500/50 hover:bg-white dark:hover:bg-surface-800 transition-all text-left relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 group-hover:text-brand-600 transition-colors" />
+              <span className="truncate">Search catalog or makers...</span>
+              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold text-surface-400 bg-surface-200/60 dark:bg-surface-800 rounded border border-surface-300/40 dark:border-surface-700">
+                ⌘K
+              </kbd>
+            </button>
           </div>
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mobile Search Button */}
             <button
-              onClick={toggleTheme}
-              aria-label="Toggle color theme"
-              className="h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Open search dialog"
+              className="lg:hidden h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
             >
-              {theme === 'dark' ? <SunModeIcon size={20} /> : <MoonModeIcon size={20} />}
+              <SearchIcon size={18} />
             </button>
+
+            <ThemeToggle />
 
             <button
               onClick={() => setIsCartOpen(true)}
@@ -195,7 +224,7 @@ export default function Navbar() {
                     {user.name.charAt(0)}
                   </Link>
                   <button
-                    onClick={logoutUser}
+                    onClick={() => setIsLogoutModalOpen(true)}
                     aria-label="Sign out"
                     className="h-10 w-10 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
                   >
@@ -404,7 +433,7 @@ export default function Navbar() {
             aria-label="Mobile Navigation Menu"
             className="pointer-events-auto absolute inset-y-0 left-0 w-4/5 max-w-xs bg-white dark:bg-surface-900 shadow-2xl flex flex-col h-full border-r border-surface-200 dark:border-surface-800 p-6 z-10 transition-transform duration-300 ease-out"
           >
-            <div className="flex items-center justify-between pb-6 border-b border-surface-200 dark:border-surface-800">
+            <div className="flex items-center justify-between pb-4 border-b border-surface-200 dark:border-surface-800">
               <NexusLogo href="/" size="sm" />
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -414,6 +443,22 @@ export default function Navbar() {
                 <X className="h-4 w-4" />
               </button>
             </div>
+
+            {/* Mobile Search Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsSearchOpen(true);
+              }}
+              className="mt-4 w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:border-brand-500 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <SearchIcon size={14} className="text-surface-400" />
+                <span>Search catalog...</span>
+              </div>
+              <kbd className="text-[10px] font-mono font-bold bg-surface-200 dark:bg-surface-700 px-1.5 py-0.5 rounded text-surface-500">⌘K</kbd>
+            </button>
 
             <nav className="flex flex-col gap-3 py-6 font-bold text-surface-800 dark:text-surface-200">
               <Link 
@@ -488,14 +533,7 @@ export default function Navbar() {
             <div className="mt-auto pt-6 border-t border-surface-200 dark:border-surface-800 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase text-surface-500">Theme</span>
-                <button
-                  onClick={toggleTheme}
-                  aria-label="Toggle color theme"
-                  className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md bg-surface-100 dark:bg-surface-800"
-                >
-                  {theme === 'dark' ? <SunModeIcon size={14} className="text-amber-500" /> : <MoonModeIcon size={14} className="text-indigo-500" />}
-                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
+                <ThemeToggle variant="dropdown" />
               </div>
 
               {user ? (
@@ -507,7 +545,10 @@ export default function Navbar() {
                     <span className="text-xs font-bold text-surface-800 dark:text-surface-200">{user.name}</span>
                   </div>
                   <button
-                    onClick={() => { logoutUser(); setIsMobileMenuOpen(false); }}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsLogoutModalOpen(true);
+                    }}
                     className="text-xs text-red-500 font-bold hover:underline"
                   >
                     Sign Out
@@ -522,6 +563,23 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Global Modals */}
+      <SiteSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+      <ConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={() => {
+          logoutUser();
+          setIsLogoutModalOpen(false);
+        }}
+        title="Sign out of Nexus?"
+        message="Are you sure you want to sign out? Your session will end, but your cart items will be preserved on this device."
+        confirmLabel="Sign Out"
+        cancelLabel="Stay Signed In"
+        variant="danger"
+      />
     </>
   );
 }

@@ -14,6 +14,7 @@ import { z } from 'zod';
 
 import { Card, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { Label } from '@/components/ui/Label';
 import { Button } from '@/components/ui/Button';
 
@@ -121,11 +122,9 @@ function LoginForm() {
                     Forgot Password?
                   </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="••••••••"
-                  icon={Lock}
                   error={!!errors.password}
                   disabled={loading}
                   {...register('password')}

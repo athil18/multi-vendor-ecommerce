@@ -107,6 +107,9 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
     ? (currentOriginalUnitPrice - currentUnitPrice)
     : (currentOriginalUnitPrice * selectedQuantity - effectiveTotalPrice);
 
+  const showStickyDock = !isMainCTAVisible;
+  const productPrice = effectiveTotalPrice;
+
   // Level 8: IntersectionObserver on Main Purchase Button for Sticky CTA
   useEffect(() => {
     if (!mainBuyButtonRef.current) return;

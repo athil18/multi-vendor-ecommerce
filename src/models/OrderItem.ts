@@ -33,7 +33,7 @@ export const OrderItem = {
     const rawId = data.id || data._id;
     const id = rawId ? toIdString(rawId) : undefined;
     let sId = toIdString(data.sellerId);
-    const oId = toIdString(data.orderId);
+    let oId = toIdString(data.orderId);
     let pId = toIdString(data.productId);
     let vId = data.variantId ? toIdString(data.variantId) : null;
 

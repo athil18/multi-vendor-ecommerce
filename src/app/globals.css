@@ -572,3 +572,79 @@ body {
 .tracking-wide-kicker {
   letter-spacing: 0.08em;
 }
+
+/* ==============================================================================
+   PRODUCTION PRINT STYLESHEET
+   Clean layout, zero interactive widgets, high-contrast readable paper print
+   ============================================================================== */
+@media print {
+  /* Hide all interactive, floating, and promotional UI elements */
+  header,
+  footer,
+  nav,
+  aside,
+  [role="region"][aria-label*="cookie" i],
+  [role="region"][aria-label*="support" i],
+  [role="progressbar"],
+  .print\:hidden,
+  button:not(.print\:show),
+  .no-print,
+  #main-content > aside,
+  [aria-label*="cart" i],
+  [aria-label*="drawer" i],
+  [aria-label*="comparison" i] {
+    display: none !important;
+  }
+
+  /* Optimize layout and typography for clean paper output */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0.25in !important;
+    width: 100% !important;
+  }
+
+  /* Prevent broken page splits across cards, tables, and images */
+  article,
+  section,
+  table,
+  tr,
+  img,
+  .card,
+  [role="article"] {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* High-contrast borders for printed tables and cards */
+  .border,
+  table,
+  th,
+  td {
+    border-color: #94a3b8 !important;
+    color: #000000 !important;
+  }
+}
+
+/* Respect user's motion preferences for scroll and transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

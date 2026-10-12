@@ -30,7 +30,6 @@ import {
   ArrowLeft, ArrowRight, Tag, X, Loader2, CheckCircle2,
   Lock, AlertCircle, Edit2
 } from 'lucide-react';
-import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -49,9 +48,10 @@ export default function CheckoutPage() {
 
   const [currentStep, setCurrentStep] = useState<CheckoutStep>(1);
   const [loading, setLoading] = useState(false);
-
-  const [loading, setLoading] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<any>(null);
+
+  const paymentMethod = 'card';
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   // Step 1: Address form fields
   const [name, setName] = useState(user?.name || '');
@@ -77,6 +77,7 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState<number>(0);
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState('');
+  const finalTotal = Math.max(0, cartTotal - discount);
 
   // Proactive Input Formatter for Card (Doherty Threshold #6)
   const handleCardNumberChange = (value: string) => {

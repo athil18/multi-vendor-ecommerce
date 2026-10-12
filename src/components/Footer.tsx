@@ -266,6 +266,17 @@ export function Footer() {
                 {link.label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('nexus_open_cookie_preferences'));
+                }
+              }}
+              className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors underline decoration-dotted underline-offset-2 cursor-pointer"
+            >
+              Cookie Preferences
+            </button>
           </div>
         </div>
       </div>
