@@ -2,36 +2,122 @@
 # Nexus Multi-Vendor E-Commerce Platform - Git Ignore Rules
 # ==============================================================================
 
-# Environment & Sensitive Credentials (CRITICAL)
+# ------------------------------------------------------------------------------
+# 1. Environment & Sensitive Credentials (CRITICAL)
+# ------------------------------------------------------------------------------
 .env
+.env.*
 .env*.local
+.env.local
 .env.development
+.env.development.local
 .env.test
+.env.test.local
 .env.production
+.env.production.local
 .env.staging
+.env.staging.local
 *.env
+*.env.*
+
+# Allow environment template & documentation files explicitly
+!.env.example
+!.env.production.example
+!.env.*.example
+!*.env.example
+
+# ------------------------------------------------------------------------------
+# 2. Private Keys, Certificates, Signatures & SSH Keys
+# ------------------------------------------------------------------------------
 *.pem
 *.key
 *.cert
+*.crt
 *.pfx
 *.p12
+*.pkcs12
+*.der
+*.csr
+*.cer
+*.keystore
+*.jks
+id_rsa
+id_rsa*
+id_ed25519
+id_ed25519*
+id_ecdsa
+id_ecdsa*
+id_dsa
+id_dsa*
+known_hosts*
+*.publishsettings
 
-# Allow environment example template
-!.env.example
+# ------------------------------------------------------------------------------
+# 3. Secrets, API Tokens & Cloud Provider Credentials
+# ------------------------------------------------------------------------------
+*credentials*.json
+*serviceaccount*.json
+*service-account*.json
+*serviceAccount*.json
+*.secret
+*.secrets
+secrets.json
+secrets.yaml
+secrets.yml
+token.json
+tokens.json
+*.token
+*.tokens
+.aws/
+.azure/
+.gcloud/
+.stripe/
+.sentry-clirc
+sentry.properties
 
-# Internal documents & metadata
+# ------------------------------------------------------------------------------
+# 4. Database Secrets, Dumps, Backups & PII
+# ------------------------------------------------------------------------------
+backups/
+**/backups/
+*.dump
+*.sql.gz
+*.sql.tar
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.bak
+
+# Preserve schema DDL template files
+!scripts/init_db.sql
+
+# ------------------------------------------------------------------------------
+# 5. AI Agent Local Data, Scratch Directories & Internal Notes
+# ------------------------------------------------------------------------------
 .ai/
 **/.ai/
+scratch/
+**/scratch/
+.agents/
+.cursor/
+.claude/
+.gemini/
+antigravity.json
 *.pdf
 **/*.pdf
 
-# Dependencies
+# ------------------------------------------------------------------------------
+# 6. Dependencies
+# ------------------------------------------------------------------------------
 node_modules/
 **/node_modules/
 .pnp
 .pnp.js
 
-# Next.js Build Outputs & Cache
+# ------------------------------------------------------------------------------
+# 7. Next.js Build Outputs & Cache
+# ------------------------------------------------------------------------------
 .next/
 **/.next/
 out/
@@ -39,11 +125,15 @@ build/
 dist/
 .vercel
 
-# User Uploads
+# ------------------------------------------------------------------------------
+# 8. User Uploads
+# ------------------------------------------------------------------------------
 public/uploads/*
 !public/uploads/.gitkeep
 
-# Logs & Runtime State
+# ------------------------------------------------------------------------------
+# 9. Logs & Runtime State
+# ------------------------------------------------------------------------------
 logs/
 *.log
 npm-debug.log*
@@ -53,19 +143,25 @@ pnpm-debug.log*
 .dev-state.json
 brag-output/work/*.webm
 
-# TypeScript & Cache
+# ------------------------------------------------------------------------------
+# 10. TypeScript & Cache
+# ------------------------------------------------------------------------------
 *.tsbuildinfo
 **/*.tsbuildinfo
 next-env.d.ts
 
-# Testing & Coverage
+# ------------------------------------------------------------------------------
+# 11. Testing & Coverage
+# ------------------------------------------------------------------------------
 coverage/
 **/coverage/
 test-results/
 playwright-report/
 blob-report/
 
-# OS & Editor Metadata
+# ------------------------------------------------------------------------------
+# 12. OS & Editor Metadata
+# ------------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
 Desktop.ini
@@ -76,7 +172,9 @@ Desktop.ini
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Tooling reports & local metadata
+# ------------------------------------------------------------------------------
+# 13. Tooling reports & local metadata
+# ------------------------------------------------------------------------------
 .gsd/
 eslint*.json
 
