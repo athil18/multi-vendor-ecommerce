@@ -48,11 +48,12 @@ function runDiagnostic() {
 
   // Check 4: Agent Governance Directorate
   const agentsPath = path.join(ROOT_DIR, '.agents', 'AGENTS.md');
-  const hasAgents = fs.existsSync(agentsPath);
+  const rootAgentsPath = path.join(ROOT_DIR, 'AGENTS.md');
+  const hasAgents = fs.existsSync(agentsPath) || fs.existsSync(rootAgentsPath);
   checks.push({
     title: '500+ AI Agent Governance Charter',
     passed: hasAgents,
-    detail: hasAgents ? '.agents/AGENTS.md verified' : 'Agent governance missing'
+    detail: hasAgents ? 'AGENTS.md verified' : 'Agent governance missing'
   });
 
   // Check 5: Environment Configuration Sanitization
