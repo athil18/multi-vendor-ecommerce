@@ -144,6 +144,32 @@ function RegisterForm() {
                 )}
               </div>
 
+              {/* Legal Notice, Children's Privacy (18+), and Terms Agreement */}
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-50 dark:bg-surface-800/50 border border-outline-variant/20 text-xs text-on-surface-variant leading-relaxed">
+                <input
+                  type="checkbox"
+                  id="agree-terms"
+                  required
+                  aria-required="true"
+                  className="mt-0.5 h-4 w-4 rounded border-outline-variant/40 text-primary focus:ring-primary cursor-pointer shrink-0"
+                />
+                <label htmlFor="agree-terms" className="cursor-pointer text-[11px] leading-snug">
+                  I confirm that I am at least 18 years of age and agree to the{' '}
+                  <Link href="/terms" target="_blank" className="font-semibold text-primary hover:underline">
+                    Terms of Service
+                  </Link>
+                  , acknowledge the{' '}
+                  <Link href="/privacy" target="_blank" className="font-semibold text-primary hover:underline">
+                    Privacy Policy
+                  </Link>
+                  , and accept the{' '}
+                  <Link href="/returns" target="_blank" className="font-semibold text-primary hover:underline">
+                    Refund & Return Policy
+                  </Link>
+                  .
+                </label>
+              </div>
+
               {/* Submit Button */}
               <Button type="submit" loading={loading} className="w-full mt-2">
                 {!loading && <UserPlus className="h-4 w-4" />}

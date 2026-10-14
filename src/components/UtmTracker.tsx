@@ -59,15 +59,34 @@ function UtmListener() {
       };
 
       try {
+        // Ephemeral in-session routing only
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(params));
-        // Save first touch only if not already saved
-        if (!localStorage.getItem(FIRST_TOUCH_KEY)) {
-          localStorage.setItem(FIRST_TOUCH_KEY, JSON.stringify(params));
+
+        // Persistent storage requires explicit marketing consent under DPDP/ePrivacy
+        const consentRaw = localStorage.getItem('nexus_cookie_consent');
+        const consent = consentRaw ? JSON.parse(consentRaw) : null;
+        if (consent && consent.marketing) {
+          if (!localStorage.getItem(FIRST_TOUCH_KEY)) {
+            localStorage.setItem(FIRST_TOUCH_KEY, JSON.stringify(params));
+          }
         }
       } catch {
         // Storage disabled or unavailable
       }
     }
+
+    // Listen for consent revocation
+    const handleConsentUpdate = (e: any) => {
+      const prefs = e.detail;
+      if (prefs && !prefs.marketing) {
+        try {
+          localStorage.removeItem(FIRST_TOUCH_KEY);
+        } catch {}
+      }
+    };
+
+    window.addEventListener('nexus_cookie_consent_updated', handleConsentUpdate);
+    return () => window.removeEventListener('nexus_cookie_consent_updated', handleConsentUpdate);
   }, [searchParams]);
 
   return null;

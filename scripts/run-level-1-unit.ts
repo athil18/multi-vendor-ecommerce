@@ -10,6 +10,8 @@
 
 import { loginSchema, registerSchema } from '../src/lib/schemas/auth';
 import { useCartStore } from '../src/store/useCartStore';
+import { validateSkillInput, normalizeSkillName } from '../src/lib/brain/skills/validation';
+import { brainToolExecutor } from '../src/lib/brain/tools/executor';
 
 interface TestRecord {
   functionName: string;
@@ -313,6 +315,68 @@ async function runLevel1Tests() {
       functionName: 'filterAndSortCatalog',
       purpose: 'Filter and sort catalog',
       tests: 'Filter and sort',
+      expectedResult: 'Success',
+      actualResult: `Error: ${err.message}`,
+      passed: false,
+    });
+  }
+
+  // Test 12: Nexus Commerce Brain - Dynamic Skill Validation & Normalization
+  try {
+    const normalized = normalizeSkillName('  Artisan Concierge & Escrow v2!  ');
+    const validated = validateSkillInput({
+      name: normalized,
+      description: 'Use when customer requests bespoke artisan provenance and recommendations.',
+      body: '# Artisan Playbook\nValidate materials and seller store.',
+      scope: 'platform',
+    });
+    const passed = validated.name === 'artisan_concierge_escrow_v2' && validated.scope === 'platform';
+    recordTest({
+      functionName: 'validateSkillInput (Brain Dynamic Skills)',
+      purpose: 'Normalize skill name and validate executable playbook bounds',
+      tests: 'Normalize and validate dynamic skill playbook',
+      expectedResult: 'Normalized name: "artisan_concierge_escrow_v2", scope: "platform"',
+      actualResult: `Normalized name: "${validated.name}", scope: "${validated.scope}"`,
+      passed,
+    });
+  } catch (err: any) {
+    recordTest({
+      functionName: 'validateSkillInput (Brain Dynamic Skills)',
+      purpose: 'Normalize skill name and validate playbook bounds',
+      tests: 'Normalize and validate dynamic skill playbook',
+      expectedResult: 'Success',
+      actualResult: `Error: ${err.message}`,
+      passed: false,
+    });
+  }
+
+  // Test 13: Nexus Commerce Brain - Integer-Cent Escrow Payout Arithmetic
+  try {
+    const payoutExec = await brainToolExecutor.executeTool(
+      'calculate_payout_disbursement',
+      { orderAmount: 189.50, platformFeePercent: 10.0 },
+      { role: 'seller', traceId: 'unit-trace' }
+    );
+    // 189.50 -> 18950 cents
+    // Platform fee 10% -> 1895 cents ($18.95)
+    // Processing fee 2.9% + 30c -> round(18950 * 0.029) + 30 = 550 + 30 = 580 cents ($5.80)
+    // Total deductions = 1895 + 580 = 2475 cents ($24.75)
+    // Net seller = 18950 - 2475 = 16475 cents ($164.75)
+    const netPayout = parseFloat(payoutExec.result.sellerNetPayoutUsd);
+    const passed = netPayout === 164.75 && payoutExec.result.currencySafetyInvariant === 'integer_cents_verified';
+    recordTest({
+      functionName: 'calculate_payout_disbursement (Exact Integer Cents)',
+      purpose: 'Verify multi-vendor escrow payout calculations use exact integer cents preventing float drift',
+      tests: 'Calculate take-rate and net seller payout for $189.50 order',
+      expectedResult: 'Net Payout: $164.75 with integer_cents_verified invariant',
+      actualResult: `Net Payout: $${payoutExec.result.sellerNetPayoutUsd}, Invariant: ${payoutExec.result.currencySafetyInvariant}`,
+      passed,
+    });
+  } catch (err: any) {
+    recordTest({
+      functionName: 'calculate_payout_disbursement (Exact Integer Cents)',
+      purpose: 'Verify multi-vendor escrow payout calculations use exact integer cents',
+      tests: 'Calculate take-rate and net seller payout',
       expectedResult: 'Success',
       actualResult: `Error: ${err.message}`,
       passed: false,

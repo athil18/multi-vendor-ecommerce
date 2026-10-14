@@ -23,7 +23,7 @@ import Link from 'next/link';
 import { 
   Star, ShieldCheck, Truck, RotateCcw, 
   Store, CheckCircle, Sparkles, Scale, Check, 
-  Award, Leaf, CheckCircle2
+  Award, Leaf, CheckCircle2, ZoomIn, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import { AddToCartButton } from '@/components/AddToCartButton';
 import { Button } from '@/components/ui/Button';
@@ -40,6 +40,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'provenance' | 'atelier' | 'escrow' | 'sustainability'>('provenance');
   const [isMainCTAVisible, setIsMainCTAVisible] = useState(true);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const mainBuyButtonRef = useRef<HTMLDivElement>(null);
 
   const { addToCompare, isInCompare } = useCompareStore();
@@ -68,7 +69,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
         sku: v.sku || `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-0${idx + 1}`,
         priceModifier: Number(v.priceModifier || 0),
         isPopular: Boolean(v.isPopular ?? (idx === 0)),
-        stockCount: v.stockCount || (14 - idx * 3 > 0 ? 14 - idx * 3 : 5),
+        stockCount: Number(v.stockCount ?? product.stock ?? 10),
         imageIndex: Math.min(idx, images.length - 1),
       }));
     }
@@ -80,7 +81,7 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
         sku: `${(product.slug || 'NX').toUpperCase().slice(0, 4)}-STD`,
         priceModifier: 0,
         isPopular: true,
-        stockCount: 14,
+        stockCount: Number(product.stock ?? 10),
         imageIndex: 0,
       },
     ];
@@ -130,6 +131,18 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
     observer.observe(mainBuyButtonRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // Keyboard navigation for high-res material lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsLightboxOpen(false);
+      if (e.key === 'ArrowRight') setSelectedImageIndex((prev) => (prev + 1) % images.length);
+      if (e.key === 'ArrowLeft') setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isLightboxOpen, images.length]);
 
   const handleSelectVariant = (variant: ProductVariantOption) => {
     setSelectedVariant(variant);
@@ -202,14 +215,22 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
               </button>
             </div>
 
-            {/* Bottom Live Viewer Urgency Pill */}
+            {/* Authentic Provenance Trust Pill */}
             <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-surface-950/90 px-3 py-1.5 rounded-lg text-[11px] text-white/90 border border-surface-800">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>4 collectors currently inspecting this creation</span>
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Verified Artisan Provenance &bull; Escrow Protected</span>
             </div>
+
+            {/* High-Res Material Zoom Trigger Button (Finding 3) */}
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(true)}
+              aria-label="Inspect artisan material in high-resolution zoom"
+              className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 hover:bg-black/85 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all cursor-zoom-in shadow-md"
+            >
+              <ZoomIn className="h-3.5 w-3.5" />
+              <span>Inspect Material</span>
+            </button>
           </div>
 
           {/* Thumbnail Gallery Scrub */}
@@ -563,6 +584,99 @@ export function ProductStudioView({ product }: ProductStudioViewProps) {
             </div>
           </div>
         </aside>
+      )}
+
+      {/* ─── High-Resolution Artisan Material Lightbox (Finding 3) ────────────── */}
+      {isLightboxOpen && (
+        <div 
+          role="dialog"
+          aria-modal="true"
+          aria-label="Artisan Specimen Material Inspector"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-4 sm:p-8 animate-in fade-in duration-200"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          {/* Top Bar */}
+          <div className="w-full max-w-6xl flex items-center justify-between text-white z-20">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-brand-400 font-mono">Material Inspector</p>
+              <h3 className="text-base font-bold text-white">{product.name}</h3>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-white/70 font-mono hidden sm:inline">
+                Angle {selectedImageIndex + 1} of {images.length} &bull; ESC to exit
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsLightboxOpen(false)}
+                aria-label="Close image inspector"
+                className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Main Inspection Canvas */}
+          <div 
+            className="relative w-full max-w-4xl h-[65vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length)}
+                aria-label="Previous angle"
+                className="absolute left-2 sm:left-4 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 transition-all cursor-pointer"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
+
+            <div className="relative w-full h-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src={images[selectedImageIndex] || images[0]}
+                alt={`${product.name} - Angle ${selectedImageIndex + 1}`}
+                fill
+                priority
+                sizes="(max-width: 1200px) 100vw, 1200px"
+                className="object-contain"
+              />
+            </div>
+
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setSelectedImageIndex((prev) => (prev + 1) % images.length)}
+                aria-label="Next angle"
+                className="absolute right-2 sm:right-4 z-20 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 transition-all cursor-pointer"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
+          </div>
+
+          {/* Thumbnail Scrubber */}
+          {images.length > 1 && (
+            <div 
+              className="flex items-center gap-3 overflow-x-auto pb-2 z-20 max-w-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {images.map((img: string, idx: number) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setSelectedImageIndex(idx)}
+                  aria-label={`View angle ${idx + 1}`}
+                  className={`relative h-14 w-14 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all cursor-pointer ${
+                    selectedImageIndex === idx ? 'border-brand-500 scale-105' : 'border-white/20 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <Image src={img} alt={`Thumb ${idx + 1}`} fill sizes="56px" className="object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

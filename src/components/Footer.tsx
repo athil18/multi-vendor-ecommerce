@@ -74,10 +74,10 @@ export function Footer() {
     <footer 
       role="contentinfo" 
       aria-label="Site Footer"
-      className="w-full border-t border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-950 transition-colors duration-300"
+      className="w-full border-t border-black/[0.08] dark:border-white/[0.08] bg-[#fcfcfd] dark:bg-[#0a0a0c] text-[#111113] dark:text-[#f5f5f7] transition-colors duration-200"
     >
       {/* Top Banner: Marketplace Trust Guarantee */}
-      <div className="border-b border-surface-200/40 dark:border-surface-800/40 py-4 px-4 sm:px-6 lg:px-8">
+      <div className="border-b border-black/[0.08] dark:border-white/[0.08] py-4 px-4 sm:px-6 lg:px-8 bg-black/[0.015] dark:bg-white/[0.015]">
         <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-400/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">

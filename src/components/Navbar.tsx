@@ -13,14 +13,15 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useCartStore } from '@/store/useCartStore';
+import { useCompareStore } from '@/store/useCompareStore';
 import { useThemeStore } from '@/store/useThemeStore';
-import { LogOut, Shield, X, Trash2, Plus, Minus, ChevronDown, Flame, ArrowRight, PackageOpen } from 'lucide-react';
+import { LogOut, Shield, X, Trash2, Plus, Minus, ChevronDown, Flame, ArrowRight, PackageOpen, Scale } from 'lucide-react';
 import { 
   SearchIcon, 
   ShoppingCartIcon, 
@@ -53,6 +54,9 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  const cartTriggerRef = useRef<HTMLButtonElement>(null);
+  const cartDrawerRef = useRef<HTMLDivElement>(null);
+
   // Global search hotkey (Cmd+K / Ctrl+K) and Escape handler
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -70,183 +74,259 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMobileMenuOpen, isCartOpen, isMegaMenuOpen]);
 
+  // Accessibility focus trap & keyboard return for Cart Drawer (WCAG 2.4.3 & 2.1.2)
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    const drawer = cartDrawerRef.current;
+    if (!drawer) return;
+
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableElements = drawer.querySelectorAll<HTMLElement>(focusableSelector);
+    if (focusableElements.length > 0) {
+      // Focus close button initially
+      focusableElements[0].focus();
+    }
+
+    function handleTabKey(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return;
+      const elements = drawer?.querySelectorAll<HTMLElement>(focusableSelector);
+      if (!elements || elements.length === 0) return;
+
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => {
+      document.removeEventListener('keydown', handleTabKey);
+      cartTriggerRef.current?.focus();
+    };
+  }, [isCartOpen]);
+
+  const compareItems = useCompareStore((state) => state.items);
+  const setIsCompareOpen = useCompareStore((state) => state.setIsOpen);
+
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950 shadow-sm">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          
-          {/* Logo */}
-          <div className="flex items-center gap-6 lg:gap-10">
-            <NexusLogo href="/" size="md" />
+      {/* ── Top Announcement Protocol Bar per Stitch Design System ───── */}
+      <aside className="w-full bg-[#111113] text-white/90 text-xs py-2 px-4 sm:px-6 lg:px-8 border-b border-white/10 flex items-center justify-between z-50">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-mono tracking-wider uppercase border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            Verified Protocol
+          </span>
+          <span className="hidden sm:inline text-white/70 text-[11px]">Nexus Escrow secures funds until delivery verification.</span>
+        </div>
+        <div className="flex items-center gap-4 text-white/70 text-[11px] font-mono">
+          <span>Direct Atelier Sourcing</span>
+          <span className="text-white/30">•</span>
+          <span>Zero Secondary Counterfeits</span>
+        </div>
+      </aside>
 
-            {/* Navigation links */}
-            <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-bold text-surface-600 dark:text-surface-300">
-              <Link
-                href="/products"
-                className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors uppercase tracking-widest text-[11px] rounded px-1"
+      {/* High-Fashion Editorial Header (SSENSE / Balenciaga Art Direction) */}
+      <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] dark:border-white/[0.08] bg-white/95 dark:bg-[#0a0a0c]/95 backdrop-blur-md transition-colors duration-200">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          
+          {/* Left Zone: Architectural Brand Monogram & High-Fashion Category Nav */}
+          <div className="flex items-center gap-8 lg:gap-12">
+            <Link href="/" aria-label="Nexus Homepage" className="group flex items-center gap-2 select-none">
+              <span className="font-black text-base tracking-[0.25em] uppercase text-[#000000] dark:text-[#ffffff] group-hover:opacity-75 transition-opacity">
+                NEXUS
+              </span>
+              <span className="text-[9px] font-mono tracking-widest uppercase text-neutral-400 dark:text-neutral-500 border-l border-neutral-300 dark:border-neutral-700 pl-2">
+                ARCHIVE
+              </span>
+            </Link>
+
+            {/* High-Fashion Category Links matching Stitch Taxonomy */}
+            <nav className="hidden lg:flex items-center gap-7 text-[11px] font-semibold tracking-[0.2em] uppercase text-neutral-500 dark:text-neutral-400">
+              <button
+                type="button"
+                aria-label="Shop categories menu"
+                aria-expanded={isMegaMenuOpen}
+                onClick={() => setIsMegaMenuOpen((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsMegaMenuOpen((prev) => !prev);
+                  }
+                }}
+                className="hover:text-black dark:hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
-                Products
-              </Link>
+                <span>COLLECTIONS</span>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isMegaMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
 
               <Link
                 href="/stores"
-                className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors uppercase tracking-widest text-[11px] rounded px-1"
+                className="hover:text-black dark:hover:text-white transition-colors"
               >
-                Stores
+                ATELIERS
+              </Link>
+              <Link
+                href="/products"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                OBJECTS
+              </Link>
+              <Link
+                href="/products?category=Apparel"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                APPAREL
+              </Link>
+              <Link
+                href="/products?category=Living"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                LIVING
+              </Link>
+              <Link
+                href="/products?category=Luxury"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                CURATIONS
+              </Link>
+              <Link
+                href="/stores"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                MAKERS
+              </Link>
+              <Link
+                href="/brain"
+                className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-1 font-semibold text-brand-600 dark:text-brand-400"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
+                BRAIN
               </Link>
 
-              <div 
-                className="relative group py-8"
-                onMouseEnter={() => setIsMegaMenuOpen(true)}
-                onMouseLeave={() => setIsMegaMenuOpen(false)}
-              >
-                <button 
-                  aria-label="Shop categories menu"
-                  aria-expanded={isMegaMenuOpen}
-                  aria-haspopup="true"
-                  onClick={() => setIsMegaMenuOpen((prev) => !prev)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setIsMegaMenuOpen((prev) => !prev);
-                    }
-                  }}
-                  className="flex items-center gap-1 hover:text-brand-600 dark:hover:text-brand-400 transition-colors uppercase tracking-widest text-[11px] rounded px-1"
-                >
-                  Categories <ChevronDown className="h-3 w-3" />
-                </button>
-                
-                {/* Mega Menu with Zero-JS CSS Transition */}
-                <div 
-                  className={`absolute top-full left-[-200px] w-[800px] bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 shadow-2xl p-8 grid grid-cols-3 gap-8 rounded-2xl transition-all duration-200 ease-out transform will-change-transform ${
-                    isMegaMenuOpen 
-                      ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' 
-                      : 'opacity-0 translate-y-2 scale-95 pointer-events-none'
-                  }`}
-                >
-                  <div className="col-span-1 border-r border-surface-200 dark:border-surface-800 pr-8">
-                    <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400 mb-4 font-bold text-lg">
-                      <Flame className="h-5 w-5" /> Trending
-                    </div>
-                    <ul className="space-y-4">
-                      <li><Link href="/products?category=Tech+Gear" className="text-surface-600 dark:text-surface-400 hover:text-brand-600 text-sm block">Mechanical Keyboards & Audio</Link></li>
-                      <li><Link href="/products?category=Fitness" className="text-surface-600 dark:text-surface-400 hover:text-brand-600 text-sm block">Sports & Fitness</Link></li>
-                      <li><Link href="/products?category=Sustainable" className="text-surface-600 dark:text-surface-400 hover:text-brand-600 text-sm block">Sustainable Living</Link></li>
-                      <li><Link href="/products?category=Luxury" className="text-surface-600 dark:text-surface-400 hover:text-brand-600 text-sm block">Luxury Artisan Goods</Link></li>
-                    </ul>
-                  </div>
-                  <div className="col-span-2 grid grid-cols-2 gap-6">
-                    <Link href="/products" className="group cursor-pointer">
-                      <div className="h-32 w-full rounded-2xl bg-surface-200 dark:bg-surface-800 mb-4 overflow-hidden relative">
-                        <Image src="https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=600" alt="New Arrivals" fill sizes="300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                      </div>
-                      <h4 className="font-bold text-surface-900 dark:text-white flex items-center gap-1">New Arrivals <ArrowRight className="h-4 w-4" /></h4>
-                    </Link>
-                    <Link href="/stores" className="group cursor-pointer">
-                      <div className="h-32 w-full rounded-2xl bg-surface-200 dark:bg-surface-800 mb-4 overflow-hidden relative">
-                        <Image src="https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?auto=format&fit=crop&q=80&w=600" alt="Top Creators" fill sizes="300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                      </div>
-                      <h4 className="font-bold text-surface-900 dark:text-white flex items-center gap-1">Top Creators <ArrowRight className="h-4 w-4" /></h4>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
               {role === 'seller' && (
-                <Link href="/seller" prefetch={false} className="flex items-center gap-1.5 hover:text-brand-600 dark:hover:text-brand-400 transition-colors uppercase tracking-widest text-[11px]">
-                  <StoreIcon size={12} />
-                  Seller Panel
+                <Link href="/seller" prefetch={false} className="hover:text-black dark:hover:text-white transition-colors text-neutral-400">
+                  SELLER
                 </Link>
               )}
               {role === 'admin' && (
-                <Link href="/admin" prefetch={false} className="flex items-center gap-1.5 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white uppercase tracking-wider text-[11px] font-medium">
-                  <Shield className="h-3 w-3" />
-                  Admin Panel
+                <Link href="/admin" prefetch={false} className="hover:text-black dark:hover:text-white transition-colors text-neutral-400">
+                  ADMIN
                 </Link>
               )}
             </nav>
           </div>
 
-          {/* Quick Search */}
-          <div className="hidden lg:flex items-center flex-1 max-w-xs mx-6">
+          {/* Center Zone: Search Trigger Pill */}
+          <div className="hidden md:flex items-center">
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Search creations, materials, or stores (Press Cmd+K to open)"
-              className="w-full flex items-center justify-between bg-surface-100 dark:bg-surface-900 text-surface-500 text-xs rounded-xl pl-9 pr-3 py-2.5 border border-surface-200 dark:border-surface-800 hover:border-brand-500/50 hover:bg-white dark:hover:bg-surface-800 transition-all text-left relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              aria-label="Search objects, ateliers, and specimens (Press Cmd+K to open)"
+              className="flex items-center gap-3 px-3.5 py-1.5 rounded-full border border-black/[0.08] dark:border-white/[0.08] hover:border-black/25 dark:hover:border-white/25 bg-black/[0.02] dark:bg-white/[0.03] text-[11px] font-mono tracking-wider uppercase text-neutral-500 dark:text-neutral-400 transition-all cursor-pointer group"
             >
-              <SearchIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 group-hover:text-brand-600 transition-colors" />
-              <span className="truncate">Search catalog or makers...</span>
-              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold text-surface-400 bg-surface-200/60 dark:bg-surface-800 rounded border border-surface-300/40 dark:border-surface-700">
+              <SearchIcon size={12} className="text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors" />
+              <span className="text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200">SEARCH ARCHIVE & MAKERS</span>
+              <kbd className="text-[10px] text-neutral-400 border border-neutral-200 dark:border-neutral-800 rounded px-1 font-sans">
                 ⌘K
               </kbd>
             </button>
           </div>
 
-          {/* Right Header Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* Right Zone: Compare, Theme, Bag & Account */}
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Mobile Search Button */}
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
               aria-label="Open search dialog"
-              className="lg:hidden h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
+              className="md:hidden h-9 w-9 flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white"
             >
-              <SearchIcon size={18} />
+              <SearchIcon size={16} />
+            </button>
+
+            {/* Quick Compare Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsCompareOpen(true)}
+              aria-label={`Compare specimens (${compareItems.length} selected)`}
+              className="hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.08] hover:border-black/25 dark:hover:border-white/25 text-[11px] font-mono tracking-wider uppercase text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all cursor-pointer"
+            >
+              <Scale className="h-3.5 w-3.5" />
+              <span>COMPARE</span>
+              {compareItems.length > 0 && (
+                <span className="font-bold text-black dark:text-white tabular-nums">[{compareItems.length}]</span>
+              )}
             </button>
 
             <ThemeToggle />
 
+            {/* Bag Button (Stark High-Fashion Pill) */}
             <button
+              ref={cartTriggerRef}
               onClick={() => setIsCartOpen(true)}
-              aria-label={`Shopping cart with ${cartCount} items`}
+              aria-label={`Shopping bag with ${cartCount} items`}
               aria-expanded={isCartOpen}
-              className="relative h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
+              className="flex items-center gap-2 h-9 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.08] hover:border-black/25 dark:hover:border-white/25 text-[11px] font-mono tracking-widest uppercase text-neutral-800 dark:text-neutral-200 transition-all cursor-pointer"
             >
-              <ShoppingCartIcon size={20} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[11px] font-black text-white shadow-md ring-2 ring-white dark:ring-surface-950">
-                  {cartCount}
-                </span>
-              )}
+              <ShoppingBagIcon size={14} />
+              <span>BAG</span>
+              <span className="font-bold tabular-nums">[{cartCount}]</span>
             </button>
 
-            <div className="flex items-center justify-end">
+            {/* Auth / Account */}
+            <div className="flex items-center">
               {user ? (
-                <div className="flex items-center gap-2 pl-2 sm:pl-4 border-l border-surface-200 dark:border-surface-800">
-                  <Link href="/customer" prefetch={false} className="h-9 w-9 rounded-lg bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center font-bold text-sm">
+                <div className="flex items-center gap-2 pl-3 border-l border-black/[0.08] dark:border-white/[0.08]">
+                  <Link
+                    href="/customer"
+                    prefetch={false}
+                    className="h-8 w-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-xs uppercase"
+                  >
                     {user.name.charAt(0)}
                   </Link>
                   <button
                     onClick={() => setIsLogoutModalOpen(true)}
                     aria-label="Sign out"
-                    className="h-10 w-10 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all"
+                    className="h-8 w-8 flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors"
                   >
-                    <LogOut className="h-5 w-5" />
+                    <LogOut className="h-4 w-4" />
                   </button>
                 </div>
               ) : (
                 <Link
                   href="/auth/login"
                   prefetch={false}
-                  className="ml-1 sm:ml-2"
                 >
-                  <Button variant="primary" size="sm" className="px-4 text-xs font-semibold">Sign in</Button>
+                  <button className="h-9 px-4 rounded-full bg-black hover:bg-neutral-800 text-white dark:bg-white dark:text-black dark:hover:bg-neutral-200 text-[11px] font-semibold tracking-widest uppercase transition-all">
+                    LOGIN
+                  </button>
                 </Link>
               )}
             </div>
 
-            {/* Mobile Menu Hamburger Button */}
+            {/* Mobile Drawer Trigger */}
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}
-              className="md:hidden h-10 w-10 flex items-center justify-center rounded-lg text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all ml-1"
+              className="lg:hidden h-9 w-9 flex items-center justify-center text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white"
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <MenuDrawerIcon size={20} />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <MenuDrawerIcon size={18} />}
             </button>
           </div>
         </div>
@@ -263,6 +343,7 @@ export default function Navbar() {
         />
         <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
           <div 
+            ref={cartDrawerRef}
             role="dialog"
             aria-modal="true"
             aria-label="Shopping Cart Drawer"
@@ -503,6 +584,13 @@ export default function Navbar() {
                 className="flex items-center justify-between py-1.5 text-sm text-surface-600 dark:text-surface-400 hover:text-brand-600 transition-colors pl-2"
               >
                 • Luxury Goods
+              </Link>
+              <Link 
+                href="/brain" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2 text-sm text-brand-600 dark:text-brand-400 font-bold hover:text-brand-700 transition-colors pl-2"
+              >
+                🧠 Commerce Brain & Skills
               </Link>
 
               {role === 'seller' && (

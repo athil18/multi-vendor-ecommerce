@@ -115,6 +115,18 @@ export function NewsletterForm() {
           <span>{errorMessage}</span>
         </p>
       )}
+
+      <p className="text-[11px] text-surface-500 dark:text-surface-400 leading-normal">
+        By subscribing, you agree to receive promotional drops. You may{' '}
+        <a href="/unsubscribe" className="underline hover:text-surface-900 dark:hover:text-white">
+          unsubscribe
+        </a>{' '}
+        at any time. See our{' '}
+        <a href="/privacy" className="underline hover:text-surface-900 dark:hover:text-white">
+          Privacy Policy
+        </a>
+        .
+      </p>
     </div>
   );
 }

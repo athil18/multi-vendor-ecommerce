@@ -88,5 +88,20 @@ if (require.main === module) {
     dsn: process.env.SENTRY_DSN || 'https://mock@sentry.io/12345',
     tracesSampleRate: 1.0,
   });
-  startWorker();
+  const worker = startWorker();
+
+  const shutdown = async (signal: string) => {
+    logger.info(`Received ${signal}. Shutting down background worker gracefully...`);
+    try {
+      await worker.close();
+      logger.info('Background worker closed safely.');
+    } catch (err: any) {
+      logger.error('Error during worker shutdown:', { error: err.message });
+    } finally {
+      process.exit(0);
+    }
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }

@@ -51,7 +51,7 @@ function CatalogContent() {
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [maxPriceFilter, setMaxPriceFilter] = useState<number>(2000);
+  const [maxPriceFilter, setMaxPriceFilter] = useState<number>(20000);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating'>('featured');
   const [viewMode, setViewMode] = useState<'editorial' | 'compact'>('editorial');
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
@@ -132,7 +132,18 @@ function CatalogContent() {
         const matchesSearch = !searchTerm || nameDesc.includes(searchTerm.toLowerCase());
         
         const catName = (p.category?.name || (typeof p.category === 'string' ? p.category : p.categoryName) || '').toLowerCase();
-        const matchesCat = selectedCategory === 'all' || catName === selectedCategory.toLowerCase();
+        const matchesCat = (() => {
+          if (selectedCategory === 'all') return true;
+          const sel = selectedCategory.toLowerCase();
+          if (catName === sel) return true;
+          if (sel.includes('tech') && catName.includes('tech')) return true;
+          if ((sel.includes('luxury') || sel.includes('fragrance') || sel.includes('beauty')) && (catName.includes('beauty') || catName.includes('wellness'))) return true;
+          if ((sel.includes('apparel') || sel.includes('fashion')) && (catName.includes('fashion') || catName.includes('apparel'))) return true;
+          if ((sel.includes('footwear') || sel.includes('shoes') || sel.includes('sneaker')) && catName.includes('footwear')) return true;
+          if ((sel.includes('living') || sel.includes('home')) && catName.includes('living')) return true;
+          if ((sel.includes('jewelry') || sel.includes('horology') || sel.includes('watch') || sel.includes('accessories')) && catName.includes('jewelry')) return true;
+          return catName.includes(sel);
+        })();
 
         const matchesPrice = (p.basePrice ?? 0) <= maxPriceFilter;
         const matchesStock = !inStockOnly || p.inStock !== false;
@@ -148,7 +159,11 @@ function CatalogContent() {
         if (sortBy === 'price-high') return (b.basePrice || 0) - (a.basePrice || 0);
         if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5);
         
-        // Default featured sort gives balanced weighting by rating and review count
+        // Default featured sort prioritizes flagship masterworks, then quality rating
+        const aIsFlagship = (a.id?.startsWith('spotlight') || a.id?.startsWith('flagship')) ? 1 : 0;
+        const bIsFlagship = (b.id?.startsWith('spotlight') || b.id?.startsWith('flagship')) ? 1 : 0;
+        if (aIsFlagship !== bIsFlagship) return bIsFlagship - aIsFlagship;
+
         return ((b.rating || 4.9) * 10 + (b.numReviews || 10)) - ((a.rating || 4.9) * 10 + (a.numReviews || 10));
       });
   }, [products, searchTerm, selectedCategory, maxPriceFilter, inStockOnly, selectedMaterials, sortBy]);
@@ -156,14 +171,14 @@ function CatalogContent() {
   const activeFilterCount = (selectedCategory !== 'all' ? 1 : 0) +
     selectedMaterials.length +
     (inStockOnly ? 1 : 0) +
-    (maxPriceFilter < 2000 ? 1 : 0);
+    (maxPriceFilter < 20000 ? 1 : 0);
 
   const resetAllFilters = () => {
     setSearchTerm('');
     setSelectedCategory('all');
     setSelectedMaterials([]);
     setInStockOnly(false);
-    setMaxPriceFilter(2000);
+    setMaxPriceFilter(20000);
     setSortBy('featured');
     updateUrlParams('', 'all');
   };
@@ -365,8 +380,8 @@ function CatalogContent() {
                   <input
                     type="range"
                     min="50"
-                    max="2000"
-                    step="50"
+                    max="20000"
+                    step="100"
                     value={maxPriceFilter}
                     onChange={(e) => setMaxPriceFilter(Number(e.target.value))}
                     className="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer accent-brand-600"

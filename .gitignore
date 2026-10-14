@@ -177,4 +177,11 @@ Desktop.ini
 # ------------------------------------------------------------------------------
 .gsd/
 eslint*.json
+.data/
+screenshot*.png
+scripts/*.jpg
+*.backup
+*.pre-mobile-purge
+Untitled-1.txt
+
 

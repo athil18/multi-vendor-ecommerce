@@ -9,6 +9,7 @@ import {
   orderConfirmationTemplate, 
   passwordResetTemplate, 
   welcomeEmailTemplate, 
+  marketingNewsletterTemplate,
   EmailOrderDetails 
 } from './templates';
 
@@ -69,3 +70,23 @@ export async function sendWelcomeNotification(
     tags: [{ name: 'category', value: 'welcome' }],
   });
 }
+
+/**
+ * High-level helper: Send marketing drop with mandatory 1-click unsubscribe link
+ */
+export async function sendMarketingDrop(
+  to: string,
+  dropTitle: string,
+  dropSnippet: string,
+  actionUrl: string
+): Promise<SendEmailResult> {
+  const { subject, html, text } = marketingNewsletterTemplate(to, dropTitle, dropSnippet, actionUrl);
+  return sendEmail({
+    to,
+    subject,
+    html,
+    text,
+    tags: [{ name: 'category', value: 'marketing_drop' }],
+  });
+}
+

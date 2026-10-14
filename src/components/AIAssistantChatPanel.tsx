@@ -14,7 +14,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Bot, Send, X, RefreshCw, ChevronRight, ShoppingCart, Check, Store, Trash2, Star } from 'lucide-react';
+import { Bot, Send, X, RefreshCw, ChevronRight, ShoppingCart, Check, Store, Trash2, Star, Brain, Zap } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
 interface CartItemPayload {
@@ -45,6 +45,7 @@ interface SuggestedAction {
   href?: string;
   action?: 'PUSH_TO_CART' | 'NAVIGATE' | 'PROMPT';
   item?: CartItemPayload;
+  payload?: any;
 }
 
 interface ChatMessage {
@@ -52,6 +53,8 @@ interface ChatMessage {
   sender: 'user' | 'agent';
   text: string;
   dispatchedAgents?: string[];
+  loadedSkills?: { id: string; name: string; version: string }[];
+  memoriesRecalled?: { id: string; key: string; scope: string; snippet: string }[];
   suggestedActions?: SuggestedAction[];
   itemToCart?: CartItemPayload;
   products?: CopilotProductItem[];
@@ -77,13 +80,16 @@ function createMessageRecord(
 const INITIAL_WELCOME_MESSAGE: ChatMessage = {
   id: 'welcome-msg',
   sender: 'agent',
-  text: 'Hello. I can assist with product search, order tracking, and escrow protections.',
-  dispatchedAgents: ['support-agent', 'payments-engineer'],
+  text: 'Hello! I am your Nexus Commerce Brain Concierge. I can assist with product discovery, order logistics, escrow safety, and store operations.',
+  dispatchedAgents: ['support-agent', 'artisan-concierge'],
+  loadedSkills: [
+    { id: 'skill-artisan-concierge', name: 'artisan_concierge_skill', version: '1.2.0' },
+  ],
   suggestedActions: [
-    { label: 'Push Top Tech Item to Cart' },
-    { label: 'Push ANC Headphones to Cart' },
-    { label: 'Track My Orders' },
-    { label: 'Buyer Protection Policy' },
+    { label: '🛡️ Buyer Escrow Protection' },
+    { label: '🌟 Curated Desk Pieces' },
+    { label: '📦 Track My Orders' },
+    { label: '📊 Seller Store Health' },
   ],
   timestamp: new Date(),
 };
@@ -139,21 +145,47 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
         content: m.text,
       }));
 
-      const res = await fetch('/api/ai/assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: textToSend,
-          messages: historyContext,
-        }),
-      });
+      // 1. Try Brain API first
+      let data: any = null;
+      try {
+        const brainRes = await fetch('/api/brain/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: textToSend,
+            messages: historyContext,
+          }),
+        });
+        if (brainRes.ok) {
+          const json = await brainRes.json();
+          if (json.success && json.data) {
+            data = json.data;
+          }
+        }
+      } catch {
+        // Fall back to copilot assistant below
+      }
 
-      const data = await res.json();
+      // 2. Fallback to copilot assistant if brain API was unavailable
+      if (!data) {
+        const res = await fetch('/api/ai/assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: textToSend,
+            messages: historyContext,
+          }),
+        });
+        data = await res.json();
+      }
 
       const agentMessage = createMessageRecord('agent', data.message || 'Request completed.', {
         dispatchedAgents: data.dispatchedAgents || ['support-agent'],
+        loadedSkills: data.loadedSkills,
+        memoriesRecalled: data.memoriesRecalled,
         suggestedActions: data.suggestedActions,
         itemToCart: data.itemToCart,
+        products: data.products,
       });
 
       setMessages((prev) => [...prev, agentMessage]);
@@ -183,18 +215,27 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-surface-900 dark:text-white text-sm">Customer Support Assistant</h3>
+              <h3 className="font-bold text-surface-900 dark:text-white text-sm">Commerce Brain Concierge</h3>
               <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
-                Online
+                Skills Active
               </span>
             </div>
             <p className="text-[11px] text-surface-500 flex items-center gap-1 mt-0.5">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Instant catalog & order lookup
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Dynamic Playbooks & Escrow Engine
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-1">
+          <Link
+            href="/brain"
+            onClick={onClose}
+            title="Open Nexus Commerce Brain Hub"
+            aria-label="Open Nexus Commerce Brain Hub"
+            className="p-1.5 text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors"
+          >
+            <Brain className="h-4 w-4" />
+          </Link>
           <button
             type="button"
             onClick={handleClearChat}
@@ -229,6 +270,20 @@ export function AIAssistantChatPanel({ onClose }: { onClose: () => void }) {
                   : 'bg-surface-100 dark:bg-surface-900 text-surface-800 dark:text-surface-200 rounded-bl-none border border-surface-200/60 dark:border-surface-800/60'
               }`}
             >
+              {/* Loaded Skills Strip in Agent Message */}
+              {msg.loadedSkills && msg.loadedSkills.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-1">
+                  {msg.loadedSkills.map((sk) => (
+                    <span
+                      key={sk.id}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-100 dark:bg-brand-950/80 text-brand-700 dark:text-brand-300 text-[10px] font-mono font-medium"
+                    >
+                      <Zap className="h-2.5 w-2.5 text-brand-500" /> {sk.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               <div className="whitespace-pre-line prose-sm dark:prose-invert">
                 {msg.text}
               </div>

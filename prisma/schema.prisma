@@ -238,6 +238,8 @@ model Store {
   updatedAt                DateTime         @updatedAt
 
   @@index([governanceStatus])
+  @@index([governanceStatus, deletedAt])
+  @@index([trustScore(sort: Desc)])
   @@map("stores")
 }
 
@@ -297,6 +299,9 @@ model Product {
   @@index([sellerId, status, createdAt(sort: Desc)])
   @@index([status, basePrice])
   @@index([status, deletedAt, createdAt(sort: Desc)])
+  @@index([status, deletedAt, categoryId, createdAt(sort: Desc)])
+  @@index([status, deletedAt, basePrice])
+  @@index([status, deletedAt, inStock])
   @@map("products")
 }
 
@@ -410,6 +415,8 @@ model Order {
 
   @@index([customerId, createdAt(sort: Desc)])
   @@index([customerId, aggregateStatus, createdAt(sort: Desc)])
+  @@index([aggregateStatus, createdAt(sort: Desc)])
+  @@index([paymentStatus, createdAt(sort: Desc)])
   @@index([stripePaymentIntentId])
   @@map("orders")
 }

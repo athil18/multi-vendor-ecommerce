@@ -69,8 +69,8 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
       {/* 4. Sticky Header with Search, Theme & Mobile Drawer */}
       <Navbar />
 
-      {/* 5. Trust-First Navigation Strip */}
-      <TrustStrip />
+      {/* 5. Trust-First Navigation Strip (rendered on sub-pages; homepage features integrated Stitch Hero ledger) */}
+      {pathname !== '/' && <TrustStrip />}
 
       {/* 6. Accessible Main Landmark */}
       <main id="main-content" tabIndex={-1} className="flex-grow flex flex-col focus:outline-none">
@@ -83,8 +83,8 @@ export function ConditionalShell({ children }: { children: React.ReactNode }) {
       {/* 8. Global Accessible Footer */}
       <Footer />
 
-      {/* 9. Floating Contact / Support Concierge */}
-      <FloatingContactButton />
+      {/* 9. Floating Contact / Support Concierge (rendered on sub-pages; homepage features dedicated header and footer support) */}
+      {pathname !== '/' && <FloatingContactButton />}
 
       {/* 10. Smooth Back-to-Top Button */}
       <BackToTop />

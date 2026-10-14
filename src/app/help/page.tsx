@@ -31,7 +31,11 @@ export default function HelpPage() {
     },
     {
       q: 'What is the return & refund policy?',
-      a: 'Buyers enjoy a 14-day inspection window upon delivery. If an item is damaged or does not match the maker atelier specifications, you can initiate a dispute from your Customer Portal for an immediate return authorization.',
+      a: 'Buyers enjoy an industry-leading 30-day inspection window upon carrier-confirmed delivery. If an item is damaged, defective, or diverges from atelier specifications, initiate a return from your Customer Dashboard for an immediate escrow refund under our Buyer Protection Policy.',
+    },
+    {
+      q: 'How do I escalate an unresolved grievance?',
+      a: 'In compliance with Consumer Protection (E-Commerce) Rules 2020, you can contact our designated Grievance Officer (grievance@nexus.market). Every grievance receives an automated ticket within 48 hours and resolution within 30 days.',
     },
     {
       q: 'How do I contact an artisan directly?',

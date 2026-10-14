@@ -34,7 +34,10 @@ export function saveCookieConsent(prefs: Omit<CookiePreferences, 'timestamp'>) {
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    document.cookie = `nexus_consent_status=granted; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+    const isGranted = Boolean(prefs.functional || prefs.analytics || prefs.marketing);
+    const status = isGranted ? 'granted' : 'denied';
+    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `nexus_consent_status=${status}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax${secureFlag}`;
     window.dispatchEvent(new CustomEvent('nexus_cookie_consent_updated', { detail: payload }));
   } catch (err) {
     console.error('Failed to save cookie consent:', err);
@@ -112,6 +115,20 @@ export function CookieConsent() {
     setIsPreferencesOpen(false);
   };
 
+  const handleWithdrawConsent = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('nexus_utm_first_touch');
+      const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `nexus_consent_status=denied; path=/; max-age=0; SameSite=Lax${secureFlag}`;
+    } catch {}
+    const minimal = { essential: true, functional: false, analytics: false, marketing: false };
+    setPreferences(minimal);
+    setHasChoice(false);
+    setIsPreferencesOpen(false);
+    window.dispatchEvent(new CustomEvent('nexus_cookie_consent_updated', { detail: minimal }));
+  };
+
   return (
     <>
       {/* 1. Cookie Banner (Bottom Toast/Strip) */}
@@ -119,53 +136,53 @@ export function CookieConsent() {
         <aside
           role="region"
           aria-label="Cookie consent banner"
-          className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6 bg-white/95 dark:bg-surface-900/95 backdrop-blur-md border-t border-surface-200 dark:border-surface-800 shadow-2xl transition-all duration-300 print:hidden"
+          className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-5 bg-white/95 dark:bg-surface-900/95 backdrop-blur-md border-t border-surface-200 dark:border-surface-800 shadow-2xl transition-all duration-300 print:hidden"
         >
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <div className="flex items-start gap-3.5 max-w-3xl">
-              <div className="h-10 w-10 rounded-xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-brand-200/50 dark:border-brand-800/50">
-                <Cookie className="h-5 w-5" />
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-start gap-2.5 sm:gap-3.5 max-w-3xl">
+              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-brand-200/50 dark:border-brand-800/50">
+                <Cookie className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-surface-900 dark:text-white">
+                <h3 className="text-xs sm:text-sm font-bold text-surface-900 dark:text-white">
                   Privacy and Cookie Transparency
                 </h3>
-                <p className="text-xs text-surface-600 dark:text-surface-300 mt-1 leading-relaxed">
-                  Nexus uses strictly essential cookies for secure Stripe escrow checkout, authentication, and cart sessions. With your permission, we also use optional functional and anonymous telemetry cookies to elevate your marketplace experience.{' '}
+                <p className="text-[11px] sm:text-xs text-surface-600 dark:text-surface-300 mt-0.5 leading-relaxed">
+                  Nexus uses essential cookies for secure escrow transactions and auth. Optional telemetry helps optimize speed.{' '}
                   <Link
                     href="/cookies"
                     className="underline font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700"
                   >
-                    Read Cookie Policy
+                    Policy
                   </Link>
                   .
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+            <div className="grid grid-cols-3 sm:flex items-center gap-2 sm:gap-2.5 w-full lg:w-auto justify-end">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsPreferencesOpen(true)}
-                className="text-xs font-semibold"
+                className="w-full sm:w-auto text-[11px] sm:text-xs font-semibold px-2 sm:px-3 py-1.5"
               >
-                <Sliders className="h-3.5 w-3.5 mr-1.5" />
-                Customize
+                <Sliders className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
+                Options
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleRejectNonEssential}
-                className="text-xs font-semibold"
+                className="w-full sm:w-auto text-[11px] sm:text-xs font-semibold px-2 sm:px-3 py-1.5"
               >
-                Reject Non-Essential
+                Reject
               </Button>
               <Button
                 variant="primary"
                 size="sm"
                 onClick={handleAcceptAll}
-                className="text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white"
+                className="w-full sm:w-auto text-[11px] sm:text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white px-2 sm:px-3 py-1.5"
               >
                 Accept All
               </Button>
@@ -296,12 +313,20 @@ export function CookieConsent() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleRejectNonEssential}
-                className="text-xs"
+                onClick={handleWithdrawConsent}
+                className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 border-rose-200 dark:border-rose-900"
               >
-                Reject Optional
+                Withdraw / Reset All
               </Button>
               <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRejectNonEssential}
+                  className="text-xs"
+                >
+                  Reject All
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
@@ -322,6 +347,19 @@ export function CookieConsent() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 3. Persistent Floating Privacy & Cookie Preferences Launcher */}
+      {hasChoice && !isPreferencesOpen && (
+        <button
+          type="button"
+          onClick={() => setIsPreferencesOpen(true)}
+          aria-label="Manage Cookie and Privacy Preferences"
+          title="Cookie & Privacy Preferences"
+          className="fixed bottom-5 left-5 z-40 h-10 w-10 rounded-full bg-white dark:bg-surface-800 text-surface-700 dark:text-surface-200 border border-surface-200 dark:border-surface-700 shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 print:hidden cursor-pointer"
+        >
+          <Cookie className="h-4 w-4" />
+        </button>
       )}
     </>
   );

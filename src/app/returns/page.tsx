@@ -79,46 +79,67 @@ export default function ReturnsPolicyPage() {
           <section>
             <h2 className="text-lg font-bold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-              1. Return Eligibility
+              1. Return Eligibility & 30-Day Inspection Window
             </h2>
             <p className="mb-2">
-              To be eligible for a return and refund:
+              In accordance with consumer protection standards and Nexus Marketplace quality commitments, buyers enjoy a 30-day inspection period starting from the timestamp carrier tracking records physical delivery:
             </p>
             <ul className="list-disc list-inside space-y-1.5 pl-2 text-surface-600 dark:text-surface-400">
-              <li>The item must be in its original condition, unworn, unused, and with all original packaging and accessories.</li>
-              <li>The return request must be initiated within 30 days of the verified delivery date.</li>
-              <li>Custom, personalized, or perishable items are non-returnable unless defective upon arrival.</li>
+              <li><strong>Standard Catalog Goods:</strong> Eligible for return if unused, in original condition with intact artisan tags, certificates of authenticity, and original packaging.</li>
+              <li><strong>Damaged, Defective, or Misdescribed Items:</strong> 100% eligible for an immediate full refund or complimentary replacement. Return shipping fees are entirely covered by the seller or platform.</li>
+              <li><strong>Bespoke / Customized Commissions:</strong> Custom monogrammed or made-to-order items are exempt from standard returns unless they arrive damaged or deviate materially from approved commission specifications.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-              2. Order Cancellations
+              2. Order Cancellations & Pre-Dispatch Rights
             </h2>
             <p>
-              Orders may be cancelled free of charge at any time prior to carrier label creation and item dispatch. Once an item has been marked as shipped with an active tracking number, the order cannot be cancelled and must follow the standard return process upon arrival.
+              Buyers may cancel any standard order free of charge at any point prior to carrier label creation and dispatch. Upon cancellation, your vaulted escrow authorization is immediately released, and funds reflect on your original payment card within 1 to 3 banking days. Once tracking is generated, orders must proceed through the standard 30-day return process upon arrival.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-              3. Refund Process & Timelines
+              3. Reverse Shipping & Logistics Transparency
+            </h2>
+            <div className="space-y-2 text-surface-600 dark:text-surface-400">
+              <p>
+                <strong>Defective / Incorrect Goods:</strong> A pre-paid, fully insured carrier return label will be provided directly via your Customer Dashboard at no cost to you.
+              </p>
+              <p>
+                <strong>Buyer Discretion / Remorse Returns:</strong> For elective returns of pristine items, the buyer is responsible for standard return postage. We recommend utilizing tracked, insured transit to guarantee safe return to the artisan atelier.
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              4. Refund Processing & Timelines
             </h2>
             <p>
-              Once a returned item is received and inspected by the seller, the refund is initiated through Stripe Connect. Refunds are credited to the original payment method (card, Apple Pay, Google Pay) within 3 to 7 business days, depending on your financial institution.
+              Once the return parcel is delivered to the artisan atelier and inspected (maximum 48 business hours), the escrow refund is triggered automatically via Stripe Connect. Funds are credited directly back to the original funding source (credit card, debit card, Apple Pay, Google Pay). Depending on your banking institution, funds will appear on your statement within 3 to 7 business days. Nexus never charges hidden restocking or return penalty fees.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-              4. How to Request a Return
+              5. Dispute Arbitration & Grievance Redressal
             </h2>
-            <p>
-              To request a return, navigate to your <Link href="/customer" className="text-brand-600 dark:text-brand-400 hover:underline">Customer Dashboard</Link>, locate the order under Order History, and select &quot;Request Return&quot;. Alternatively, email <a href="mailto:support@nexus.market" className="text-brand-600 dark:text-brand-400 hover:underline">support@nexus.market</a> with your Order ID.
+            <p className="mb-3">
+              If an artisan denies a valid return or fails to respond within 48 hours, buyers can escalate directly to Nexus Dispute Mediation. Under the Consumer Protection (E-Commerce) Rules 2020:
             </p>
+            <div className="bg-surface-50 dark:bg-surface-950 p-4 rounded-xl border border-surface-200 dark:border-surface-800 text-xs space-y-1.5 text-surface-600 dark:text-surface-400">
+              <p><strong>Grievance Redressal Officer:</strong> Nexus Compliance & Support Desk</p>
+              <p><strong>Email:</strong> <a href="mailto:grievance@nexus.market" className="text-brand-600 dark:text-brand-400 underline font-semibold">grievance@nexus.market</a></p>
+              <p><strong>Acknowledgement SLA:</strong> Within 48 hours with a formal dispute tracking number</p>
+              <p><strong>Resolution SLA:</strong> Fair arbitration and final settlement within 30 days of grievance filing</p>
+            </div>
           </section>
 
         </div>

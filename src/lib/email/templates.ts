@@ -85,7 +85,10 @@ export function orderConfirmationTemplate(details: EmailOrderDetails): { subject
         </div>
         <div class="footer">
           <p>© ${new Date().getFullYear()} Nexus Marketplace Directorate. All rights reserved.</p>
-          <p>This is an automated transactional notification regarding your verified purchase.</p>
+          <p>This is a mandatory transactional receipt regarding your verified order #${details.orderId}.</p>
+          <p style="font-size: 11px; color: #52525b; margin-top: 8px;">
+            To manage optional marketing preferences or opt out of promotional newsletters, visit <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://nexus-marketplace.com'}/unsubscribe" style="color: #a1a1aa; text-decoration: underline;">Marketing Preferences</a>.
+          </p>
         </div>
       </div>
     </body>
@@ -102,6 +105,7 @@ Your acquisition has been confirmed and placed into escrow.
 Track your order here: ${orderUrl}
 
 Thank you for choosing Nexus.
+(Mandatory transactional notification regarding order #${details.orderId})
   `.trim();
 
   return {
@@ -139,6 +143,9 @@ export function passwordResetTemplate(resetUrl: string, customerName?: string): 
             If you did not initiate this request, you may safely disregard this communication.
           </p>
         </div>
+        <p style="text-align: center; font-size: 11px; color: #52525b; margin-top: 24px;">
+          Mandatory security notification dispatched per account authentication standards.
+        </p>
       </div>
     </body>
     </html>
@@ -173,6 +180,7 @@ export function welcomeEmailTemplate(customerName: string): { subject: string; h
         .container { max-width: 540px; margin: 0 auto; padding: 40px 20px; }
         .card { background-color: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px; text-align: center; }
         .btn { display: inline-block; background: #6366f1; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 9999px; margin-top: 24px; }
+        .footer { text-align: center; margin-top: 24px; font-size: 12px; color: #71717a; }
       </style>
     </head>
     <body>
@@ -185,6 +193,12 @@ export function welcomeEmailTemplate(customerName: string): { subject: string; h
           </p>
           <a href="${appUrl}/products" class="btn">Explore Atelier Catalog</a>
         </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} Nexus Marketplace. All rights reserved.</p>
+          <p style="font-size: 11px; color: #52525b;">
+            Manage marketing preferences: <a href="${appUrl}/unsubscribe" style="color: #a1a1aa; text-decoration: underline;">Unsubscribe from marketing</a>.
+          </p>
+        </div>
       </div>
     </body>
     </html>
@@ -194,10 +208,73 @@ export function welcomeEmailTemplate(customerName: string): { subject: string; h
 Welcome to Nexus Marketplace, ${customerName}!
 Your account has been successfully created.
 Explore the catalog: ${appUrl}/products
+
+Unsubscribe from marketing updates: ${appUrl}/unsubscribe
   `.trim();
 
   return {
     subject: 'Welcome to Nexus Multi-Vendor Marketplace',
+    html,
+    text,
+  };
+}
+
+export function marketingNewsletterTemplate(
+  email: string,
+  dropTitle: string,
+  dropSnippet: string,
+  actionUrl: string
+): { subject: string; html: string; text: string } {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://nexus-marketplace.com' : 'http://localhost:3000');
+  const unsubscribeUrl = `${appUrl}/unsubscribe?email=${encodeURIComponent(email)}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>${dropTitle} - Nexus Atelier Drops</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #09090b; color: #f4f4f5; margin: 0; padding: 0; }
+        .container { max-width: 580px; margin: 0 auto; padding: 40px 20px; }
+        .card { background-color: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px; text-align: center; }
+        .btn { display: inline-block; background: #6366f1; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 9999px; margin-top: 24px; }
+        .footer { text-align: center; margin-top: 28px; font-size: 12px; color: #71717a; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <p style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: #818cf8; text-transform: uppercase;">Nexus Atelier Drops</p>
+          <h2 style="margin: 8px 0 16px 0; color: #ffffff; font-size: 22px;">${dropTitle}</h2>
+          <p style="color: #a1a1aa; font-size: 14px; line-height: 1.6;">${dropSnippet}</p>
+          <a href="${actionUrl}" class="btn">Inspect Curated Drop</a>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} Nexus Marketplace. You are receiving this marketing communication because you consented to newsletter drops.</p>
+          <p>
+            <a href="${unsubscribeUrl}" style="color: #e4e4e7; text-decoration: underline; font-weight: 600;">1-Click Unsubscribe from Marketing Emails</a>
+            &nbsp;•&nbsp;
+            <a href="${appUrl}/privacy" style="color: #a1a1aa; text-decoration: underline;">Privacy Policy</a>
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+NEXUS ATELIER DROPS: ${dropTitle}
+
+${dropSnippet}
+View Drop: ${actionUrl}
+
+To unsubscribe from marketing emails instantly, visit:
+${unsubscribeUrl}
+  `.trim();
+
+  return {
+    subject: `Curated Drop: ${dropTitle} - Nexus Marketplace`,
     html,
     text,
   };

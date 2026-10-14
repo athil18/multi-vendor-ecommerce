@@ -83,8 +83,31 @@ export default function AboutPage() {
             In an era dominated by opaque drop-shipping platforms and disposable consumerism, true artistry has become increasingly difficult to discover. Independent ceramicists, bespoke horologists, bespoke keyboard builders, and organic botanical cultivators were relegated to algorithm traps or high-friction direct websites.
           </p>
           <p className="text-base text-surface-600 dark:text-surface-300 leading-relaxed">
-            Nexus re-engineers the digital bazaar. By providing Apple-grade minimalist aesthetic presentation, automated escrow splits, Section 508 accessibility, and international fulfillment tracking, we allow craftsmen to focus entirely on their craft while we handle the enterprise infrastructure.
+            Nexus re-engineers the digital bazaar. By providing Apple-grade minimalist aesthetic presentation, automated escrow splits, Section 508 / WCAG 2.2 accessibility, and international fulfillment tracking, we allow craftsmen to focus entirely on their craft while we handle the enterprise infrastructure.
           </p>
+        </div>
+
+        {/* Legal & Intermediary Transparency Disclosures */}
+        <div className="bg-white dark:bg-surface-900 rounded-2xl p-6 sm:p-8 border border-surface-200 dark:border-surface-800 shadow-sm space-y-4 mb-16">
+          <h2 className="text-xl font-bold text-surface-900 dark:text-white tracking-tight flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+            Platform Entity &amp; Statutory Disclosures
+          </h2>
+          <p className="text-xs text-surface-600 dark:text-surface-400 leading-relaxed">
+            Nexus operates as a multi-vendor digital marketplace and technical intermediary under Section 79 of the Information Technology Act, 2000 and Rule 4 of the Consumer Protection (E-Commerce) Rules, 2020. Products listed on Nexus are crafted and dispatched directly by independent artisan sellers.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-xs text-surface-700 dark:text-surface-300">
+            <div className="p-3 rounded-xl bg-surface-50 dark:bg-surface-950/60 border border-surface-200 dark:border-surface-800">
+              <span className="font-bold text-surface-900 dark:text-white block mb-1">Customer Support Concierge</span>
+              <p>Email: <a href="mailto:support@nexus.market" className="text-brand-600 dark:text-brand-400 underline">support@nexus.market</a></p>
+              <p>SLA: First response within 2 to 24 business hours</p>
+            </div>
+            <div className="p-3 rounded-xl bg-surface-50 dark:bg-surface-950/60 border border-surface-200 dark:border-surface-800">
+              <span className="font-bold text-surface-900 dark:text-white block mb-1">Grievance Redressal Desk</span>
+              <p>Email: <a href="mailto:grievance@nexus.market" className="text-brand-600 dark:text-brand-400 underline">grievance@nexus.market</a></p>
+              <p>Statutory SLA: Acknowledged in 48h; redressed in 30 days</p>
+            </div>
+          </div>
         </div>
 
         {/* CTA */}

@@ -110,6 +110,54 @@ export default function CheckoutPage() {
     }
   };
 
+  // Smart ZIP auto-fill lookup (Finding 5)
+  const handleZipChange = (value: string) => {
+    setZip(value);
+    if (shippingErrors.zip) setShippingErrors((prev) => ({ ...prev, zip: '' }));
+
+    const clean = value.replace(/\D/g, '').slice(0, 5);
+    if (clean.length === 5) {
+      const knownHubs: { [key: string]: { city: string; state: string } } = {
+        '94103': { city: 'San Francisco', state: 'CA' },
+        '94107': { city: 'San Francisco', state: 'CA' },
+        '90210': { city: 'Beverly Hills', state: 'CA' },
+        '90001': { city: 'Los Angeles', state: 'CA' },
+        '10001': { city: 'New York', state: 'NY' },
+        '10012': { city: 'New York', state: 'NY' },
+        '98101': { city: 'Seattle', state: 'WA' },
+        '60601': { city: 'Chicago', state: 'IL' },
+        '02108': { city: 'Boston', state: 'MA' },
+        '78701': { city: 'Austin', state: 'TX' },
+        '75201': { city: 'Dallas', state: 'TX' },
+        '30301': { city: 'Atlanta', state: 'GA' },
+        '33101': { city: 'Miami', state: 'FL' },
+        '80202': { city: 'Denver', state: 'CO' },
+        '97201': { city: 'Portland', state: 'OR' },
+      };
+
+      const hub = knownHubs[clean];
+      if (hub) {
+        if (!city.trim()) {
+          setCity(hub.city);
+          if (shippingErrors.city) setShippingErrors((prev) => ({ ...prev, city: '' }));
+        }
+        setStateRegion(hub.state);
+      } else {
+        const prefix = parseInt(clean.substring(0, 2), 10);
+        if (prefix >= 90 && prefix <= 96 && (!stateRegion || stateRegion === 'CA')) setStateRegion('CA');
+        else if (prefix >= 10 && prefix <= 14 && (!stateRegion || stateRegion === 'CA')) setStateRegion('NY');
+        else if (prefix === 98 && (!stateRegion || stateRegion === 'CA')) setStateRegion('WA');
+        else if (prefix >= 60 && prefix <= 62 && (!stateRegion || stateRegion === 'CA')) setStateRegion('IL');
+        else if (prefix >= 1 && prefix <= 2 && (!stateRegion || stateRegion === 'CA')) setStateRegion('MA');
+        else if (prefix >= 75 && prefix <= 79 && (!stateRegion || stateRegion === 'CA')) setStateRegion('TX');
+        else if (prefix >= 30 && prefix <= 31 && (!stateRegion || stateRegion === 'CA')) setStateRegion('GA');
+        else if (prefix >= 32 && prefix <= 34 && (!stateRegion || stateRegion === 'CA')) setStateRegion('FL');
+        else if (prefix >= 80 && prefix <= 81 && (!stateRegion || stateRegion === 'CA')) setStateRegion('CO');
+        else if (prefix === 97 && (!stateRegion || stateRegion === 'CA')) setStateRegion('OR');
+      }
+    }
+  };
+
   // Validate Step 1 before advancing
   const handleProceedToPayment = () => {
     const errors: { [key: string]: string } = {};
@@ -351,67 +399,83 @@ export default function CheckoutPage() {
       <nav aria-label="Checkout Progress" className="w-full">
         <ol className="grid grid-cols-3 gap-2 sm:gap-4 p-2 bg-surface-container-low rounded-2xl border border-outline-variant/20">
           {/* Step 1 */}
-          <li 
-            onClick={() => currentStep > 1 && setCurrentStep(1)}
-            className={`flex items-center gap-2 p-2.5 rounded-xl transition-all cursor-pointer ${
-              currentStep === 1 
-                ? 'bg-surface-container-high shadow-sm text-primary font-bold' 
-                : currentStep > 1 
-                  ? 'text-emerald-500 font-medium hover:bg-surface-container' 
-                  : 'text-on-surface-variant/50 cursor-not-allowed'
-            }`}
-          >
-            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-              currentStep > 1 
-                ? 'bg-emerald-500 text-white' 
-                : currentStep === 1 
-                  ? 'bg-primary text-on-primary' 
-                  : 'bg-outline-variant/40 text-on-surface-variant'
-            }`}>
-              {currentStep > 1 ? '✓' : '1'}
-            </div>
-            <span className="text-xs sm:text-sm truncate">1. Shipping</span>
+          <li>
+            <button
+              type="button"
+              disabled={currentStep <= 1}
+              aria-current={currentStep === 1 ? 'step' : undefined}
+              aria-label="Step 1: Shipping Address"
+              onClick={() => currentStep > 1 && setCurrentStep(1)}
+              className={`w-full flex items-center gap-2 p-2.5 rounded-xl transition-all text-left ${
+                currentStep === 1 
+                  ? 'bg-surface-container-high shadow-sm text-primary font-bold ring-1 ring-primary/20' 
+                  : currentStep > 1 
+                    ? 'text-emerald-600 dark:text-emerald-400 font-medium hover:bg-surface-container cursor-pointer' 
+                    : 'text-on-surface-variant/50 cursor-not-allowed opacity-60'
+              }`}
+            >
+              <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                currentStep > 1 
+                  ? 'bg-emerald-500 text-white' 
+                  : currentStep === 1 
+                    ? 'bg-primary text-on-primary' 
+                    : 'bg-outline-variant/40 text-on-surface-variant'
+              }`}>
+                {currentStep > 1 ? '✓' : '1'}
+              </div>
+              <span className="text-xs sm:text-sm truncate font-semibold">1. Shipping</span>
+            </button>
           </li>
 
           {/* Step 2 */}
-          <li 
-            onClick={() => currentStep > 2 && setCurrentStep(2)}
-            className={`flex items-center gap-2 p-2.5 rounded-xl transition-all cursor-pointer ${
-              currentStep === 2 
-                ? 'bg-surface-container-high shadow-sm text-primary font-bold' 
-                : currentStep > 2 
-                  ? 'text-emerald-500 font-medium hover:bg-surface-container' 
-                  : 'text-on-surface-variant/50 cursor-not-allowed'
-            }`}
-          >
-            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-              currentStep > 2 
-                ? 'bg-emerald-500 text-white' 
-                : currentStep === 2 
-                  ? 'bg-primary text-on-primary' 
-                  : 'bg-outline-variant/40 text-on-surface-variant'
-            }`}>
-              {currentStep > 2 ? '✓' : '2'}
-            </div>
-            <span className="text-xs sm:text-sm truncate">2. Payment</span>
+          <li>
+            <button
+              type="button"
+              disabled={currentStep <= 2}
+              aria-current={currentStep === 2 ? 'step' : undefined}
+              aria-label="Step 2: Payment Details"
+              onClick={() => currentStep > 2 && setCurrentStep(2)}
+              className={`w-full flex items-center gap-2 p-2.5 rounded-xl transition-all text-left ${
+                currentStep === 2 
+                  ? 'bg-surface-container-high shadow-sm text-primary font-bold ring-1 ring-primary/20' 
+                  : currentStep > 2 
+                    ? 'text-emerald-600 dark:text-emerald-400 font-medium hover:bg-surface-container cursor-pointer' 
+                    : 'text-on-surface-variant/50 cursor-not-allowed opacity-60'
+              }`}
+            >
+              <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                currentStep > 2 
+                  ? 'bg-emerald-500 text-white' 
+                  : currentStep === 2 
+                    ? 'bg-primary text-on-primary' 
+                    : 'bg-outline-variant/40 text-on-surface-variant'
+              }`}>
+                {currentStep > 2 ? '✓' : '2'}
+              </div>
+              <span className="text-xs sm:text-sm truncate font-semibold">2. Payment</span>
+            </button>
           </li>
 
           {/* Step 3 */}
-          <li 
-            className={`flex items-center gap-2 p-2.5 rounded-xl transition-all ${
-              currentStep === 3 
-                ? 'bg-surface-container-high shadow-sm text-primary font-bold' 
-                : 'text-on-surface-variant/50'
-            }`}
-          >
-            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-              currentStep === 3 
-                ? 'bg-primary text-on-primary' 
-                : 'bg-outline-variant/40 text-on-surface-variant'
-            }`}>
-              3
+          <li>
+            <div
+              aria-current={currentStep === 3 ? 'step' : undefined}
+              aria-label="Step 3: Review and Confirm"
+              className={`w-full flex items-center gap-2 p-2.5 rounded-xl transition-all ${
+                currentStep === 3 
+                  ? 'bg-surface-container-high shadow-sm text-primary font-bold ring-1 ring-primary/20' 
+                  : 'text-on-surface-variant/50 opacity-60'
+              }`}
+            >
+              <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                currentStep === 3 
+                  ? 'bg-primary text-on-primary' 
+                  : 'bg-outline-variant/40 text-on-surface-variant'
+              }`}>
+                3
+              </div>
+              <span className="text-xs sm:text-sm truncate font-semibold">3. Review</span>
             </div>
-            <span className="text-xs sm:text-sm truncate">3. Review</span>
           </li>
         </ol>
       </nav>
@@ -510,10 +574,7 @@ export default function CheckoutPage() {
                         required
                         maxLength={10}
                         value={zip}
-                        onChange={(e) => {
-                          setZip(e.target.value);
-                          if (shippingErrors.zip) setShippingErrors((p) => ({ ...p, zip: '' }));
-                        }}
+                        onChange={(e) => handleZipChange(e.target.value)}
                       />
                       {shippingErrors.zip && (
                         <p className="text-xs text-rose-500 flex items-center gap-1 mt-0.5">
@@ -730,6 +791,32 @@ export default function CheckoutPage() {
                     </p>
                   </div>
 
+                  {/* Mandatory Order Acknowledgment & Terms */}
+                  <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20 text-xs text-on-surface-variant leading-relaxed">
+                    <input
+                      type="checkbox"
+                      id="checkout-agree-terms"
+                      required
+                      aria-required="true"
+                      className="mt-0.5 h-4 w-4 rounded border-outline-variant/40 text-primary focus:ring-primary cursor-pointer shrink-0"
+                    />
+                    <label htmlFor="checkout-agree-terms" className="cursor-pointer text-[11px] leading-snug">
+                      I understand and agree to the{' '}
+                      <Link href="/terms" target="_blank" className="font-semibold text-primary hover:underline">
+                        Terms of Service
+                      </Link>
+                      , acknowledge that payment is vaulted in escrow subject to the{' '}
+                      <Link href="/returns" target="_blank" className="font-semibold text-primary hover:underline">
+                        30-Day Refund & Return Policy
+                      </Link>
+                      , and accept the{' '}
+                      <Link href="/privacy" target="_blank" className="font-semibold text-primary hover:underline">
+                        Privacy Policy
+                      </Link>
+                      . All item prices include applicable taxes with zero hidden fees.
+                    </label>
+                  </div>
+
                   {/* Primary CTA (Von Restorff Effect #7) */}
                   <div className="pt-2 flex flex-col sm:flex-row gap-4">
                     <Button 
@@ -799,8 +886,18 @@ export default function CheckoutPage() {
               )}
 
               <div className="flex justify-between">
+                <span>Estimated Taxes (GST / VAT)</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">Included in Price ($0.00)</span>
+              </div>
+
+              <div className="flex justify-between">
                 <span>Inspected Courier Delivery</span>
-                <span className="text-emerald-500 font-bold uppercase">Complimentary</span>
+                <span className="text-emerald-500 font-bold uppercase">Complimentary ($0.00)</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Buyer Protection Escrow</span>
+                <span className="text-emerald-500 font-bold uppercase">Included</span>
               </div>
 
               <div className="pt-3 pb-1 border-t border-outline-variant/10">

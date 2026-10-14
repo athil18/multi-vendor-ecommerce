@@ -17,17 +17,18 @@ import { parsePagination } from '@/lib/pagination';
 import { createProductSchema } from '@/lib/schemas/commerce';
 import { FALLBACK_PRODUCTS_LIST } from '@/lib/catalog-fallbacks';
 
-import { getRedisConnection } from '@/lib/queue/redis';
+import { getRedisConnection, isRedisReady } from '@/lib/queue/redis';
 
-// High-performance tiered L1 (In-Memory) & L2 (Redis) cache for catalog queries
+// High-performance tiered L1 (In-Memory) & L2 (Redis) cache for catalog queries (v5-clean-catalog)
 const catalogCache = new Map<string, { data: any; expiresAt: number }>();
+catalogCache.clear();
 const CATALOG_CACHE_TTL_MS = 60 * 1000; // 60s L1 memory TTL
 const REDIS_CATALOG_TTL_SEC = 600; // 10 minutes L2 Redis TTL
 
 export const GET = withErrorHandler(async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
-  const cacheKey = req.url;
-  const redisKey = `nexus:catalog:${Buffer.from(req.url).toString('base64url')}`;
+  const cacheKey = `v5:${req.url}`;
+  const redisKey = `nexus:catalog:v5:${Buffer.from(req.url).toString('base64url')}`;
 
   // 1. Check L1 in-memory cache (0ms lookup)
   const cached = catalogCache.get(cacheKey);
@@ -40,22 +41,24 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     });
   }
 
-  // 2. Check L2 Redis cache (~10ms distributed lookup)
-  try {
-    const redis = getRedisConnection();
-    const redisCached = await redis.get(redisKey);
-    if (redisCached) {
-      const parsed = JSON.parse(redisCached);
-      catalogCache.set(cacheKey, { data: parsed, expiresAt: Date.now() + CATALOG_CACHE_TTL_MS });
-      return NextResponse.json(parsed, {
-        headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-          'X-Cache-Lookup': 'HIT-REDIS',
-        },
-      });
+  // 2. Check L2 Redis cache (~10ms distributed lookup) only if Redis connection is ready
+  if (isRedisReady()) {
+    try {
+      const redis = getRedisConnection();
+      const redisCached = await redis.get(redisKey);
+      if (redisCached) {
+        const parsed = JSON.parse(redisCached);
+        catalogCache.set(cacheKey, { data: parsed, expiresAt: Date.now() + CATALOG_CACHE_TTL_MS });
+        return NextResponse.json(parsed, {
+          headers: {
+            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+            'X-Cache-Lookup': 'HIT-REDIS',
+          },
+        });
+      }
+    } catch {
+      // Graceful Redis fallback; proceed directly to PostgreSQL
     }
-  } catch {
-    // Graceful Redis fallback; proceed directly to PostgreSQL
   }
 
   const keyword = searchParams.get('keyword');
@@ -120,7 +123,16 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
   let products: any[] = [];
 
   try {
-    const [dbCount, dbProducts] = await Promise.all([
+    const isPlaceholderDb =
+      !process.env.DATABASE_URL ||
+      process.env.DATABASE_URL.includes('sample-pooler') ||
+      process.env.DATABASE_URL.includes('user:password');
+
+    if (isPlaceholderDb) {
+      throw new Error('PLACEHOLDER_DB');
+    }
+
+    const queryPromise = Promise.all([
       cursor ? Promise.resolve(0) : prisma.product.count({ where }),
       prisma.product.findMany({
         where,
@@ -133,6 +145,12 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         skip: cursor ? undefined : skip,
       }),
     ]);
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('DATABASE_QUERY_TIMEOUT')), 2000)
+    );
+
+    const [dbCount, dbProducts] = await Promise.race([queryPromise, timeoutPromise]);
     count = dbCount;
     products = dbProducts;
   } catch {
@@ -198,12 +216,14 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     if (oldestKey) catalogCache.delete(oldestKey);
   }
 
-  // 2. Cache in L2 Redis (Distributed across edge instances)
-  try {
-    const redis = getRedisConnection();
-    await redis.setex(redisKey, REDIS_CATALOG_TTL_SEC, JSON.stringify(responseBody));
-  } catch {
-    // Non-blocking fallback
+  // 2. Cache in L2 Redis (Distributed across edge instances) only if ready
+  if (isRedisReady()) {
+    try {
+      const redis = getRedisConnection();
+      await redis.setex(redisKey, REDIS_CATALOG_TTL_SEC, JSON.stringify(responseBody));
+    } catch {
+      // Non-blocking fallback
+    }
   }
 
   return NextResponse.json(responseBody, {
@@ -242,8 +262,19 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     },
   });
 
-  // Invalidate in-memory catalog cache on modification
+  // Invalidate in-memory and distributed catalog caches on modification
   catalogCache.clear();
+  if (isRedisReady()) {
+    try {
+      const redis = getRedisConnection();
+      const keys = await redis.keys('nexus:catalog:*');
+      if (keys.length > 0) {
+        await redis.del(...keys);
+      }
+    } catch {
+      // Non-blocking fallback
+    }
+  }
 
   return NextResponse.json({ ...product, _id: product.id }, { status: 201 });
 });

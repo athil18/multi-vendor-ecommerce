@@ -1,9 +1,12 @@
 version: '3.8'
 
 services:
+  # ----------------------------------------------------
+  # 1. PostgreSQL 16 Primary Relational Store
+  # ----------------------------------------------------
   postgres:
     image: postgres:16-alpine
-    container_name: marketplace-postgres
+    container_name: nexus-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
@@ -19,7 +22,84 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=marketplace
+    networks:
+      - nexus-network
+
+  # ----------------------------------------------------
+  # 2. Redis 7 In-Memory Cache & BullMQ Queue Store
+  # ----------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: nexus-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - nexus-network
+
+  # ----------------------------------------------------
+  # 3. Next.js 16 Web Application (Storefront & API)
+  # ----------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/marketplace?schema=public
+      - REDIS_URL=redis://redis:6379
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - CLIENT_URL=http://localhost:3000
+      - JWT_SECRET=production-grade-jwt-secret-key-32-chars-minimum
+      - JWT_REFRESH_SECRET=production-grade-jwt-refresh-secret-key-32-chars
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # ----------------------------------------------------
+  # 4. Asynchronous Queue Worker (BullMQ Escrow & Emails)
+  # ----------------------------------------------------
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-worker
+    restart: unless-stopped
+    command: ["npm", "run", "worker"]
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/marketplace?schema=public
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nexus-network
 
 volumes:
   postgres_data:
+  redis_data:
 
+networks:
+  nexus-network:
+    driver: bridge

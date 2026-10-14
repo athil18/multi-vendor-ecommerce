@@ -1,23 +1,34 @@
 import { Redis } from 'ioredis';
 
+const isPlaceholderRedis = 
+  !process.env.REDIS_URL || 
+  process.env.REDIS_URL.includes('sample.upstash.io') ||
+  process.env.REDIS_URL.includes('default:token');
+
 const getRedisUrl = () => {
-  if (process.env.REDIS_URL) {
-    return process.env.REDIS_URL;
+  if (isPlaceholderRedis) {
+    return 'redis://127.0.0.1:6379';
   }
-  // Fallback for local development if REDIS_URL is not set
-  return 'redis://127.0.0.1:6379';
+  return process.env.REDIS_URL!;
 };
 
 const redisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   connectTimeout: 10000,
-  commandTimeout: 8000,
   keepAlive: 10000,
+  enableOfflineQueue: true,
+  retryStrategy: (times: number) => (times > 5 ? null : Math.min(times * 1000, 3000)),
 };
 
 // Singleton Redis instance for queues
-let redisConnection: Redis;
+let redisConnection: Redis | null = null;
+
+export const isRedisReady = (): boolean => {
+  if (isPlaceholderRedis) return false;
+  if (!redisConnection) return false;
+  return redisConnection.status === 'ready';
+};
 
 export const getRedisConnection = () => {
   if (!redisConnection) {
@@ -29,3 +40,4 @@ export const getRedisConnection = () => {
   }
   return redisConnection;
 };
+

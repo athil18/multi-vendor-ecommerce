@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
-import { ShoppingBag, Search, ClipboardList, RefreshCw, ArrowRight, Star, X } from 'lucide-react';
+import { ShoppingBag, Search, ClipboardList, RefreshCw, ArrowRight, Star, X, ShieldCheck } from 'lucide-react';
 import { toast } from '@/components/ui/Toast';
 
 import { Card, CardContent } from '@/components/ui/Card';
@@ -124,10 +125,18 @@ export default function CustomerPage() {
           <p className="text-body-sm text-on-surface-variant mt-1">Track purchases and checkout history.</p>
         </div>
         
-        <Button variant="outline" size="sm" onClick={() => loadOrders()}>
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Reload History
-        </Button>
+        <div className="flex items-center gap-2.5">
+          <Link href="/customer/privacy">
+            <Button variant="outline" size="sm" className="text-xs">
+              <ShieldCheck className="h-4 w-4 mr-1.5 text-brand-600" />
+              Privacy & Data Rights
+            </Button>
+          </Link>
+          <Button variant="outline" size="sm" onClick={() => loadOrders()} className="text-xs">
+            <RefreshCw className="h-4 w-4 mr-1.5" />
+            Reload History
+          </Button>
+        </div>
       </div>
 
       {/* Main Split: Orders List and Tracking Detail Side-Panel */}
